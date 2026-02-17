@@ -1,6 +1,5 @@
 ﻿using CodeCareer.Areas.User.Models;
 using CodeCareer.Areas.User.ViewModels;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CodeCareer.Areas.User.Controllers
@@ -63,9 +62,13 @@ namespace CodeCareer.Areas.User.Controllers
         }
         public IActionResult SuccessAuthorizate()
         {
-            Console.WriteLine("Имя пользователя:" + currentUser.FullName);
-            Console.WriteLine("Почта:" + currentUser.Email);
             return View(currentUser);
+        }
+
+        public IActionResult LogoutUser()
+        {
+            currentUser = new UserModel();
+            return View();
         }
     }
 }

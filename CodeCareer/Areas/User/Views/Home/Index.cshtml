@@ -12,5 +12,6 @@
 	@if (Model.FullName != null)
 	{
 		<a asp-area="User" asp-controller="Home" asp-action="Index">@Model.FullName</a>
+		<a asp-area="User" asp-controller="Home" asp-action="LogoutUser">Выйти из профиля</a>
 	}
 </div>
