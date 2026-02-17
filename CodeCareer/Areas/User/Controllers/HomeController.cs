@@ -1,43 +1,70 @@
 ﻿using CodeCareer.Areas.User.Models;
+using CodeCareer.Areas.User.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CodeCareer.Areas.User.Controllers
 {
     [Area("User")]
-    [Route("")]
-    [Route("{controller}")]
-    [Route("{area}/{controller}")]
     public class HomeController : Controller
     {
-        public UserModel currentUser { get; set; } = null;
+        public static UserModel currentUser { get; set; } = new UserModel();
+
+        [HttpGet]
+        [Route("")]
+        [Route("{action}")]
         public ActionResult Index()
         {
-            return View();
+            return View(currentUser);
         }
 
         [HttpGet]
         public IActionResult Authorizate()
         {
-            return View(currentUser);
+            return View(new UserViewModel());
         }
 
         [HttpPost]
-        public IActionResult Authorizate(UserModel user)
+        public IActionResult Authorizate(UserViewModel user)
         {
             if (ModelState.IsValid)
             {
-                currentUser = user;
-                return RedirectToAction("SuccessAuthorizate");
+                UserModelDb db = new UserModelDb();
+
+                var dbUser = db.GetUserModels().Where(u => u.Email == user.Email).FirstOrDefault();
+
+                
+
+                // Если пользователь не найден в БД
+                if (dbUser == null)
+                {
+                    currentUser.CreateUser(user);
+                    db.AddUserModel(currentUser);
+                    return RedirectToAction("SuccessAuthorizate");
+                }
+                else
+                {
+                    if (dbUser.Password == user.Password)
+                    {
+                        currentUser = dbUser;
+                        return RedirectToAction("SuccessAuthorizate");
+                    }
+                    else
+                    {
+                        ViewData["isWrongAnswer"] = "true";
+                        return View(user);
+                    }
+                }
             }
             else
             {
-                return View(currentUser);
+                return View(user);
             }
         }
-
         public IActionResult SuccessAuthorizate()
         {
+            Console.WriteLine("Имя пользователя:" + currentUser.FullName);
+            Console.WriteLine("Почта:" + currentUser.Email);
             return View(currentUser);
         }
     }

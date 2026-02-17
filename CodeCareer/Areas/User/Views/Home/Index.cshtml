@@ -1,1 +1,16 @@
-﻿<h1>Главная</h1>
+﻿@{
+	ViewBag.Title = "Главная";
+}
+@model UserModel
+
+<h1>Главная</h1>
+<div>
+	@if (Model.FullName == null)
+	{
+		<a asp-area="User" asp-controller="Home" asp-action="Authorizate">Войти в профиль</a>
+	}
+	@if (Model.FullName != null)
+	{
+		<a asp-area="User" asp-controller="Home" asp-action="Index">@Model.FullName</a>
+	}
+</div>
