@@ -1,0 +1,15 @@
+﻿@model UserModel
+
+@{
+	ViewBag.Title = "Профиль";
+}
+
+<div>
+	<div> @*Шапка*@
+
+	</div>
+	<h4>@Model.FullName - @Model.Status</h4>
+	<p>@Model.Info</p>
+	<p>@Model.Subscribers подписчиков</p>
+	<p>@Model.Rating рейтинга</p>
+</div>

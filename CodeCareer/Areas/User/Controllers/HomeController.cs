@@ -70,5 +70,23 @@ namespace CodeCareer.Areas.User.Controllers
             currentUser = new UserModel();
             return View();
         }
+
+        [HttpGet]
+        public IActionResult Profile()
+        {
+            if (currentUser.FullName != null)
+            {
+                return View(currentUser);
+            }
+            else
+            {
+                return RedirectToAction("Authorizate");
+            }
+        }
+        [HttpPost]
+        public IActionResult Profile(UserModel user)
+        {
+            return View(user);
+        }
     }
 }

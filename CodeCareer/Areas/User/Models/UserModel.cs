@@ -24,6 +24,14 @@ namespace CodeCareer.Areas.User.Models
         [BindNever]
         public string Info {  get; set; } = string.Empty;
 
+        [BindNever]
+        public int Rating { get; set; } = 0;
+
+        [BindNever]
+        public int Subscribers { get; set; } = 0;
+
+        [BindNever]
+        public string Status { get; set; } = "Начинающий";
         public void CreateUser(UserViewModel user)
         {
             FullName = user.FullName;

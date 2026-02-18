@@ -12,6 +12,14 @@
 	@if (Model.FullName != null)
 	{
 		<a asp-area="User" asp-controller="Home" asp-action="Index">@Model.FullName</a>
-		<a asp-area="User" asp-controller="Home" asp-action="LogoutUser">Выйти из профиля</a>
+	}
+	<a asp-area="User" asp-controller="Home" asp-action="Profile">Профиль</a>
+	<a asp-area="User" asp-controller="Home" asp-action="Index">Лента</a>
+	<a asp-area="User" asp-controller="Home" asp-action="Index">Задачи</a>
+	<a asp-area="User" asp-controller="Home" asp-action="Index">Сообщество</a>
+	<a asp-area="User" asp-controller="Home" asp-action="Index">ТОП-100 лидеров</a>
+	@if (Model.FullName != null)
+	{
+		<a asp-area="User" asp-controller="Home" asp-action="LogoutUser">Выход</a>
 	}
 </div>
