@@ -40,5 +40,23 @@ namespace CodeCareer.Areas.User.Models
             string jsonWrite = JsonSerializer.Serialize(users);
             File.WriteAllText(filepath, jsonWrite);
         }
+
+        public void RemoveUserModel(UserModel user)
+        {
+            List<UserModel> users = new List<UserModel>();
+
+            if (File.Exists(filepath))
+            {
+                string json = File.ReadAllText(filepath);
+                if (!string.IsNullOrEmpty(json))
+                {
+                    users = JsonSerializer.Deserialize<List<UserModel>>(json) ?? new List<UserModel>();
+                }
+            }
+
+            users = users.Where(u => !(u.Email == user.Email)).ToList();
+            string jsonWrite = JsonSerializer.Serialize(users);
+            File.WriteAllText(filepath, jsonWrite);
+        }
     }
 }

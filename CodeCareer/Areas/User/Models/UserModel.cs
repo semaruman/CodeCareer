@@ -21,7 +21,8 @@ namespace CodeCareer.Areas.User.Models
         [BindNever]
         public DateTime? BirthDate { get; set; }
 
-        [BindNever]
+        [Required(ErrorMessage = "Обязательное поле")]
+        [MaxLength(300, ErrorMessage = "текст не должен превышать 300 символов")]
         public string Info {  get; set; } = string.Empty;
 
         [BindNever]

@@ -8,8 +8,13 @@
 	<div> @*Шапка*@
 
 	</div>
+	<a asp-area="User" asp-controller="Home" asp-action="EditProfile">Настроить профиль</a>
 	<h4>@Model.FullName - @Model.Status</h4>
 	<p>@Model.Info</p>
 	<p>@Model.Subscribers подписчиков</p>
 	<p>@Model.Rating рейтинга</p>
+</div>
+
+<div>
+	<a asp-area="User" asp-controller="Home" asp-action="">Создать публикацию</a>
 </div>

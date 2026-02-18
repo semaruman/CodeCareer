@@ -1,0 +1,26 @@
+﻿@model EditProfileViewModel
+
+@{
+	ViewBag.Title = "Редактировать Профиль";
+}
+
+<div>
+	<div>
+		@*Шапка*@
+
+	</div>
+	<form asp-area="User" asp-controller="Home" asp-action="EditProfile" method="post">
+		@*<h4>@Model.FullName - @Model.Status</h4>*@
+		<p>Введите краткую информацию о себе</p>
+		<textarea asp-for="Info">@Model.Info</textarea>
+		<span asp-validation-for="Info"></span>
+
+		@*<p>@Model.Subscribers подписчиков</p>*@
+		@*<p>@Model.Rating рейтинга</p>*@
+		<button type="submit">Сохранить изменения</button>
+	</form>
+</div>
+
+<div>
+	<a asp-area="User" asp-controller="Home" asp-action="">Создать публикацию</a>
+</div>

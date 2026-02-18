@@ -83,10 +83,31 @@ namespace CodeCareer.Areas.User.Controllers
                 return RedirectToAction("Authorizate");
             }
         }
-        [HttpPost]
-        public IActionResult Profile(UserModel user)
+        [HttpGet]
+        public IActionResult EditProfile()
         {
+            return View(new EditProfileViewModel());
+        }
+
+        [HttpPost]
+        public IActionResult EditProfile(EditProfileViewModel user)
+        {
+            if (ModelState.IsValid)
+            {
+                UserModelDb db = new UserModelDb();
+                db.RemoveUserModel(currentUser);
+                currentUser.Info = user.Info;
+                db.AddUserModel(currentUser);
+
+                return RedirectToAction("EditProfileSuccess");
+            }
+            Console.WriteLine("Модель не валидна");
             return View(user);
+        }
+
+        public IActionResult EditProfileSuccess()
+        {
+            return View();
         }
     }
 }
