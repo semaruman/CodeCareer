@@ -1,0 +1,14 @@
+﻿@model PublicationModel
+@{
+	ViewBag.Title = "Создание публикации";
+}
+
+
+<h1>Содержимое публикации:</h1>
+
+<form asp-area="User" asp-controller="Home" asp-action="CreatePublication" method="post">
+	<textarea asp-for="Content"></textarea>
+	<span asp-validation-for="Content"></span>
+
+	<button type="submit">Создать</button>
+</form>

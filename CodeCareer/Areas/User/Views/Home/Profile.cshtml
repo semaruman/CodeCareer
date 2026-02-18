@@ -16,5 +16,15 @@
 </div>
 
 <div>
-	<a asp-area="User" asp-controller="Home" asp-action="">Создать публикацию</a>
+	<a asp-area="User" asp-controller="Home" asp-action="CreatePublication">Создать публикацию</a>
+</div>
+<div>
+	<h2>Публикации</h2>
+	@foreach (var publication in Model.Publications)
+	{
+		<div>
+			<h4>@publication.UserFullName - @publication.CreatedDate</h4>
+			<p>@publication.Content</p>
+		</div>
+	}
 </div>

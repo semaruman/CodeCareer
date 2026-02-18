@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using CodeCareer.Areas.User.Controllers;
+
+<!DOCTYPE html>
 
 <html>
 <head>
@@ -6,6 +8,25 @@
     <title>@ViewBag.Title</title>
 </head>
 <body>
+	<header>
+		@if (HomeController.currentUser.FullName == null)
+		{
+			<a asp-area="User" asp-controller="Home" asp-action="Authorizate">Войти в профиль</a>
+		}
+		@if (HomeController.currentUser.FullName != null)
+		{
+			<a asp-area="User" asp-controller="Home" asp-action="Index">@HomeController.currentUser.FullName</a>
+		}
+		<a asp-area="User" asp-controller="Home" asp-action="Profile">Профиль</a>
+		<a asp-area="User" asp-controller="Home" asp-action="Index">Лента</a>
+		<a asp-area="User" asp-controller="Home" asp-action="Index">Задачи</a>
+		<a asp-area="User" asp-controller="Home" asp-action="Index">Сообщество</a>
+		<a asp-area="User" asp-controller="Home" asp-action="Index">ТОП-100 лидеров</a>
+		@if (HomeController.currentUser.FullName != null)
+		{
+			<a asp-area="User" asp-controller="Home" asp-action="LogoutUser">Выход</a>
+		}
+	</header>
     <main>
         @RenderBody()
     </main>

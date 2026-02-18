@@ -108,5 +108,33 @@ namespace CodeCareer.Areas.User.Controllers
         {
             return View();
         }
+
+        [HttpGet]
+        public IActionResult CreatePublication()
+        {
+            return View(new PublicationModel());
+        }
+
+        [HttpPost]
+        public IActionResult CreatePublication(PublicationModel publication)
+        {
+            if (!string.IsNullOrEmpty(publication.Content))
+            {
+                UserModelDb db = new UserModelDb();
+                publication.UserFullName = currentUser.FullName;
+                currentUser.Publications.Add(publication);
+
+                db.RemoveUserModel(currentUser);
+                db.AddUserModel(currentUser);
+
+                return RedirectToAction("Profile");
+            }
+            return View(publication);
+        }
+
+        public IActionResult PublicationFeed()
+        {
+            return View();
+        }
     }
 }
