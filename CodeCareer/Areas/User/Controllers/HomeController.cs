@@ -86,13 +86,13 @@ namespace CodeCareer.Areas.User.Controllers
         [HttpGet]
         public IActionResult EditProfile()
         {
-            return View(new EditProfileViewModel());
+            return View(currentUser);
         }
 
         [HttpPost]
-        public IActionResult EditProfile(EditProfileViewModel user)
+        public IActionResult EditProfile(UserModel user)
         {
-            if (ModelState.IsValid)
+            if (user.Info != string.Empty)
             {
                 UserModelDb db = new UserModelDb();
                 db.RemoveUserModel(currentUser);
@@ -101,7 +101,6 @@ namespace CodeCareer.Areas.User.Controllers
 
                 return RedirectToAction("EditProfileSuccess");
             }
-            Console.WriteLine("Модель не валидна");
             return View(user);
         }
 
