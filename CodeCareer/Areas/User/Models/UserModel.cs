@@ -34,8 +34,6 @@ namespace CodeCareer.Areas.User.Models
         [BindNever]
         public string Status { get; set; } = "Начинающий";
 
-        [BindNever]
-        public List<PublicationModel> Publications { get; set; } = new List<PublicationModel>();
         public void CreateUser(UserViewModel user)
         {
             FullName = user.FullName;

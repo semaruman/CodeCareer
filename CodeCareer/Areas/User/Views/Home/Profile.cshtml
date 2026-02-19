@@ -2,6 +2,8 @@
 
 @{
 	ViewBag.Title = "Профиль";
+	PublicationModelDb db = new PublicationModelDb();
+	var publications = db.GetPublicationModels().Where(p => p.User.Email == Model.Email).ToList();
 }
 
 <div>
@@ -20,7 +22,7 @@
 </div>
 <div>
 	<h2>Публикации</h2>
-	@foreach (var publication in Model.Publications)
+	@foreach (var publication in publications)
 	{
 		<div>
 			<h4>@Model.FullName - @publication.CreatedDate.Date.ToString("dd.MM.yyyy")</h4>

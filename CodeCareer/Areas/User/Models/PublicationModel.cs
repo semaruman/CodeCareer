@@ -11,6 +11,9 @@ namespace CodeCareer.Areas.User.Models
         [BindNever]
         public DateTime CreatedDate { get; set; } = DateTime.Now;
 
+        [BindNever]
+        public UserModel User { get; set; }
+
         [Required(ErrorMessage = "Введите описание")]
         [MaxLength(1000, ErrorMessage = "Максимальная длина - 1000 символов")]
         public string Content {  get; set; }

@@ -118,13 +118,11 @@ namespace CodeCareer.Areas.User.Controllers
         [HttpPost]
         public IActionResult CreatePublication(PublicationModel publication)
         {
-            if (ModelState.IsValid)
+            if (!string.IsNullOrEmpty(publication.Content))
             {
-                UserModelDb db = new UserModelDb();
-                currentUser.Publications.Add(publication);
-
-                db.RemoveUserModel(currentUser);
-                db.AddUserModel(currentUser);
+                PublicationModelDb db = new PublicationModelDb();
+                publication.User = currentUser;
+                db.AddPublicationModel(publication);
 
                 return RedirectToAction("Profile");
             }
