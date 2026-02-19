@@ -1,8 +1,15 @@
 ﻿@{
-	UserModelDb db = new UserModelDb();
-	var publications = new Dictionary<UserModel, List<PublicationModel>>();
-	foreach (var user in db.GetUserModels())
-	{
-		
-	}
+	PublicationModelDb db = new PublicationModelDb();
+	var publications = db.GetPublicationModels();
 }
+
+<div>
+	<h2>Лента публикаций</h2>
+	@foreach (var publication in publications)
+	{
+		<div>
+			<h4>@publication.User.FullName - @publication.CreatedDate.Date.ToString("dd.MM.yyyy")</h4>
+			<p>@publication.Content</p>
+		</div>
+	}
+</div>
