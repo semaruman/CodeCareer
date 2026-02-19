@@ -23,7 +23,7 @@
 	@foreach (var publication in Model.Publications)
 	{
 		<div>
-			<h4>@publication.UserFullName - @publication.CreatedDate</h4>
+			<h4>@Model.FullName - @publication.CreatedDate.Date.ToString("dd.MM.yyyy")</h4>
 			<p>@publication.Content</p>
 		</div>
 	}

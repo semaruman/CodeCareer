@@ -9,9 +9,6 @@ namespace CodeCareer.Areas.User.Models
         public int Id { get; set; }
 
         [BindNever]
-        public string UserFullName { get; set; }
-
-        [BindNever]
         public DateTime CreatedDate { get; set; } = DateTime.Now;
 
         [Required(ErrorMessage = "Введите описание")]

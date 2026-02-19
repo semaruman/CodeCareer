@@ -118,10 +118,9 @@ namespace CodeCareer.Areas.User.Controllers
         [HttpPost]
         public IActionResult CreatePublication(PublicationModel publication)
         {
-            if (!string.IsNullOrEmpty(publication.Content))
+            if (ModelState.IsValid)
             {
                 UserModelDb db = new UserModelDb();
-                publication.UserFullName = currentUser.FullName;
                 currentUser.Publications.Add(publication);
 
                 db.RemoveUserModel(currentUser);
