@@ -21,7 +21,7 @@
 		<a asp-area="User" asp-controller="Home" asp-action="PublicationFeed">Лента</a>
 		<a asp-area="User" asp-controller="Home" asp-action="Index">Задачи</a>
 		<a asp-area="User" asp-controller="Home" asp-action="Index">Сообщество</a>
-		<a asp-area="User" asp-controller="Home" asp-action="Index">ТОП-100 лидеров</a>
+		<a asp-area="User" asp-controller="Home" asp-action="Top100Users">ТОП-100 лидеров</a>
 		@if (HomeController.currentUser.FullName != null)
 		{
 			<a asp-area="User" asp-controller="Home" asp-action="LogoutUser">Выход</a>

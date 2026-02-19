@@ -1,6 +1,7 @@
 ﻿@{
 	PublicationModelDb db = new PublicationModelDb();
 	var publications = db.GetPublicationModels();
+	publications.Reverse();
 }
 
 <div>

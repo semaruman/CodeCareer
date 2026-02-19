@@ -1,0 +1,8 @@
+﻿@model List<UserModel>
+
+
+<h1>Топ 100 пользователей</h1>
+@for (int i = 0; i < Model.Count(); i++)
+{
+	<h3><a asp-area="User" asp-controller="Home" asp-action="AlienProfile" asp-route-userEmail="@Model[i].Email">@Model[i].FullName</a> - @Model[i].Rating рейтинга</h3>
+}

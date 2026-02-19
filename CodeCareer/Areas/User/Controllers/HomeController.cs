@@ -129,8 +129,13 @@ namespace CodeCareer.Areas.User.Controllers
             if (!string.IsNullOrEmpty(publication.Content))
             {
                 PublicationModelDb db = new PublicationModelDb();
+                UserModelDb uDb = new UserModelDb();
                 publication.User = currentUser;
+                currentUser.Rating += Constants.PlUS_RATING_FOR_POST;
                 db.AddPublicationModel(publication);
+
+                uDb.RemoveUserModel(currentUser);
+                uDb.AddUserModel(currentUser);
 
                 return RedirectToAction("Profile");
             }
@@ -140,6 +145,13 @@ namespace CodeCareer.Areas.User.Controllers
         public IActionResult PublicationFeed()
         {
             return View();
+        }
+
+        public IActionResult Top100Users()
+        {
+            UserModelDb db = new UserModelDb();
+            var users = db.GetUserModels().OrderByDescending(u => u.Rating).Take(100).ToList();
+            return View(users);
         }
     }
 }

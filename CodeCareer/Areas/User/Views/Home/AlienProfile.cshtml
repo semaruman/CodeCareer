@@ -4,6 +4,7 @@
 	ViewBag.Title = $"Профиль {Model.FullName}";
 	PublicationModelDb db = new PublicationModelDb();
 	var publications = db.GetPublicationModels().Where(p => p.User.Email == Model.Email).ToList();
+	publications.Reverse();
 }
 
 <div>
