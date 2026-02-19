@@ -1,0 +1,29 @@
+﻿@model UserModel
+
+@{
+	ViewBag.Title = $"Профиль {Model.FullName}";
+	PublicationModelDb db = new PublicationModelDb();
+	var publications = db.GetPublicationModels().Where(p => p.User.Email == Model.Email).ToList();
+}
+
+<div>
+	<div>
+		@*Шапка*@
+
+	</div>
+	<h4>@Model.FullName - @Model.Status</h4>
+	<p>@Model.Info</p>
+	<p>@Model.Subscribers подписчиков</p>
+	<p>@Model.Rating рейтинга</p>
+</div>
+
+<div>
+	<h2>Публикации</h2>
+	@foreach (var publication in publications)
+	{
+		<div>
+			<h4>@Model.FullName - @publication.CreatedDate.Date.ToString("dd.MM.yyyy")</h4>
+			<p>@publication.Content</p>
+		</div>
+	}
+</div>

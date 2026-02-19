@@ -83,6 +83,14 @@ namespace CodeCareer.Areas.User.Controllers
                 return RedirectToAction("Authorizate");
             }
         }
+
+        [HttpGet]
+        public IActionResult AlienProfile(string userEmail)
+        {
+            UserModelDb db = new UserModelDb();
+            UserModel user = db.GetUserModels().FirstOrDefault(u => u.Email == userEmail);
+            return View(user);
+        }
         [HttpGet]
         public IActionResult EditProfile()
         {
