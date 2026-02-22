@@ -6,33 +6,27 @@ namespace CodeCareer.Areas.User.Models
 {
     public class UserModel
     {
-        [BindNever]
         public int Id { get; set; } = 1;
 
-        [BindNever]
         public string FullName { get; set; }
 
-        [BindNever]
         public string Email {  get; set; }
 
-        [BindNever]
         public string Password { get; set; }
 
-        [BindNever]
         public DateTime? BirthDate { get; set; }
 
         [Required(ErrorMessage = "Обязательное поле")]
         [MaxLength(300, ErrorMessage = "текст не должен превышать 300 символов")]
         public string Info {  get; set; } = string.Empty;
 
-        [BindNever]
         public int Rating { get; set; } = 0;
 
-        [BindNever]
         public int Subscribers { get; set; } = 0;
 
-        [BindNever]
         public string Status { get; set; } = "Начинающий";
+
+        public List<TagModel> Tags { get; set; } = new List<TagModel>();
 
         public void CreateUser(UserViewModel user)
         {
