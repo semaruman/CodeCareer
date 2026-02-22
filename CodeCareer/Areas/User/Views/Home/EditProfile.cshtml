@@ -2,6 +2,7 @@
 
 @{
 	ViewBag.Title = "Редактировать Профиль";
+	TagModelDb db = new TagModelDb();
 }
 
 <div>
@@ -14,6 +15,14 @@
 		<p>Введите краткую информацию о себе</p>
 		<textarea asp-for="Info">@Model.Info</textarea>
 		<span asp-validation-for="Info"></span>
+
+		<p>Выберите теги</p>
+		<select asp-for="Tags" multiple>
+			@foreach (var tag in db.GetTagModels())
+			{
+				<option value="@tag">@tag.Name</option>
+			}
+		</select>
 
 		<p>@Model.Subscribers подписчиков</p>
 		<p>@Model.Rating рейтинга</p>
