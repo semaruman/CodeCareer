@@ -1,0 +1,12 @@
+﻿@model AdminModel
+
+<form asp-area="Admin" asp-controller="Home" asp-action="Authorization">
+	<h3>Введите пароль администратора</h3>
+	<input asp-for="Password"/>
+	@if (ViewBag.WrongPassword != string.Empty)
+	{
+		<h4>@ViewBag.WrongPassword</h4>
+	}
+	<br />
+	<button type="submit">Войти</button>
+</form>

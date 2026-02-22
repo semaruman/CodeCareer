@@ -6,6 +6,15 @@
     <title>@ViewBag.Title</title>
 </head>
 <body>
+    <header>
+        @if (!HomeController.admin.IsAuthorizate)
+        {
+            <a asp-area="Admin" asp-controller="Home" asp-action="Authorization">Войти в аккаунт</a>
+        }
+        else{
+            <a asp-area="Admin" asp-controller="Home" asp-action="LogoutAdmin">Выйти из аккаунта</a>
+        }
+    </header>
     <div>
         @RenderBody()
     </div>
