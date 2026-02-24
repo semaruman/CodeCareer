@@ -1,12 +1,12 @@
-﻿@using CodeCareer.Areas.User.Services
+﻿@using CodeCareer.Areas.User.Services.Interfaces
 @using CodeCareer.Areas.User.Services.Implementations.JsonServices
+
+@inject IPublicationService PublicationService
+
 @{
-	PublicationJsonService db = new PublicationJsonService();
-	var publications = db.GetPublicationModels();
+	var publications = PublicationService.GetPublicationModels();
 	publications.Reverse();
 }
-
-
 
 <div>
 	<h2>Лента публикаций</h2>
