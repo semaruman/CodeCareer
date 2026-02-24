@@ -60,5 +60,25 @@ namespace CodeCareer.Areas.User.Services.Implementations.JsonServices
             string jsonWrite = JsonSerializer.Serialize(users);
             File.WriteAllText(_filepath, jsonWrite);
         }
+
+        public void UpdateUserModel(UserModel user)
+        {
+            List<UserModel> users = new List<UserModel>();
+
+            if (File.Exists(_filepath))
+            {
+                string json = File.ReadAllText(_filepath);
+                if (!string.IsNullOrEmpty(json))
+                {
+                    users = JsonSerializer.Deserialize<List<UserModel>>(json) ?? new List<UserModel>();
+                }
+            }
+
+            users = users.Where(u => !(u.Email == user.Email)).ToList();
+            users.Add(user);
+
+            string jsonWrite = JsonSerializer.Serialize(users);
+            File.WriteAllText(_filepath, jsonWrite);
+        }
     }
 }

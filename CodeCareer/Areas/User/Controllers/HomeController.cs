@@ -140,8 +140,7 @@ namespace CodeCareer.Areas.User.Controllers
                 currentUser.Rating += Constants.PlUS_RATING_FOR_POST;
                 _publicationService.AddPublicationModel(publication);
 
-                _userService.RemoveUserModel(currentUser);
-                _userService.AddUserModel(currentUser);
+                _userService.UpdateUserModel(currentUser);
 
                 return RedirectToAction("Profile");
             }

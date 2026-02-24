@@ -7,5 +7,7 @@ namespace CodeCareer.Areas.User.Services.Interfaces
         public List<UserModel> GetUserModels();
         public void AddUserModel(UserModel user);
         public void RemoveUserModel(UserModel user);
+
+        public void UpdateUserModel(UserModel user);
     }
 }
