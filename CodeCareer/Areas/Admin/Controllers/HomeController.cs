@@ -1,16 +1,23 @@
 ﻿using CodeCareer.Areas.Admin.Models;
+using CodeCareer.Areas.User.Models;
+using CodeCareer.Areas.User.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CodeCareer.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Route("{area}")]
     [Route("{area}/{action}")]
     public class HomeController : Controller
     {
         public static AdminModel admin = new AdminModel();
 
-        [Route("")]
+        private readonly ITagService _tagService;
+
+        public HomeController(ITagService tagService)
+        {
+            _tagService = tagService;
+        }
+
         public IActionResult Index()
         {
             if (!admin.IsAuthorizate)
@@ -52,6 +59,33 @@ namespace CodeCareer.Areas.Admin.Controllers
         {
             admin = new AdminModel();
             return View();
+        }
+
+        [HttpGet]
+        public IActionResult AddTags()
+        {
+            if (admin.IsAuthorizate)
+            {
+                return View(new TagModel());
+            }
+            else
+            {
+                return RedirectToAction("Authorization");
+            }
+        }
+
+        [HttpPost]
+        public IActionResult AddTags(TagModel tag)
+        {
+            if (ModelState.IsValid)
+            {
+                _tagService.AddTagModel(tag);
+                return View(new TagModel());
+            }
+            else
+            {
+                return View(tag);
+            }
         }
     }
 }

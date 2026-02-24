@@ -5,7 +5,7 @@ namespace CodeCareer.Areas.User.Services.Interfaces
     public interface ITagService
     {
         public List<TagModel> GetTagModels();
-        public void AddPublicationModel(TagModel tag);
-        public void RemovePublicationModel(string tagName);
+        public void AddTagModel(TagModel tag);
+        public void RemoveTagModel(string tagName);
     }
 }

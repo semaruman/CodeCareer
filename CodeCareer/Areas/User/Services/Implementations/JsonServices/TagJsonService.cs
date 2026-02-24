@@ -24,7 +24,7 @@ namespace CodeCareer.Areas.User.Services.Implementations.JsonServices
             return tags;
         }
 
-        public void AddPublicationModel(TagModel tag)
+        public void AddTagModel(TagModel tag)
         {
             List<TagModel> tags = new List<TagModel>();
 
@@ -42,7 +42,7 @@ namespace CodeCareer.Areas.User.Services.Implementations.JsonServices
             File.WriteAllText(_filepath, jsonWrite);
         }
 
-        public void RemovePublicationModel(string tagName)
+        public void RemoveTagModel(string tagName)
         {
             List<TagModel> tags = new List<TagModel>();
 
