@@ -1,5 +1,7 @@
-﻿@{
-	PublicationModelDb db = new PublicationModelDb();
+﻿@using CodeCareer.Areas.User.Services
+@using CodeCareer.Areas.User.Services.Implementations.JsonServices
+@{
+	PublicationJsonService db = new PublicationJsonService();
 	var publications = db.GetPublicationModels();
 	publications.Reverse();
 }

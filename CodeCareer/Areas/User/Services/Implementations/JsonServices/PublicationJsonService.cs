@@ -1,18 +1,20 @@
 ﻿using System.Text.Json;
+using CodeCareer.Areas.User.Models;
+using CodeCareer.Areas.User.Services.Interfaces;
 
-namespace CodeCareer.Areas.User.Models
+namespace CodeCareer.Areas.User.Services.Implementations.JsonServices
 {
-    public class PublicationModelDb
+    public class PublicationJsonService : IPublicationService
     {
-        private readonly string filepath = Path.Combine(Directory.GetCurrentDirectory(), "Areas", "User", "Data", "publication_db.json");
+        private readonly string _filepath = Path.Combine(Directory.GetCurrentDirectory(), "Areas", "User", "Data", "JsonFiles", "publication_db.json");
 
         public List<PublicationModel> GetPublicationModels()
         {
             List<PublicationModel> publications = new List<PublicationModel>();
 
-            if (File.Exists(filepath))
+            if (File.Exists(_filepath))
             {
-                string json = File.ReadAllText(filepath);
+                string json = File.ReadAllText(_filepath);
                 if (!string.IsNullOrEmpty(json))
                 {
                     publications = JsonSerializer.Deserialize<List<PublicationModel>>(json) ?? new List<PublicationModel>();
@@ -26,9 +28,9 @@ namespace CodeCareer.Areas.User.Models
         {
             List<PublicationModel> publications = new List<PublicationModel>();
 
-            if (File.Exists(filepath))
+            if (File.Exists(_filepath))
             {
-                string json = File.ReadAllText(filepath);
+                string json = File.ReadAllText(_filepath);
                 if (!string.IsNullOrEmpty(json))
                 {
                     publications = JsonSerializer.Deserialize<List<PublicationModel>>(json) ?? new List<PublicationModel>();
@@ -37,16 +39,16 @@ namespace CodeCareer.Areas.User.Models
 
             publications.Add(publication);
             string jsonWrite = JsonSerializer.Serialize(publications);
-            File.WriteAllText(filepath, jsonWrite);
+            File.WriteAllText(_filepath, jsonWrite);
         }
 
         public void RemovePublicationModel(string content, string userName)
         {
             List<PublicationModel> publications = new List<PublicationModel>();
 
-            if (File.Exists(filepath))
+            if (File.Exists(_filepath))
             {
-                string json = File.ReadAllText(filepath);
+                string json = File.ReadAllText(_filepath);
                 if (!string.IsNullOrEmpty(json))
                 {
                     publications = JsonSerializer.Deserialize<List<PublicationModel>>(json) ?? new List<PublicationModel>();
@@ -55,7 +57,7 @@ namespace CodeCareer.Areas.User.Models
 
             publications = publications.Where(p => !(p.Content == content && p.User.FullName == userName)).ToList();
             string jsonWrite = JsonSerializer.Serialize(publications);
-            File.WriteAllText(filepath, jsonWrite);
+            File.WriteAllText(_filepath, jsonWrite);
         }
     }
 }

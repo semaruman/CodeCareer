@@ -1,8 +1,10 @@
-﻿@model UserModel
+﻿@using CodeCareer.Areas.User.Services
+@using CodeCareer.Areas.User.Services.Implementations.JsonServices
+@model UserModel
 
 @{
 	ViewBag.Title = $"Профиль {Model.FullName}";
-	PublicationModelDb db = new PublicationModelDb();
+	PublicationJsonService db = new PublicationJsonService();
 	var publications = db.GetPublicationModels().Where(p => p.User.Email == Model.Email).ToList();
 	publications.Reverse();
 }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CodeCareer.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     [Route("{area}")]
     [Route("{area}/{action}")]
     public class HomeController : Controller

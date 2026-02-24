@@ -1,8 +1,10 @@
-﻿@model UserModel
+﻿@using CodeCareer.Areas.User.Services
+@using CodeCareer.Areas.User.Services.Implementations.JsonServices
+@model UserModel
 
 @{
 	ViewBag.Title = "Редактировать Профиль";
-	TagModelDb db = new TagModelDb();
+	TagJsonService db = new TagJsonService();
 }
 
 <div>

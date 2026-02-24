@@ -1,4 +1,6 @@
 ﻿using CodeCareer.Areas.User.Models;
+using CodeCareer.Areas.User.Services.Implementations.JsonServices;
+using CodeCareer.Areas.User.Services.Interfaces;
 using CodeCareer.Areas.User.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,6 +10,15 @@ namespace CodeCareer.Areas.User.Controllers
     public class HomeController : Controller
     {
         public static UserModel currentUser { get; set; } = new UserModel();
+
+        private readonly IUserService _userService;
+        private readonly IPublicationService _publicationService;
+
+        public HomeController(IUserService userService, IPublicationService publicationService)
+        {
+            _userService = userService;
+            _publicationService = publicationService;
+        }
 
         [HttpGet]
         [Route("")]
@@ -28,9 +39,8 @@ namespace CodeCareer.Areas.User.Controllers
         {
             if (ModelState.IsValid)
             {
-                UserModelDb db = new UserModelDb();
 
-                var dbUser = db.GetUserModels().Where(u => u.Email == user.Email).FirstOrDefault();
+                var dbUser = _userService.GetUserModels().Where(u => u.Email == user.Email).FirstOrDefault();
 
                 
 
@@ -38,7 +48,7 @@ namespace CodeCareer.Areas.User.Controllers
                 if (dbUser == null)
                 {
                     currentUser.CreateUser(user);
-                    db.AddUserModel(currentUser);
+                    _userService.AddUserModel(currentUser);
                     return RedirectToAction("SuccessAuthorizate");
                 }
                 else
@@ -87,8 +97,7 @@ namespace CodeCareer.Areas.User.Controllers
         [HttpGet]
         public IActionResult AlienProfile(string userEmail)
         {
-            UserModelDb db = new UserModelDb();
-            UserModel user = db.GetUserModels().FirstOrDefault(u => u.Email == userEmail);
+            UserModel user = _userService.GetUserModels().FirstOrDefault(u => u.Email == userEmail);
             return View(user);
         }
         [HttpGet]
@@ -102,10 +111,9 @@ namespace CodeCareer.Areas.User.Controllers
         {
             if (user.Info != string.Empty)
             {
-                UserModelDb db = new UserModelDb();
-                db.RemoveUserModel(currentUser);
+                _userService.RemoveUserModel(currentUser);
                 currentUser.Info = user.Info;
-                db.AddUserModel(currentUser);
+                _userService.AddUserModel(currentUser);
 
                 return RedirectToAction("EditProfileSuccess");
             }
@@ -128,14 +136,12 @@ namespace CodeCareer.Areas.User.Controllers
         {
             if (!string.IsNullOrEmpty(publication.Content))
             {
-                PublicationModelDb db = new PublicationModelDb();
-                UserModelDb uDb = new UserModelDb();
                 publication.User = currentUser;
                 currentUser.Rating += Constants.PlUS_RATING_FOR_POST;
-                db.AddPublicationModel(publication);
+                _publicationService.AddPublicationModel(publication);
 
-                uDb.RemoveUserModel(currentUser);
-                uDb.AddUserModel(currentUser);
+                _userService.RemoveUserModel(currentUser);
+                _userService.AddUserModel(currentUser);
 
                 return RedirectToAction("Profile");
             }
@@ -149,8 +155,7 @@ namespace CodeCareer.Areas.User.Controllers
 
         public IActionResult Top100Users()
         {
-            UserModelDb db = new UserModelDb();
-            var users = db.GetUserModels().OrderByDescending(u => u.Rating).Take(100).ToList();
+            var users = _userService.GetUserModels().OrderByDescending(u => u.Rating).Take(100).ToList();
             return View(users);
         }
     }
