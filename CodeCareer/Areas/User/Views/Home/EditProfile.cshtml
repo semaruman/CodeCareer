@@ -1,10 +1,11 @@
-﻿@using CodeCareer.Areas.User.Services
+﻿@using CodeCareer.Areas.User.Services.Interfaces
 @using CodeCareer.Areas.User.Services.Implementations.JsonServices
 @model UserModel
 
+@inject ITagService TagService
+
 @{
 	ViewBag.Title = "Редактировать Профиль";
-	TagJsonService db = new TagJsonService();
 }
 
 <div>
@@ -20,7 +21,7 @@
 
 		<p>Выберите теги</p>
 		<select asp-for="Tags" multiple>
-			@foreach (var tag in db.GetTagModels())
+			@foreach (var tag in TagService.GetTagModels())
 			{
 				<option value="@tag">@tag.Name</option>
 			}
