@@ -3,7 +3,7 @@
 
 @inject IPublicationService PublicationService
 
-@model UserModel
+@model PublicationFeedViewModel
 
 @{
 	var publications = PublicationService.GetPublicationModels();
@@ -15,17 +15,16 @@
 
 	@foreach (var publication in publications)
 	{
-		@await Component.InvokeAsync("Publication", new {publicationP = publication})
-		<br />
-		@if (!Model.SubscriptionsEmails.Contains(publication.User.Email))
-		{
-			<button>Подписаться</button>
-		}
-		else
-		{
-			<button>Отписаться</button>
-		}
 
-		<button>Повысить рейтинг</button>
+		@await Component.InvokeAsync("Publication", new { publicationP = publication })
+		<br />
+
+		<form asp-area="Users" asp-controller="Home" asp-action="PublicationFeed" method="post">
+			<input asp-for="CurrentUser" value="@Model.CurrentUser" type="hidden" />
+			<input asp-for="PublicationUser" value="@publication.User" type="hidden" />
+			@*Если у текущего пользователя нет в подписках создателя публикации, то значение кнопки - подписаться*@
+			<input type="hidden" asp-for="WantsToSubscribe" value="@(!Model.WantsToSubscribe)"/>
+			<button type="submit">@(!Model.CurrentUser.SubscriptionsEmails.Contains(publication.User.Email)? "Подписаться" : "Отписаться")</button>
+		</form>
 	}
 </div>

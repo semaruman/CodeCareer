@@ -147,9 +147,50 @@ namespace CodeCareer.Areas.User.Controllers
             return View(publication);
         }
 
+        [HttpGet]
         public IActionResult PublicationFeed()
         {
-            return View(currentUser);
+            return View(new PublicationFeedViewModel(currentUser));
+        }
+
+        [HttpPost]
+        public IActionResult PublicationFeed(PublicationFeedViewModel viewModel)
+        {
+            // если пользователь не зарегистрирован
+            if (viewModel.CurrentUser.FullName == string.Empty)
+            {
+                // Ничего не делаем
+            }
+            else
+            {
+                if (viewModel.WantsToSubscribe)
+                {
+                    viewModel.PublicationUser.Subscribers += 1;
+                    viewModel.PublicationUser.SubscribersEmails.Add(viewModel.CurrentUser.Email);
+
+                    viewModel.CurrentUser.Subscriptions += 1;
+                    viewModel.CurrentUser.SubscriptionsEmails.Add(viewModel.PublicationUser.Email);
+
+                    _userService.UpdateUserModel(viewModel.PublicationUser);
+                    _userService.UpdateUserModel(viewModel.CurrentUser);
+                    
+                }
+                else
+                {
+                    viewModel.PublicationUser.Subscribers -= 1;
+                    viewModel.PublicationUser.SubscribersEmails.Remove(viewModel.CurrentUser.Email);
+
+                    viewModel.CurrentUser.Subscriptions -= 1;
+                    viewModel.CurrentUser.SubscriptionsEmails.Remove(viewModel.PublicationUser.Email);
+
+                    _userService.UpdateUserModel(viewModel.PublicationUser);
+                    _userService.UpdateUserModel(viewModel.CurrentUser);
+
+                }
+                
+            }
+
+            return View(new PublicationFeedViewModel(currentUser));
         }
 
         public IActionResult Top100Users()
