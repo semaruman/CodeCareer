@@ -149,7 +149,7 @@ namespace CodeCareer.Areas.User.Controllers
 
         public IActionResult PublicationFeed()
         {
-            return View();
+            return View(currentUser);
         }
 
         public IActionResult Top100Users()

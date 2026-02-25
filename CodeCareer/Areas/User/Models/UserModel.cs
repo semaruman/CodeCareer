@@ -23,6 +23,10 @@ namespace CodeCareer.Areas.User.Models
         public int Rating { get; set; } = 0;
 
         public int Subscribers { get; set; } = 0;
+        public HashSet<string> SubscribersEmails = new HashSet<string>();
+
+        public int Subscriptions { get; set; } = 0;
+        public HashSet<string> SubscriptionsEmails = new HashSet<string>();
 
         public string Status { get; set; } = "Начинающий";
 
