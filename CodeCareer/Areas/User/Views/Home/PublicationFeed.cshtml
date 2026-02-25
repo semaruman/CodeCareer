@@ -13,9 +13,6 @@
 
 	@foreach (var publication in publications)
 	{
-		<div>
-			<h4><a asp-area="User" asp-controller="Home" asp-action="AlienProfile" asp-route-userEmail="@publication.User.Email">@publication.User.FullName</a> - @publication.CreatedDate.Date.ToString("dd.MM.yyyy")</h4>
-			<p>@publication.Content</p>
-		</div>
+		@await Component.InvokeAsync("Publication", new {publicationP = publication})
 	}
 </div>
