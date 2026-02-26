@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using CodeCareer.Areas.User.ViewModels;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
@@ -23,10 +24,14 @@ namespace CodeCareer.Areas.User.Models
         public int Rating { get; set; } = 0;
 
         public int Subscribers { get; set; } = 0;
-        public HashSet<string> SubscribersEmails = new HashSet<string>();
+
+        [JsonInclude]
+        public List<string> SubscribersEmails = new List<string>();
 
         public int Subscriptions { get; set; } = 0;
-        public HashSet<string> SubscriptionsEmails = new HashSet<string>();
+
+        [JsonInclude]
+        public List<string> SubscriptionsEmails = new List<string>();
 
         public string Status { get; set; } = "Начинающий";
 

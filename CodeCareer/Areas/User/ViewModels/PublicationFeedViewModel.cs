@@ -6,23 +6,20 @@ namespace CodeCareer.Areas.User.ViewModels
 {
     public class PublicationFeedViewModel
     {
-        public UserModel CurrentUser { get; set; }
-
-        public UserModel PublicationUser { get; set; }
+        public string CurrentUserEmail {  get; set; }
+        public string PublicationUserEmail { get; set; }
 
         public bool WantsToSubscribe { get; set; } = false;
 
-        public bool WantsToBoostRating { get; set; } = false;
+        //public bool WantsToBoostRating { get; set; } = false;
 
         public PublicationFeedViewModel()
         {
 
         }
-
-        public PublicationFeedViewModel(UserModel currentUser)
+        public PublicationFeedViewModel(string currentUserEmail)
         {
-            CurrentUser = currentUser;
+            CurrentUserEmail = currentUserEmail;
         }
-        
     }
 }

@@ -150,47 +150,49 @@ namespace CodeCareer.Areas.User.Controllers
         [HttpGet]
         public IActionResult PublicationFeed()
         {
-            return View(new PublicationFeedViewModel(currentUser));
+            return View(new PublicationFeedViewModel(currentUser.Email));
         }
 
         [HttpPost]
         public IActionResult PublicationFeed(PublicationFeedViewModel viewModel)
         {
             // если пользователь не зарегистрирован
-            if (viewModel.CurrentUser.FullName == string.Empty)
+            if (currentUser.FullName == string.Empty)
             {
                 // Ничего не делаем
             }
             else
             {
+                UserModel publicationUser = _userService.GetUserModels().FirstOrDefault(u => u.Email == viewModel.PublicationUserEmail);
                 if (viewModel.WantsToSubscribe)
                 {
-                    viewModel.PublicationUser.Subscribers += 1;
-                    viewModel.PublicationUser.SubscribersEmails.Add(viewModel.CurrentUser.Email);
+                    publicationUser.SubscribersEmails.Add(currentUser.Email);
+                    publicationUser.Subscribers += 1;
+                    currentUser.Subscriptions += 1;
+                    currentUser.SubscriptionsEmails.Add(publicationUser.Email);
 
-                    viewModel.CurrentUser.Subscriptions += 1;
-                    viewModel.CurrentUser.SubscriptionsEmails.Add(viewModel.PublicationUser.Email);
-
-                    _userService.UpdateUserModel(viewModel.PublicationUser);
-                    _userService.UpdateUserModel(viewModel.CurrentUser);
+                    _userService.UpdateUserModel(publicationUser);
+                    _userService.UpdateUserModel(currentUser);
                     
                 }
                 else
                 {
-                    viewModel.PublicationUser.Subscribers -= 1;
-                    viewModel.PublicationUser.SubscribersEmails.Remove(viewModel.CurrentUser.Email);
+                    
+                    if (publicationUser.SubscribersEmails.Remove(currentUser.Email))
+                    {
+                        publicationUser.Subscribers -= 1;
+                        currentUser.Subscriptions -= 1;
+                        currentUser.SubscriptionsEmails.Remove(publicationUser.Email);
+                    }
 
-                    viewModel.CurrentUser.Subscriptions -= 1;
-                    viewModel.CurrentUser.SubscriptionsEmails.Remove(viewModel.PublicationUser.Email);
-
-                    _userService.UpdateUserModel(viewModel.PublicationUser);
-                    _userService.UpdateUserModel(viewModel.CurrentUser);
+                    _userService.UpdateUserModel(publicationUser);
+                    _userService.UpdateUserModel(currentUser);
 
                 }
                 
             }
 
-            return View(new PublicationFeedViewModel(currentUser));
+            return View(new PublicationFeedViewModel(currentUser.Email));
         }
 
         public IActionResult Top100Users()

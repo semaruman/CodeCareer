@@ -2,7 +2,17 @@ using CodeCareer.Areas.User.Services.Implementations.JsonServices;
 using CodeCareer.Areas.User.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews()
+    .AddJsonOptions(options =>
+    {
+        // Сохранять значения по умолчанию при сериализации
+        options.JsonSerializerOptions.DefaultIgnoreCondition =
+            System.Text.Json.Serialization.JsonIgnoreCondition.Never;
+
+        // Или игнорировать только null значения
+        // options.JsonSerializerOptions.DefaultIgnoreCondition = 
+        //     System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+    });
 
 builder.Services.AddScoped<IUserService, UserJsonService>();
 builder.Services.AddScoped<IPublicationService, PublicationJsonService>();
