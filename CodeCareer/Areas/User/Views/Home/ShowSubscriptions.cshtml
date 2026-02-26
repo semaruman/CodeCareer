@@ -8,13 +8,13 @@
 
 
 @{
-	var subscribers = UserService.GetUserModels().Where(u => Model.SubscribersEmails.Contains(u.Email));
+	var subscriptions = UserService.GetUserModels().Where(u => Model.SubscriptionsEmails.Contains(u.Email));
 }
 
-<h1>Подписчики <a asp-area="User" asp-controller="Home" asp-action="AlienProfile" asp-route-userEmail="@Model.Email">@Model.FullName</a></h1>
+<h1>Подписки <a asp-area="User" asp-controller="Home" asp-action="AlienProfile" asp-route-userEmail="@Model.Email">@Model.FullName</a></h1>
 
 <div>
-	@foreach (var sub in subscribers)
+	@foreach (var sub in subscriptions)
 	{
 		<div>
 			<a asp-area="User" asp-controller="Home" asp-action="AlienProfile" asp-route-userEmail="@sub.Email">@sub.FullName</a>

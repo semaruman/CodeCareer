@@ -109,6 +109,13 @@ namespace CodeCareer.Areas.User.Controllers
         }
 
         [HttpGet]
+        public IActionResult ShowSubscriptions(string userEmail)
+        {
+            UserModel user = _userService.GetUserModels().FirstOrDefault(u => u.Email == userEmail);
+            return View(user);
+        }
+
+        [HttpGet]
         public IActionResult EditProfile()
         {
             return View(currentUser);
