@@ -18,6 +18,7 @@
 	<h4>@Model.FullName - @Model.Status</h4>
 	<p>@Model.Info</p>
 	<p><a asp-area="User" asp-controller="Home" asp-action="ShowSubscribes" asp-route-userEmail="@Model.Email">@Model.Subscribers подписчиков</a></p>
+	<p><a asp-area="User" asp-controller="Home" asp-action="ShowSubscriptions" asp-route-userEmail="@Model.Email">@Model.Subscriptions подписок</a></p>
 	<p>@Model.Rating рейтинга</p>
 </div>
 
@@ -31,3 +32,5 @@
 		@await Component.InvokeAsync("Publication", new { publicationP = publication })
 	}
 </div>
+
+<a asp-area="User" asp-controller="Home" asp-action="AlienProfile" asp-route-userEmail="@Model.Email">Как мой профиль видят другие?</a>
