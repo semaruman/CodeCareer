@@ -171,6 +171,9 @@ namespace CodeCareer.Areas.User.Controllers
                     currentUser.Subscriptions += 1;
                     currentUser.SubscriptionsEmails.Add(publicationUser.Email);
 
+                    publicationUser.Rating += Constants.PlUS_RATING_FOR_SUBSCRIBE;
+                    currentUser.Rating += Constants.PlUS_RATING_FOR_SUBSCRIPTION;
+
                     _userService.UpdateUserModel(publicationUser);
                     _userService.UpdateUserModel(currentUser);
                     
@@ -183,6 +186,9 @@ namespace CodeCareer.Areas.User.Controllers
                         publicationUser.Subscribers -= 1;
                         currentUser.Subscriptions -= 1;
                         currentUser.SubscriptionsEmails.Remove(publicationUser.Email);
+
+                        publicationUser.Rating -= Constants.PlUS_RATING_FOR_SUBSCRIBE;
+                        currentUser.Rating -= Constants.PlUS_RATING_FOR_SUBSCRIPTION;
                     }
 
                     _userService.UpdateUserModel(publicationUser);
