@@ -19,7 +19,9 @@
 	<h4>@Model.FullName - @Model.Status</h4>
 	<p>@Model.Info</p>
 	<p><a asp-area="User" asp-controller="Home" asp-action="ShowSubscribes" asp-route-userEmail="@Model.Email">@Model.Subscribers подписчиков</a></p>
-	<p><a asp-area="User" asp-controller="Home" asp-action="ShowSubscriptions" asp-route-userEmail="@Model.Email">@Model.Subscriptions подписок</a></p>
+	@if (Model.ShowSubscriptions){
+		<p><a asp-area="User" asp-controller="Home" asp-action="ShowSubscriptions" asp-route-userEmail="@Model.Email">@Model.Subscriptions подписок</a></p>
+	}
 	<p>@Model.Rating рейтинга</p>
 </div>
 

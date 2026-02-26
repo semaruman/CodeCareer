@@ -128,6 +128,7 @@ namespace CodeCareer.Areas.User.Controllers
             {
                 _userService.RemoveUserModel(currentUser);
                 currentUser.Info = user.Info;
+                currentUser.ShowSubscriptions = user.ShowSubscriptions;
                 _userService.AddUserModel(currentUser);
 
                 return RedirectToAction("EditProfileSuccess");

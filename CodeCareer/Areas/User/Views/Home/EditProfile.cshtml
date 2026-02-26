@@ -29,6 +29,12 @@
 
 		<p>@Model.Subscribers подписчиков</p>
 		<p>@Model.Rating рейтинга</p>
+
+		<select asp-for="ShowSubscriptions"> 
+			<option value="@(true)">Да</option>
+			<option value="@(false)">Нет</option>
+		</select>
+
 		<button type="submit">Сохранить изменения</button>
 	</form>
 </div>
