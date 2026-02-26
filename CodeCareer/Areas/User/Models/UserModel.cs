@@ -31,11 +31,11 @@ namespace CodeCareer.Areas.User.Models
         public int Subscriptions { get; set; } = 0;
 
         [JsonInclude]
-        public List<string> SubscriptionsEmails = new List<string>();
+        public HashSet<string> SubscriptionsEmails = new HashSet<string>();
 
         public string Status { get; set; } = "Начинающий";
 
-        public List<TagModel> Tags { get; set; } = new List<TagModel>();
+        public HashSet<TagModel> Tags { get; set; } = new HashSet<TagModel>();
 
         public void CreateUser(UserViewModel user)
         {
