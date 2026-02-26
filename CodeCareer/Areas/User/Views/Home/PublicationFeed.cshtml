@@ -20,7 +20,9 @@
 		@await Component.InvokeAsync("Publication", new { publicationP = publication })
 		<br />
 
-		<form asp-area="Users" asp-controller="Home" asp-action="PublicationFeed" method="post">
+		@if (currentUser != null)
+		{
+			<form asp-area="Users" asp-controller="Home" asp-action="PublicationFeed" method="post">
 
 			<input asp-for="PublicationUserEmail" value="@publication.User.Email" type="hidden" />
 
@@ -30,5 +32,6 @@
 			@*Если у текущего пользователя нет в подписках создателя публикации, то значение кнопки - подписаться*@
 			<button type="submit">@(!currentUser.SubscriptionsEmails.Contains(publication.User.Email) ? "Подписаться" : "Отписаться")</button>
 		</form>
+		}
 	}
 </div>
