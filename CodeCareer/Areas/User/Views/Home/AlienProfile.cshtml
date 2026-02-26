@@ -3,6 +3,7 @@
 @model UserModel
 
 @inject IPublicationService PublicationService
+@inject IUserService UserService
 
 @{
 	ViewBag.Title = $"Профиль {Model.FullName}";
@@ -17,7 +18,7 @@
 	</div>
 	<h4>@Model.FullName - @Model.Status</h4>
 	<p>@Model.Info</p>
-	<p>@Model.Subscribers подписчиков</p>
+	<p><a asp-area="User" asp-controller="Home" asp-action="ShowSubscribes" asp-route-userEmail="@Model.Email">@Model.Subscribers подписчиков</a></p>
 	<p>@Model.Rating рейтинга</p>
 </div>
 

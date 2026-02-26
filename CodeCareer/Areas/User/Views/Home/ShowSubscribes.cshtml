@@ -1,0 +1,21 @@
+﻿@using CodeCareer.Areas.User.Services.Interfaces
+@using CodeCareer.Areas.User.Services.Implementations.JsonServices
+
+@inject IUserService UserService
+
+@model UserModel
+
+
+
+@{
+	var subscribers = UserService.GetUserModels().Where(u => Model.SubscribersEmails.Contains(u.Email));
+}
+
+<h1>Подписчики <a asp-area="User" asp-controller="Home" asp-action="AlienProfile" asp-route-userEmail="@Model.Email">@Model.FullName</a></h1>
+
+<div>
+	@foreach (var sub in subscribers)
+	{
+		<a asp-area="User" asp-controller="Home" asp-action="AlienProfile" asp-route-userEmail="@sub.Email">@sub.FullName</a>
+	}
+</div>

@@ -100,6 +100,14 @@ namespace CodeCareer.Areas.User.Controllers
             UserModel user = _userService.GetUserModels().FirstOrDefault(u => u.Email == userEmail);
             return View(user);
         }
+
+        [HttpGet]
+        public IActionResult ShowSubscribes(string userEmail)
+        {
+            UserModel user = _userService.GetUserModels().FirstOrDefault(u => u.Email == userEmail);
+            return View(user);
+        }
+
         [HttpGet]
         public IActionResult EditProfile()
         {
