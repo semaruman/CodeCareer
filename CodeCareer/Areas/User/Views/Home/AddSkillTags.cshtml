@@ -5,7 +5,7 @@
 }
 
 <form asp-area="User" asp-controller="Home" asp-action="AddSkillTags" method="post">
-	<h1>Выберите теги</h1>
+	<h1>Выберите навыки</h1>
 	@foreach (var tag in tags)
 	{
 		if (HomeController.currentUser.SkillTags.Contains(tag))
