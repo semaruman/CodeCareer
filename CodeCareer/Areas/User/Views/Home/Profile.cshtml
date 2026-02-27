@@ -15,6 +15,7 @@
 
 	</div>
 	<a asp-area="User" asp-controller="Home" asp-action="EditProfile">Настроить профиль</a>
+	<a asp-area="User" asp-controller="Home" asp-action="AddSkillTags">Добавить теги</a>
 	<h4>@Model.FullName - @Model.Status</h4>
 	<p>@Model.Info</p>
 	<p><a asp-area="User" asp-controller="Home" asp-action="ShowSubscribes" asp-route-userEmail="@Model.Email">@Model.Subscribers подписчиков</a></p>

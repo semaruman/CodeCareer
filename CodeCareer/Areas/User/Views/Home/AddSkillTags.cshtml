@@ -9,10 +9,12 @@
 	<h1>Выберите теги</h1>
 	@foreach (var tag in tags)
 	{
-		<input type="checkbox"
-			   name="skillTagNames"
-			   value="@tag.Name"/>
-		<label>@tag.Name</label>
+		<div>
+			<input type="checkbox"
+				   name="skillTagNames"
+				   value="@tag.Name" />
+			<label>@tag.Name</label>
+		</div>
 	}
 	<button type="submit">Добавить</button>
 </form>

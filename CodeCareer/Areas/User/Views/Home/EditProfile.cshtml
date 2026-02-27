@@ -22,12 +22,13 @@
 		<p>@Model.Subscribers подписчиков</p>
 		<p>@Model.Rating рейтинга</p>
 
+		<p>Отображать подписки?</p>
 		<select asp-for="ShowSubscriptions"> 
 			<option value="@(true)">Да</option>
 			<option value="@(false)">Нет</option>
 		</select>
-
-		<a asp-area="User" asp-controller="Home" asp-action="AddSkillTags">Добавить теги</a>
+		<br />
+		<br />
 
 		<button type="submit">Сохранить изменения</button>
 	</form>
