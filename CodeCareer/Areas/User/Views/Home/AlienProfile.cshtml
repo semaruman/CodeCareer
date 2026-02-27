@@ -1,14 +1,17 @@
 ﻿@using CodeCareer.Areas.User.Services.Interfaces
 @using CodeCareer.Areas.User.Services.Implementations.JsonServices
-@model UserModel
+@model AlienProfileViewModel
 
 @inject IPublicationService PublicationService
 @inject IUserService UserService
 
 @{
-	ViewBag.Title = $"Профиль {Model.FullName}";
-	var publications = PublicationService.GetPublicationModels().Where(p => p.User.Email == Model.Email).ToList();
+	UserModel user = UserService.GetUserModels().FirstOrDefault(u => u.Email == Model.AlienUserEmail);
+	ViewBag.Title = $"Профиль {user.FullName}";
+	var publications = PublicationService.GetPublicationModels().Where(p => p.User.Email == Model.AlienUserEmail).ToList();
 	publications.Reverse();
+
+	var currentUser = UserService.GetUserModels().FirstOrDefault(u => u.Email == Model.CurrentUserEmail);
 }
 
 <div>
@@ -16,18 +19,32 @@
 		@*Шапка*@
 
 	</div>
-	<h4>@Model.FullName - @Model.Status</h4>
-	<p>@Model.Info</p>
-	<p><a asp-area="User" asp-controller="Home" asp-action="ShowSubscribes" asp-route-userEmail="@Model.Email">@Model.Subscribers подписчиков</a></p>
-	@if (Model.ShowSubscriptions){
-		<p><a asp-area="User" asp-controller="Home" asp-action="ShowSubscriptions" asp-route-userEmail="@Model.Email">@Model.Subscriptions подписок</a></p>
+	<h4>@user.FullName - @user.Status</h4>
+	<p>@user.Info</p>
+	<p><a asp-area="User" asp-controller="Home" asp-action="ShowSubscribes" asp-route-userEmail="@user.Email">@user.Subscribers подписчиков</a></p>
+	@if (user.ShowSubscriptions)
+	{
+		<p><a asp-area="User" asp-controller="Home" asp-action="ShowSubscriptions" asp-route-userEmail="@user.Email">@user.Subscriptions подписок</a></p>
 	}
-	<p>@Model.Rating рейтинга</p>
+	<p>@user.Rating рейтинга</p>
+
+	@*Кнопка "подписаться"*@
+	@if (currentUser != null)
+	{
+		<form asp-area="Users" asp-controller="Home" asp-action="PublicationFeed" method="post">
+
+			<input asp-for="AlienUserEmail" value="@Model.AlienUserEmail" type="hidden" />
+			<input type="hidden" asp-for="WantsToSubscribe" value="@(!currentUser.SubscriptionsEmails.Contains(Model.AlienUserEmail))" />
+
+			@*Если у текущего пользователя нет в подписках создателя публикации, то значение кнопки - подписаться*@
+			<button type="submit">@(!currentUser.SubscriptionsEmails.Contains(Model.AlienUserEmail) ? "Подписаться" : "Отписаться")</button>
+		</form>
+	}
 </div>
 
 <div>
 	<h4>Навыки</h4>
-	@foreach (var tag in Model.SkillTags)
+	@foreach (var tag in user.SkillTags)
 	{
 		@await Component.InvokeAsync("Tag", new { tagP = tag })
 	}

@@ -24,14 +24,14 @@
 		{
 			<form asp-area="Users" asp-controller="Home" asp-action="PublicationFeed" method="post">
 
-			<input asp-for="PublicationUserEmail" value="@publication.User.Email" type="hidden" />
+				<input asp-for="PublicationUserEmail" value="@publication.User.Email" type="hidden" />
 
-			
-			<input type="hidden" asp-for="WantsToSubscribe" value="@(!currentUser.SubscriptionsEmails.Contains(publication.User.Email))" />
 
-			@*Если у текущего пользователя нет в подписках создателя публикации, то значение кнопки - подписаться*@
-			<button type="submit">@(!currentUser.SubscriptionsEmails.Contains(publication.User.Email) ? "Подписаться" : "Отписаться")</button>
-		</form>
+				<input type="hidden" asp-for="WantsToSubscribe" value="@(!currentUser.SubscriptionsEmails.Contains(publication.User.Email))" />
+
+				@*Если у текущего пользователя нет в подписках создателя публикации, то значение кнопки - подписаться*@
+				<button type="submit">@(!currentUser.SubscriptionsEmails.Contains(publication.User.Email) ? "Подписаться" : "Отписаться")</button>
+			</form>
 		}
 	}
 </div>

@@ -99,8 +99,73 @@ namespace CodeCareer.Areas.User.Controllers
         [HttpGet]
         public IActionResult AlienProfile(string userEmail)
         {
-            UserModel user = _userService.GetUserModels().FirstOrDefault(u => u.Email == userEmail);
-            return View(user);
+            AlienProfileViewModel model = new AlienProfileViewModel()
+            {
+                CurrentUserEmail = currentUser.Email,
+                AlienUserEmail = userEmail
+            };
+            
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult AlienProfile(AlienProfileViewModel viewModel)
+        {
+            // если пользователь не зарегистрирован
+            if (currentUser.FullName == string.Empty)
+            {
+                // Ничего не делаем
+            }
+            else
+            {
+                UserModel alienUser = _userService.GetUserModels().FirstOrDefault(u => u.Email == viewModel.AlienUserEmail);
+
+                if (alienUser == null)
+                {
+                    Console.WriteLine($"Null. {viewModel.AlienUserEmail}");
+                }
+
+                if (viewModel.WantsToSubscribe)
+                {
+                    alienUser.SubscribersEmails.Add(currentUser.Email);
+                    alienUser.Subscribers += 1;
+                    currentUser.Subscriptions += 1;
+                    currentUser.SubscriptionsEmails.Add(alienUser.Email);
+
+                    alienUser.Rating += Constants.PlUS_RATING_FOR_SUBSCRIBE;
+                    currentUser.Rating += Constants.PlUS_RATING_FOR_SUBSCRIPTION;
+
+                    _userService.UpdateUserModel(alienUser);
+                    _userService.UpdateUserModel(currentUser);
+
+                }
+                else
+                {
+
+                    if (alienUser.SubscribersEmails.Remove(currentUser.Email))
+                    {
+                        alienUser.Subscribers -= 1;
+                        currentUser.Subscriptions -= 1;
+                        currentUser.SubscriptionsEmails.Remove(alienUser.Email);
+
+                        alienUser.Rating -= Constants.PlUS_RATING_FOR_SUBSCRIBE;
+                        currentUser.Rating -= Constants.PlUS_RATING_FOR_SUBSCRIPTION;
+                    }
+
+                    _userService.UpdateUserModel(alienUser);
+                    _userService.UpdateUserModel(currentUser);
+
+                }
+
+            }
+
+            AlienProfileViewModel model = new AlienProfileViewModel()
+            {
+                CurrentUserEmail = currentUser.Email,
+                AlienUserEmail = viewModel.AlienUserEmail
+            };
+
+            return View(model);
         }
 
         [HttpGet]
