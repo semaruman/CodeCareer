@@ -6,7 +6,6 @@ namespace CodeCareer.Areas.User.Models
     {
         public int Id { get; set; }
         public string Name {  get; set; }
-        public string Type { get; set; }
 
         public TagModel()
         {
@@ -18,5 +17,18 @@ namespace CodeCareer.Areas.User.Models
             Name = name;
         }
 
+        public override bool Equals(object? obj)
+        {
+            if (obj is TagModel)
+            {
+                return Name == ((TagModel)obj).Name;
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Name);
+        }
     }
 }

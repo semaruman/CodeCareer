@@ -1,5 +1,4 @@
-﻿
-@inject ITagService TagService
+﻿@inject ITagService TagService
 
 @{
 	var tags = TagService.GetTagModels();
@@ -9,12 +8,25 @@
 	<h1>Выберите теги</h1>
 	@foreach (var tag in tags)
 	{
-		<div>
-			<input type="checkbox"
-				   name="skillTagNames"
-				   value="@tag.Name" />
-			<label>@tag.Name</label>
-		</div>
+		if (HomeController.currentUser.SkillTags.Contains(tag))
+		{
+			<div>
+				<input type="checkbox"
+					   name="skillTagNames"
+					   value="@tag.Name"
+					   checked />
+				<label>@tag.Name</label>
+			</div>
+		}
+		else
+		{
+			<div>
+				<input type="checkbox"
+					   name="skillTagNames"
+					   value="@tag.Name" />
+				<label>@tag.Name</label>
+			</div>
+		}
 	}
 	<button type="submit">Добавить</button>
 </form>
