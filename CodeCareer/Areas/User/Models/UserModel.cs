@@ -35,7 +35,7 @@ namespace CodeCareer.Areas.User.Models
 
         public string Status { get; set; } = "Начинающий";
 
-        public HashSet<TagModel> Tags { get; set; } = new HashSet<TagModel>();
+        public HashSet<TagModel> SkillTags { get; set; } = new HashSet<TagModel>();
 
         public bool ShowSubscriptions { get; set; } = true;
 

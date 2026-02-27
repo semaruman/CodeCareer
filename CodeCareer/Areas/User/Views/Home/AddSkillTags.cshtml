@@ -1,0 +1,18 @@
+﻿
+@inject ITagService TagService
+
+@{
+	var tags = TagService.GetTagModels();
+}
+
+<form asp-area="User" asp-controller="Home" asp-action="AddSkillTags" method="post">
+	<h1>Выберите теги</h1>
+	@foreach (var tag in tags)
+	{
+		<input type="checkbox"
+			   name="skillTagNames"
+			   value="@tag.Name"/>
+		<label>@tag.Name</label>
+	}
+	<button type="submit">Добавить</button>
+</form>

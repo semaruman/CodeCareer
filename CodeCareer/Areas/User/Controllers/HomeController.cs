@@ -13,11 +13,13 @@ namespace CodeCareer.Areas.User.Controllers
 
         private readonly IUserService _userService;
         private readonly IPublicationService _publicationService;
+        private readonly ITagService _tagService;
 
-        public HomeController(IUserService userService, IPublicationService publicationService)
+        public HomeController(IUserService userService, IPublicationService publicationService, ITagService tagService)
         {
             _userService = userService;
             _publicationService = publicationService;
+            _tagService = tagService;
         }
 
         [HttpGet]
@@ -221,6 +223,23 @@ namespace CodeCareer.Areas.User.Controllers
         {
             var users = _userService.GetUserModels().OrderByDescending(u => u.Rating).Take(100).ToList();
             return View(users);
+        }
+
+        [HttpGet]
+        public IActionResult AddSkillTags()
+        {
+            return View(new List<string>());
+        }
+
+        [HttpPost]
+        public IActionResult AddSkillTags(List<string> skillTagNames)
+        {
+            if (skillTagNames != null)
+            {
+                currentUser.SkillTags = _tagService.GetTagModels().Where(t => skillTagNames.Contains(t.Name)).ToHashSet();
+                _userService.UpdateUserModel(currentUser);
+            }
+            return RedirectToAction("Profile");
         }
     }
 }

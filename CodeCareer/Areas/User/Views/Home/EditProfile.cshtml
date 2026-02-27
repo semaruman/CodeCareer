@@ -19,14 +19,6 @@
 		<textarea asp-for="Info">@Model.Info</textarea>
 		<span asp-validation-for="Info"></span>
 
-		<p>Выберите теги</p>
-		<select asp-for="Tags" multiple>
-			@foreach (var tag in TagService.GetTagModels())
-			{
-				<option value="@tag">@tag.Name</option>
-			}
-		</select>
-
 		<p>@Model.Subscribers подписчиков</p>
 		<p>@Model.Rating рейтинга</p>
 
@@ -34,6 +26,8 @@
 			<option value="@(true)">Да</option>
 			<option value="@(false)">Нет</option>
 		</select>
+
+		<a asp-area="User" asp-controller="Home" asp-action="AddSkillTags">Добавить теги</a>
 
 		<button type="submit">Сохранить изменения</button>
 	</form>
