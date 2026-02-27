@@ -26,6 +26,14 @@
 </div>
 
 <div>
+	<h4>Навыки</h4>
+	@foreach (var tag in Model.SkillTags)
+	{
+		@await Component.InvokeAsync("Tag", new { tagP = tag })
+	}
+</div>
+
+<div>
 	<h2>Публикации</h2>
 	@foreach (var publication in publications)
 	{
