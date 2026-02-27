@@ -236,7 +236,7 @@ namespace CodeCareer.Areas.User.Controllers
         {
             if (skillTagNames != null)
             {
-                currentUser.SkillTags = _tagService.GetTagModels().Where(t => skillTagNames.Contains(t.Name)).ToHashSet();
+                currentUser.SkillTags.Union(_tagService.GetTagModels().Where(t => skillTagNames.Contains(t.Name)).ToHashSet());
                 _userService.UpdateUserModel(currentUser);
             }
             return RedirectToAction("Profile");
