@@ -211,14 +211,19 @@ namespace CodeCareer.Areas.User.Controllers
         [HttpGet]
         public IActionResult CreatePublication()
         {
-            return View(new PublicationModel());
+            return View(new CreatePublicationViewModel());
         }
 
         [HttpPost]
-        public IActionResult CreatePublication(PublicationModel publication)
+        public IActionResult CreatePublication(CreatePublicationViewModel viewModel, List<string> TagNames)
         {
-            if (!string.IsNullOrEmpty(publication.Content))
+
+            if (!string.IsNullOrEmpty(viewModel.Content))
             {
+                var publication = new PublicationModel { Content = viewModel.Content };
+
+                publication.Tags = _tagService.GetTagModels().Where(t => TagNames.Contains(t.Name)).ToHashSet();
+
                 publication.User = currentUser;
                 currentUser.Rating += Constants.PlUS_RATING_FOR_POST;
                 _publicationService.AddPublicationModel(publication);
@@ -227,7 +232,7 @@ namespace CodeCareer.Areas.User.Controllers
 
                 return RedirectToAction("Profile");
             }
-            return View(publication);
+            return View(viewModel);
         }
 
         [HttpGet]

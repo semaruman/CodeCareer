@@ -1,14 +1,32 @@
-﻿@model PublicationModel
+﻿@model CreatePublicationViewModel
 @{
 	ViewBag.Title = "Создание публикации";
 }
 
+@inject ITagService TagService
 
-<h1>Содержимое публикации:</h1>
+@{
+	var tags = TagService.GetTagModels();
+}
+
+
+<h1>Создание публикации:</h1>
 
 <form asp-area="User" asp-controller="Home" asp-action="CreatePublication" method="post">
+
 	<textarea asp-for="Content"></textarea>
 	<span asp-validation-for="Content"></span>
+
+	<h5>Выберите теги</h5>
+	@foreach (var tag in tags)
+	{
+		<div>
+			<input type="checkbox"
+				   name="TagNames"
+				   value="@tag.Name" />
+			<label>@tag.Name</label>
+		</div>
+	}
 
 	<button type="submit">Создать</button>
 </form>

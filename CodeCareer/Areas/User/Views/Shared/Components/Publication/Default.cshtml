@@ -3,4 +3,11 @@
 <div>
 	<h4><a asp-area="User" asp-controller="Home" asp-action="AlienProfile" asp-route-userEmail="@Model.User.Email">@Model.User.FullName</a> - @Model.CreatedDate.Date.ToString("dd.MM.yyyy")</h4>
 	<p>@Model.Content</p>
+	@if (Model.Tags != null)
+	{
+		@foreach (var tag in Model.Tags)
+		{
+			@await Component.InvokeAsync("Tag", new { tagP = tag })
+		}
+	}
 </div>

@@ -18,5 +18,7 @@ namespace CodeCareer.Areas.User.Models
         [MaxLength(1000, ErrorMessage = "Максимальная длина - 1000 символов")]
         public string Content {  get; set; }
 
+        public HashSet<TagModel> Tags { get; set; }
+
     }
 }
