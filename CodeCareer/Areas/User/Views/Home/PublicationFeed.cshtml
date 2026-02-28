@@ -3,17 +3,54 @@
 
 @inject IPublicationService PublicationService
 @inject IUserService UserService
+@inject ITagService TagService
 
 @model PublicationFeedViewModel
 
 @{
 	var currentUser = UserService.GetUserModels().FirstOrDefault(u => u.Email == Model.CurrentUserEmail);
-	var publications = PublicationService.GetPublicationModels();
+	List<PublicationModel> publications;
+	if (Model.TagNames == null || Model.TagNames.Count() == 0)
+	{
+		publications = PublicationService.GetPublicationModels();
+	}
+	else
+	{
+		publications = PublicationService.GetPublicationModels().Where(p =>
+		{
+			if (p.Tags == null || p.Tags.Count() == 0)
+			{
+				return false;
+			}
+			else
+			{
+				@*Если хотябы один тег публикации соответствует выбранным тегам пользователя*@
+				if (p.Tags.Any(t => Model.TagNames.Contains(t.Name)))
+				{
+					return true;
+				}
+				return false;
+			}
+		}).ToList();
+	}
 	publications.Reverse();
 }
 
 <div>
 	<h2>Лента публикаций</h2>
+
+	<form asp-area="Users" asp-controller="Home" asp-action="PublicationFeed" method="post">
+		@foreach (var tag in TagService.GetTagModels())
+		{
+			<div>
+				<input type="checkbox"
+					   name="SelectedTags"
+					   value="@tag.Name" />
+				<label>@tag.Name</label>
+			</div>
+		}
+		<button type="submit">Выбрать теги</button>
+	</form>
 
 	@foreach (var publication in publications)
 	{

@@ -11,7 +11,10 @@ namespace CodeCareer.Areas.User.ViewModels
 
         public bool WantsToSubscribe { get; set; } = false;
 
+
         //public bool WantsToBoostRating { get; set; } = false;
+
+        public List<string> TagNames { get; set; } = new List<string>();
 
         public PublicationFeedViewModel()
         {

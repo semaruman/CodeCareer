@@ -242,10 +242,10 @@ namespace CodeCareer.Areas.User.Controllers
         }
 
         [HttpPost]
-        public IActionResult PublicationFeed(PublicationFeedViewModel viewModel)
+        public IActionResult PublicationFeed(PublicationFeedViewModel viewModel, List<string> SelectedTags)
         {
             // если пользователь не зарегистрирован
-            if (currentUser.FullName == string.Empty)
+            if (viewModel.CurrentUserEmail == null)
             {
                 // Ничего не делаем
             }
@@ -286,7 +286,13 @@ namespace CodeCareer.Areas.User.Controllers
                 
             }
 
-            return View(new PublicationFeedViewModel(currentUser.Email));
+            viewModel = new PublicationFeedViewModel
+            {
+                CurrentUserEmail = currentUser.Email,
+                TagNames = SelectedTags
+            };
+
+            return View(viewModel);
         }
 
         public IActionResult Top100Users()
