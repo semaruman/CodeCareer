@@ -289,7 +289,8 @@ namespace CodeCareer.Areas.User.Controllers
             viewModel = new PublicationFeedViewModel
             {
                 CurrentUserEmail = currentUser.Email,
-                TagNames = SelectedTags
+                TagNames = SelectedTags,
+                SortType = viewModel.SortType,
             };
 
             return View(viewModel);

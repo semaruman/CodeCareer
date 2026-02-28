@@ -33,24 +33,53 @@
 			}
 		}).ToList();
 	}
-	publications.Reverse();
+
+
+	if (Model.SortType == "Сначала новые")
+	{
+		publications.Reverse();
+	}
+	else if (Model.SortType == "Сначала старые")
+	{
+		publications.OrderBy(p => p.CreatedDate);
+	}
+	else
+	{
+		publications.Reverse();
+	}
 }
 
 <div>
 	<h2>Лента публикаций</h2>
 
+	
 	<form asp-area="Users" asp-controller="Home" asp-action="PublicationFeed" method="post">
-		@foreach (var tag in TagService.GetTagModels())
-		{
-			<div>
-				<input type="checkbox"
-					   name="SelectedTags"
-					   value="@tag.Name" />
-				<label>@tag.Name</label>
-			</div>
-		}
-		<button type="submit">Выбрать теги</button>
+		<h4>Теги</h4>
+		<div>
+			@foreach (var tag in TagService.GetTagModels())
+			{
+				<div>
+					<input type="checkbox"
+						   name="SelectedTags"
+						   value="@tag.Name" />
+					<label>@tag.Name</label>
+				</div>
+			}
+		</div>
+
+		<h4>Сортировка</h4>
+		<div>
+			<select asp-for="SortType">
+				<option value="нет">Без сортировки</option>
+				<option value="Сначала новые">Сначала новые</option>
+				<option value="Сначала старые">Сначала старые</option>
+			</select>
+		</div>
+		
+		<button type="submit">Отобразить</button>
 	</form>
+
+	
 
 	@foreach (var publication in publications)
 	{

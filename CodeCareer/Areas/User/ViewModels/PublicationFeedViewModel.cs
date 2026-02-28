@@ -16,6 +16,9 @@ namespace CodeCareer.Areas.User.ViewModels
 
         public List<string> TagNames { get; set; } = new List<string>();
 
+
+        public string SortType { get; set; } = "нет";
+
         public PublicationFeedViewModel()
         {
 
