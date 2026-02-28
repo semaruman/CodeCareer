@@ -318,5 +318,11 @@ namespace CodeCareer.Areas.User.Controllers
             }
             return RedirectToAction("Profile");
         }
+
+        [HttpGet]
+        public IActionResult Community()
+        {
+            return View();
+        }
     }
 }
