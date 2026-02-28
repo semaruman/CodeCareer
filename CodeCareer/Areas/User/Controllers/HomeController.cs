@@ -324,5 +324,14 @@ namespace CodeCareer.Areas.User.Controllers
         {
             return View();
         }
+
+        [HttpGet]
+        public IActionResult FindUser()
+        {
+            return View(new FindUserViewModel()
+            {
+                CurrentUserEmail = currentUser.Email
+            });
+        }
     }
 }
