@@ -328,19 +328,15 @@ namespace CodeCareer.Areas.User.Controllers
         [HttpGet]
         public IActionResult FindUser()
         {
-            return View(new FindUserViewModel()
-            {
-                CurrentUserEmail = currentUser.Email
-            });
+            return View(new FindUserViewModel());
         }
 
         [HttpPost]
-        public IActionResult FindUser(FindUserViewModel viewModel)
+        public IActionResult FindUser(FindUserViewModel viewModel, List<string> skillTagNames)
         {
-            return View(new FindUserViewModel()
-            {
-                CurrentUserEmail = currentUser.Email
-            });
+            viewModel.SkillTagNames = skillTagNames;
+
+            return View(viewModel);
         }
     }
 }

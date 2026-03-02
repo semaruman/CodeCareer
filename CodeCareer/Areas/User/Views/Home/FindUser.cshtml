@@ -1,0 +1,60 @@
+﻿@model FindUserViewModel
+
+@inject ITagService TagService
+@inject IUserService UserService
+
+@{
+	var tags = TagService.GetTagModels();
+
+	IEnumerable<UserModel> users;
+
+	if (Model.SkillTagNames == null || Model.SkillTagNames.Count() == 0)
+	{
+		users = UserService.GetUserModels()
+		.Where(u => u.FullName.Contains(Model.FindUserName));
+	}
+	else
+	{
+		users = UserService.GetUserModels().Where(user =>
+		{
+			if (user.SkillTags == null || user.SkillTags.Count() == 0)
+			{
+				return false;
+			}
+			else
+			{
+				@*Если все выбранные теги есть у пользователя*@
+				if (Model.SkillTagNames.All(tagName => user.SkillTags.Select(t => t.Name).Contains(tagName)))
+				{
+					return true;
+				}
+				return false;
+			}
+		});
+	}
+}
+
+<form asp-area="User" asp-controller="Home" asp-action="FindUser" method="post">
+	<h3>Введите имя пользователя</h3>
+	<input asp-for="FindUserName"/>
+
+	<h3>Выберите навыки</h3>
+	@foreach (var tag in tags)
+	{
+		<div>
+			<input type="checkbox"
+			name="skillTagNames"
+			value="@tag.Name" />
+			<label>@tag.Name</label>
+		</div>
+	}
+	<button type="submit">Искать</button>
+</form>
+
+<div>
+	<h2>Найденные пользователи:</h2>
+	@foreach (var user in users)
+	{
+		<h4><a asp-area="User" asp-controller="Home" asp-action="AlienProfile" asp-route-userEmail="@user.Email">@user.FullName</a></h4>
+	}
+</div>

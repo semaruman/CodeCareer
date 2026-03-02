@@ -1,11 +1,11 @@
-﻿namespace CodeCareer.Areas.User.ViewModels
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace CodeCareer.Areas.User.ViewModels
 {
     public class FindUserViewModel
     {
-        public string CurrentUserEmail {  get; set; }
+        public string FindUserName {  get; set; } = string.Empty;
 
-        public string FindUserName {  get; set; }
-
-        public List<string> SkillTagNames { get; set; }
+        public List<string> SkillTagNames { get; set; } = new List<string>();
     }
 }
