@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using CodeCareer.Areas.User.ViewModels;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace CodeCareer.Areas.User.Models
 {

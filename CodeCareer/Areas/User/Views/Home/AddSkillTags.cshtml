@@ -8,7 +8,7 @@
 	<h1>Выберите навыки</h1>
 	@foreach (var tag in tags)
 	{
-		if (HomeController.currentUser.SkillTags.Contains(tag))
+		if (CurrentUserService.CurrentUser.SkillTags.Contains(tag))
 		{
 			<div>
 				<input type="checkbox"

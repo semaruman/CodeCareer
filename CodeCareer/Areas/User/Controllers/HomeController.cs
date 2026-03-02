@@ -1,7 +1,9 @@
-﻿using CodeCareer.Areas.User.Models;
+﻿using System.Security.Claims;
+using CodeCareer.Areas.User.Models;
 using CodeCareer.Areas.User.Services.Implementations.JsonServices;
 using CodeCareer.Areas.User.Services.Interfaces;
 using CodeCareer.Areas.User.ViewModels;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CodeCareer.Areas.User.Controllers
@@ -9,17 +11,26 @@ namespace CodeCareer.Areas.User.Controllers
     [Area("User")]
     public class HomeController : Controller
     {
-        public static UserModel currentUser { get; set; } = new UserModel();
+
+
+        private readonly ICurrentUserService _currentUserService;
 
         private readonly IUserService _userService;
         private readonly IPublicationService _publicationService;
         private readonly ITagService _tagService;
 
-        public HomeController(IUserService userService, IPublicationService publicationService, ITagService tagService)
+        public UserModel currentUser
+        {
+            get => _currentUserService.CurrentUser;
+            set => _currentUserService.CurrentUser = value;
+        }
+
+        public HomeController(IUserService userService, IPublicationService publicationService, ITagService tagService, ICurrentUserService currentUserService)
         {
             _userService = userService;
             _publicationService = publicationService;
             _tagService = tagService;
+            _currentUserService = currentUserService;
         }
 
         [HttpGet]
@@ -37,40 +48,29 @@ namespace CodeCareer.Areas.User.Controllers
         }
 
         [HttpPost]
-        public IActionResult Authorizate(UserViewModel user)
+        public async Task<IActionResult> Authorizate(UserViewModel user)
         {
-            if (ModelState.IsValid)
+            var dbUser = _userService.GetUserByEmail(user.Email);
+
+            if (dbUser != null && user.Password == dbUser.Password)
             {
-
-                var dbUser = _userService.GetUserModels().Where(u => u.Email == user.Email).FirstOrDefault();
-
-                
-
-                // Если пользователь не найден в БД
-                if (dbUser == null)
-                {
-                    currentUser.CreateUser(user);
-                    _userService.AddUserModel(currentUser);
-                    return RedirectToAction("SuccessAuthorizate");
-                }
-                else
-                {
-                    if (dbUser.Password == user.Password)
+                // Те же шаги - создаем claims и вызываем SignInAsync
+                var claims = new List<Claim>
                     {
-                        currentUser = dbUser;
-                        return RedirectToAction("SuccessAuthorizate");
-                    }
-                    else
-                    {
-                        ViewData["isWrongAnswer"] = "true";
-                        return View(user);
-                    }
-                }
+                        new Claim(ClaimTypes.Name, user.FullName),
+                        new Claim(ClaimTypes.Email, user.Email)
+                    };
+
+                var claimsIdentity = new ClaimsIdentity(claims, "CookieAuth");
+                var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+
+                await HttpContext.SignInAsync(claimsPrincipal);
+
+                return RedirectToAction("Index", "Home");
             }
-            else
-            {
-                return View(user);
-            }
+
+            return View(user);
+            
         }
         public IActionResult SuccessAuthorizate()
         {
@@ -104,7 +104,7 @@ namespace CodeCareer.Areas.User.Controllers
                 CurrentUserEmail = currentUser.Email,
                 AlienUserEmail = userEmail
             };
-            
+
             return View(model);
         }
 
@@ -264,11 +264,11 @@ namespace CodeCareer.Areas.User.Controllers
 
                     _userService.UpdateUserModel(publicationUser);
                     _userService.UpdateUserModel(currentUser);
-                    
+
                 }
                 else
                 {
-                    
+
                     if (publicationUser.SubscribersEmails.Remove(currentUser.Email))
                     {
                         publicationUser.Subscribers -= 1;
@@ -283,7 +283,7 @@ namespace CodeCareer.Areas.User.Controllers
                     _userService.UpdateUserModel(currentUser);
 
                 }
-                
+
             }
 
             viewModel = new PublicationFeedViewModel
@@ -327,6 +327,15 @@ namespace CodeCareer.Areas.User.Controllers
 
         [HttpGet]
         public IActionResult FindUser()
+        {
+            return View(new FindUserViewModel()
+            {
+                CurrentUserEmail = currentUser.Email
+            });
+        }
+
+        [HttpPost]
+        public IActionResult FindUser(FindUserViewModel viewModel)
         {
             return View(new FindUserViewModel()
             {

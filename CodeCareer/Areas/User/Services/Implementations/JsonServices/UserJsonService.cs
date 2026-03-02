@@ -80,5 +80,10 @@ namespace CodeCareer.Areas.User.Services.Implementations.JsonServices
             string jsonWrite = JsonSerializer.Serialize(users);
             File.WriteAllText(_filepath, jsonWrite);
         }
+
+        public UserModel GetUserByEmail(string email)
+        {
+            return GetUserModels().Where(u => u.Email == email).FirstOrDefault();
+        }
     }
 }

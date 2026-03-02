@@ -9,5 +9,7 @@ namespace CodeCareer.Areas.User.Services.Interfaces
         public void RemoveUserModel(UserModel user);
 
         public void UpdateUserModel(UserModel user);
+
+        public UserModel GetUserByEmail(string email);
     }
 }
