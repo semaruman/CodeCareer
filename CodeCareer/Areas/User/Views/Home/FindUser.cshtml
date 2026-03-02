@@ -41,12 +41,25 @@
 	<h3>Выберите навыки</h3>
 	@foreach (var tag in tags)
 	{
-		<div>
-			<input type="checkbox"
-			name="skillTagNames"
-			value="@tag.Name" />
-			<label>@tag.Name</label>
-		</div>
+		if (Model.SkillTagNames.Contains(tag.Name))
+		{
+			<div>
+				<input type="checkbox"
+					   name="skillTagNames"
+					   value="@tag.Name"
+					   checked />
+				<label>@tag.Name</label>
+			</div>
+		}
+		else
+		{
+			<div>
+				<input type="checkbox"
+					   name="skillTagNames"
+					   value="@tag.Name" />
+				<label>@tag.Name</label>
+			</div>
+		}
 	}
 	<button type="submit">Искать</button>
 </form>
