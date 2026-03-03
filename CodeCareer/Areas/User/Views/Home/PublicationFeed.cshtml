@@ -58,12 +58,25 @@
 		<div>
 			@foreach (var tag in TagService.GetTagModels())
 			{
-				<div>
-					<input type="checkbox"
-						   name="SelectedTags"
-						   value="@tag.Name" />
-					<label>@tag.Name</label>
-				</div>
+				if (Model.TagNames.Contains(tag.Name))
+				{
+					<div>
+						<input type="checkbox"
+							   name="SelectedTags"
+							   value="@tag.Name"
+							   checked />
+						<label>@tag.Name</label>
+					</div>
+				}
+				else
+				{
+					<div>
+						<input type="checkbox"
+							   name="SelectedTags"
+							   value="@tag.Name" />
+						<label>@tag.Name</label>
+					</div>
+				}
 			}
 		</div>
 
