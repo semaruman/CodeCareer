@@ -19,7 +19,7 @@
 		}
 		<a asp-area="User" asp-controller="Home" asp-action="Profile">Профиль</a>
 		<a asp-area="User" asp-controller="Home" asp-action="PublicationFeed">Лента</a>
-		<a asp-area="User" asp-controller="Home" asp-action="Index">Задачи</a>
+		<a asp-area="User" asp-controller="TasksSolving" asp-action="Index">Задачи</a>
 		<a asp-area="User" asp-controller="Home" asp-action="Community">Сообщество</a>
 		<a asp-area="User" asp-controller="Home" asp-action="Top100Users">ТОП-100 лидеров</a>
 		@if (CurrentUserService.CurrentUser.FullName != null)
