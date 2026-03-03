@@ -8,6 +8,11 @@
 
 	IEnumerable<UserModel> users;
 
+	if (Model.FindUserName == null)
+	{
+		Model.FindUserName = string.Empty;
+	}
+
 	if (Model.SkillTagNames == null || Model.SkillTagNames.Count() == 0)
 	{
 		users = UserService.GetUserModels()
@@ -18,6 +23,10 @@
 		users = UserService.GetUserModels().Where(user =>
 		{
 			if (user.SkillTags == null || user.SkillTags.Count() == 0)
+			{
+				return false;
+			}
+			else if (!user.FullName.Contains(Model.FindUserName))
 			{
 				return false;
 			}
