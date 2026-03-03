@@ -11,6 +11,12 @@ namespace CodeCareer.Areas.User.Controllers
             return View();
         }
 
+        public IActionResult SolveTask(string taskName)
+        {
+            ViewBag.TaskName = taskName;
+            return View();
+        }
+
         public IActionResult LinearSearchTasks()
         {
             return View();
