@@ -1,0 +1,29 @@
+@model TaskModel
+
+<h2>Добавление задачи</h2>
+<form asp-area="Admin" asp-controller="Home" asp-action="AddTasks" method="post">
+    <h4>Введите название задачи</h4>
+    <input asp-for="Name"/>
+    <span asp-validation-for="Name"></span>
+
+    <h4>Выберите тип задачи</h4>
+    <select asp-for="Type">
+        <option value="Линейный поиск">"Линейный поиск"</option>
+    </select>
+    <span asp-validation-for="Type"></span>
+
+    <h4>Введите содержимое задачи</h4>
+    <textarea asp-for="Content"></textarea>
+    <span asp-validation-for="Content"></span>
+
+    <h4>Опишите входные данные задачи</h4>
+    <textarea asp-for="InputContent"></textarea>
+    <span asp-validation-for="InputContent"></span>
+
+    <h4>Опишите выходные данные задачи</h4>
+    <textarea asp-for="OutputContent"></textarea>
+    <span asp-validation-for="OutputContent"></span>
+
+    <button type="submit">Добавить</button>
+
+</form>

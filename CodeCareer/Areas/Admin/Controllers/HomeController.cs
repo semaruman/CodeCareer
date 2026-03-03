@@ -12,10 +12,12 @@ namespace CodeCareer.Areas.Admin.Controllers
         public static AdminModel admin = new AdminModel();
 
         private readonly ITagService _tagService;
+        private readonly ITaskService _taskService;
 
-        public HomeController(ITagService tagService)
+        public HomeController(ITagService tagService,ITaskService taskService)
         {
             _tagService = tagService;
+            _taskService = taskService;
         }
 
         public IActionResult Index()
@@ -86,6 +88,40 @@ namespace CodeCareer.Areas.Admin.Controllers
             {
                 return View(tag);
             }
+        }
+
+
+        [HttpGet]
+        public IActionResult AddTasks()
+        {
+            if (admin.IsAuthorizate)
+            {
+                return View(new TaskModel());
+            }
+            else
+            {
+                return RedirectToAction("Authorization");
+            }
+        }
+
+        [HttpPost]
+        public IActionResult AddTasks(TaskModel task)
+        {
+            if (ModelState.IsValid)
+            {
+                _taskService.AddTaskModel(task);
+                return RedirectToAction("AddTasksSuccess");
+            }
+            else
+            {
+                return View(task);
+            }
+        }
+
+        [HttpGet]
+        public IActionResult AddTasksSuccess()
+        {
+            return View();
         }
     }
 }
