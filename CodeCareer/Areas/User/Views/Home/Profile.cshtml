@@ -35,6 +35,9 @@
 	<a asp-area="User" asp-controller="Home" asp-action="CreatePublication">Создать публикацию</a>
 </div>
 <div>
+	<a asp-area="User" asp-controller="Home" asp-action="AlienProfile" asp-route-userEmail="@Model.Email">Как мой профиль видят другие?</a>
+</div>
+<div>
 	<h2>Публикации</h2>
 	@foreach (var publication in publications)
 	{
@@ -42,4 +45,3 @@
 	}
 </div>
 
-<a asp-area="User" asp-controller="Home" asp-action="AlienProfile" asp-route-userEmail="@Model.Email">Как мой профиль видят другие?</a>
