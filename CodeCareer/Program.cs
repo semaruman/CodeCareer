@@ -20,7 +20,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     .AddCookie(options =>
     {
         options.LoginPath = "/Authorizate";
-        options.LogoutPath = "/Account/Logout";
+        options.LogoutPath = "/LogoutUser";
         options.ExpireTimeSpan = TimeSpan.FromDays(7); // запоминать на неделю
         options.SlidingExpiration = true;
     });

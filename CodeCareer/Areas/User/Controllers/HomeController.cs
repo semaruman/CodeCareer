@@ -77,10 +77,10 @@ namespace CodeCareer.Areas.User.Controllers
             return View(currentUser);
         }
 
-        public IActionResult LogoutUser()
+        public async Task<IActionResult> LogoutUser()
         {
-            currentUser = new UserModel();
-            return View();
+            await HttpContext.SignOutAsync();
+            return RedirectToAction("Index");
         }
 
         [HttpGet]
