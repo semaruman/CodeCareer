@@ -1,0 +1,82 @@
+﻿@model FindPublicationViewModel
+
+@inject ITagService TagService
+@inject IUserService UserService
+@inject IPublicationService PublicationService
+
+@{
+	var tags = TagService.GetTagModels();
+
+	List<PublicationModel> publications;
+	if (Model.TagNames == null || Model.TagNames.Count() == 0)
+	{
+		publications = PublicationService.GetPublicationModels()
+		.Where(p => p.Content.ToLower().Contains(Model.FindPublicationText.ToLower())).ToList();
+	}
+	else
+	{
+		publications = PublicationService.GetPublicationModels().Where(p =>
+		{
+			if (p.Tags == null || p.Tags.Count() == 0)
+			{
+				return false;
+			}
+			else if (string.IsNullOrEmpty(Model.FindPublicationText))
+			{
+				@*Если хотябы один тег публикации соответствует выбранным тегам пользователя*@
+				if (p.Tags.Any(t => Model.TagNames.Contains(t.Name)))
+				{
+					return true;
+				}
+				return false;
+			}
+			else
+			{
+				@*Если хотябы один тег публикации соответствует выбранным тегам пользователя и содержимое соотвутствует*@
+				if (p.Tags.Any(t => Model.TagNames.Contains(t.Name)) && p.Content.ToLower().Contains(Model.FindPublicationText.ToLower()))
+				{
+					return true;
+				}
+				return false;
+			}
+		}).ToList();
+	}
+}
+
+<form asp-area="User" asp-controller="Home" asp-action="FindPublication" method="post">
+	<h3>Введите часть содержимого публикации</h3>
+	<textarea asp-for="FindPublicationText"></textarea>
+
+	<h3>Выберите теги</h3>
+	@foreach (var tag in tags)
+	{
+		if (Model.TagNames.Contains(tag.Name))
+		{
+			<div>
+				<input type="checkbox"
+					   name="tagNames"
+					   value="@tag.Name"
+					   checked />
+				<label>@tag.Name</label>
+			</div>
+		}
+		else
+		{
+			<div>
+				<input type="checkbox"
+					   name="tagNames"
+					   value="@tag.Name" />
+				<label>@tag.Name</label>
+			</div>
+		}
+	}
+	<button type="submit">Искать</button>
+</form>
+
+<div>
+	<h2>Найденные публикации:</h2>
+	@foreach (var publication in publications)
+	{
+		@await Component.InvokeAsync("Publication", new { publicationP = publication })
+	}
+</div>

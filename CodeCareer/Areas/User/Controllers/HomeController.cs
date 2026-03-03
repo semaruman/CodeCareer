@@ -338,5 +338,19 @@ namespace CodeCareer.Areas.User.Controllers
 
             return View(viewModel);
         }
+
+        [HttpGet]
+        public IActionResult FindPublication()
+        {
+            return View(new FindPublicationViewModel());
+        }
+
+        [HttpPost]
+        public IActionResult FindPublication(FindPublicationViewModel viewModel, List<string> tagNames)
+        {
+            viewModel.TagNames = tagNames;
+
+            return View(viewModel);
+        }
     }
 }
