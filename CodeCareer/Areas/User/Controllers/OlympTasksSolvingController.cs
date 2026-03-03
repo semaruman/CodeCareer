@@ -1,0 +1,19 @@
+using Microsoft.AspNetCore.Mvc;
+
+namespace CodeCareer.Areas.User.Controllers
+{
+    [Area("User")]
+    public class OlympTasksSolvingController : Controller
+    {
+        [HttpGet]
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        public IActionResult LinearSearchTasks()
+        {
+            return View();
+        }
+    }
+}
