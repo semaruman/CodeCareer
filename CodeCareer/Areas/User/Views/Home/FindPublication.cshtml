@@ -7,6 +7,11 @@
 @{
 	var tags = TagService.GetTagModels();
 
+	if (Model.FindPublicationText == null)
+	{
+		Model.FindPublicationText = string.Empty;
+	}
+
 	List<PublicationModel> publications;
 	if (Model.TagNames == null || Model.TagNames.Count() == 0)
 	{
