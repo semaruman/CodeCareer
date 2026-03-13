@@ -47,7 +47,27 @@ FROM publications
 
         public void AddPublicationModel(PublicationModel publication)
         {
+            using var connection = new MySqlConnection(Constants.CONNECTION_STRING);
+            connection.Open();
 
+            DateTime createdDateP = publication.CreatedDate;
+            int userIdP = publication.User.Id;
+            string contentP = publication.Content;
+            string tagNamesP = string.Join("; ", publication.Tags);
+
+            string sqlQuery = @"
+INSERT INTO publications (created_date, user_id, content, tag_names) VALUES
+    (@createdDateP, @userIdP, @contentP, @tagNamesP)
+";
+
+            using var command = new MySqlCommand(sqlQuery, connection);
+
+            command.Parameters.AddWithValue("@createdDateP", createdDateP);
+            command.Parameters.AddWithValue("@userIdP", userIdP);
+            command.Parameters.AddWithValue("@contentP", contentP);
+            command.Parameters.AddWithValue("@tagNamesP", tagNamesP);
+
+            command.ExecuteNonQuery();
         }
 
         public void RemovePublicationModel(int id)
