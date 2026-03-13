@@ -59,5 +59,23 @@ namespace CodeCareer.Areas.User.Services.Implementations.JsonServices
             string jsonWrite = JsonSerializer.Serialize(publications);
             File.WriteAllText(_filepath, jsonWrite);
         }
+
+        public void RemovePublicationModel(int id)
+        {
+            List<PublicationModel> publications = new List<PublicationModel>();
+
+            if (File.Exists(_filepath))
+            {
+                string json = File.ReadAllText(_filepath);
+                if (!string.IsNullOrEmpty(json))
+                {
+                    publications = JsonSerializer.Deserialize<List<PublicationModel>>(json) ?? new List<PublicationModel>();
+                }
+            }
+
+            publications = publications.Where(p => !(p.Id == id)).ToList();
+            string jsonWrite = JsonSerializer.Serialize(publications);
+            File.WriteAllText(_filepath, jsonWrite);
+        }
     }
 }

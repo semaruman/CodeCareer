@@ -11,5 +11,7 @@ namespace CodeCareer.Areas.User.Services.Interfaces
         public void UpdateUserModel(UserModel user);
 
         public UserModel GetUserByEmail(string email);
+
+        public UserModel GetUserById(int email);
     }
 }

@@ -85,5 +85,10 @@ namespace CodeCareer.Areas.User.Services.Implementations.JsonServices
         {
             return GetUserModels().Where(u => u.Email == email).FirstOrDefault();
         }
+
+        public UserModel GetUserById(int id)
+        {
+            return GetUserModels().Where(u => u.Id == id).FirstOrDefault();
+        }
     }
 }
