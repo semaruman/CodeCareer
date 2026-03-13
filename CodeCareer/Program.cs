@@ -1,4 +1,5 @@
 using CodeCareer.Areas.User.Services.Implementations.JsonServices;
+using CodeCareer.Areas.User.Services.Implementations.MySqlServices;
 using CodeCareer.Areas.User.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
@@ -28,7 +29,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 builder.Services.AddAuthorization();
 
 builder.Services.AddScoped<IUserService, UserJsonService>();
-builder.Services.AddScoped<IPublicationService, PublicationJsonService>();
+builder.Services.AddScoped<IPublicationService, PublicationMySqlService>();
 builder.Services.AddScoped<ITagService, TagJsonService>();
 builder.Services.AddScoped<ITaskService, TaskJsonService>();
 

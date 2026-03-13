@@ -1,4 +1,5 @@
-﻿using CodeCareer.Areas.User.Models;
+﻿using System.Data;
+using CodeCareer.Areas.User.Models;
 using CodeCareer.Areas.User.Services.Interfaces;
 using MySql.Data.MySqlClient;
 
@@ -9,9 +10,10 @@ namespace CodeCareer.Areas.User.Services.Implementations.MySqlServices
         private IUserService _userService { get; set; }
         private ITagService _tagService { get; set; }
 
-        public PublicationMySqlService(IUserService userService)
+        public PublicationMySqlService(IUserService userService, ITagService tagService)
         {
             _userService = userService;
+            _tagService = tagService;
         }
 
         public List<PublicationModel> GetPublicationModels()
@@ -20,7 +22,7 @@ namespace CodeCareer.Areas.User.Services.Implementations.MySqlServices
             connection.Open();
 
             string sqlQuery = @"
-SELECT id, created_date, user_id, content, tagnames
+SELECT id, created_date, user_id, content, tag_names
 FROM publications
 ";
 
@@ -31,13 +33,21 @@ FROM publications
             List<PublicationModel> publicationsList = new List<PublicationModel>();
             while (reader.Read())
             {
+                HashSet<TagModel> tags = new HashSet<TagModel>();
+                string tagNames = reader.GetString("tag_names");
+                if (!string.IsNullOrEmpty(tagNames))
+                {
+                    tags = _tagService.GetTagModels().Where(t => tagNames.Contains(t.Name)).ToHashSet();
+
+                }
+
                 var publication = new PublicationModel()
                 {
-                    Id = reader.GetInt32("id"),
+                    //Id = reader.IsDBNull("id") ? 0: reader.GetInt32("id"),
                     CreatedDate = reader.GetDateTime("created_date"),
                     User = _userService.GetUserById(reader.GetInt32("user_id")),
                     Content = reader.GetString("content"),
-                    Tags = _tagService.GetTagModels().Where(t => reader.GetString("tag_names").Contains(t.Name)).ToHashSet()
+                    Tags = tags
                 };
                 publicationsList.Add(publication);
             }
@@ -53,7 +63,7 @@ FROM publications
             DateTime createdDateP = publication.CreatedDate;
             int userIdP = publication.User.Id;
             string contentP = publication.Content;
-            string tagNamesP = string.Join("; ", publication.Tags);
+            string tagNamesP = (publication.Tags == null?"" : string.Join("; ", publication.Tags));
 
             string sqlQuery = @"
 INSERT INTO publications (created_date, user_id, content, tag_names) VALUES
