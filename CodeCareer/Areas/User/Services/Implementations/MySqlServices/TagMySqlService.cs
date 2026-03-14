@@ -54,5 +54,21 @@ INSERT INTO tags (name, img_path) VALUES
 
             command.ExecuteNonQuery();
         }
+
+        public void RemoveTagModel(string tagName)
+        {
+            using var connection = new MySqlConnection(Constants.CONNECTION_STRING);
+            connection.Open();
+
+            string sqlQuery = @"
+DELETE FROM tags WHERE name = @tagName
+";
+
+            using var command = new MySqlCommand(sqlQuery, connection);
+
+            command.Parameters.AddWithValue("@tagName", tagName);
+
+            command.ExecuteNonQuery();
+        }
     }
 }
