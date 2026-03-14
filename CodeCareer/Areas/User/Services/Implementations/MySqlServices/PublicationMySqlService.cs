@@ -82,7 +82,16 @@ INSERT INTO publications (created_date, user_id, content, tag_names) VALUES
 
         public void RemovePublicationModel(int id)
         {
+            using var connection = new MySqlConnection(Constants.CONNECTION_STRING);
+            connection.Open();
 
+            string sqlQuery = @"DELETE FROM publications WHERE id = @id";
+
+            using var command = new MySqlCommand(sqlQuery, connection);
+
+            command.Parameters.AddWithValue("@id", id);
+
+            command.ExecuteNonQuery();
         }
     }
 }
