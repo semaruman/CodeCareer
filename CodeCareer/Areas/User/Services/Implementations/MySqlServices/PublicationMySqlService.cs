@@ -5,6 +5,7 @@ using MySql.Data.MySqlClient;
 
 namespace CodeCareer.Areas.User.Services.Implementations.MySqlServices
 {
+    // Класс для работы с таблицей publications. Использовал ADO.NET
     public class PublicationMySqlService : IPublicationService
     {
         private IUserService _userService { get; set; }
