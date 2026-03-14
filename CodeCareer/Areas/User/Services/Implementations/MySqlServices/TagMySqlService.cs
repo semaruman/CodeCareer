@@ -1,0 +1,38 @@
+﻿using System.Data;
+using CodeCareer.Areas.User.Models;
+using CodeCareer.Areas.User.Services.Interfaces;
+using MySql.Data.MySqlClient;
+
+namespace CodeCareer.Areas.User.Services.Implementations.MySqlServices
+{
+    // Класс для работы с таблицей tags. Использовал ADO.NET
+    public class TagMySqlService : ITagService
+    {
+        public List<TagModel> GetTagModels()
+        {
+            using var connection = new MySqlConnection(Constants.CONNECTION_STRING);
+            connection.Open();
+
+            string sqlQuery = @"
+SELECT id, name, img_path
+FROM tags
+";
+
+            using var command = new MySqlCommand(sqlQuery, connection);
+
+            using var reader = command.ExecuteReader();
+
+            List<TagModel> tagModels = new List<TagModel>();
+
+            while (reader.Read())
+            {
+                TagModel tagModel = new TagModel()
+                {
+                    Id = reader.GetInt32("id"),
+                    Name = reader.GetString("name"),
+                    ImgPath = reader.IsDBNull("img_path") ? "" : reader.GetString("img_path")
+                };
+            }
+        }
+    }
+}
