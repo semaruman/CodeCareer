@@ -32,6 +32,7 @@ FROM tags
                     Name = reader.GetString("name"),
                     ImgPath = reader.IsDBNull("img_path") ? Constants.DEFAULT_TAG_IMG_PATH : reader.GetString("img_path")
                 };
+                tagModels.Add(tagModel);
             }
 
             return tagModels;
