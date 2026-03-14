@@ -30,9 +30,29 @@ FROM tags
                 {
                     Id = reader.GetInt32("id"),
                     Name = reader.GetString("name"),
-                    ImgPath = reader.IsDBNull("img_path") ? "" : reader.GetString("img_path")
+                    ImgPath = reader.IsDBNull("img_path") ? Constants.DEFAULT_TAG_IMG_PATH : reader.GetString("img_path")
                 };
             }
+
+            return tagModels;
+        }
+
+        public void AddTagModel(TagModel tagModel)
+        {
+            using var connection = new MySqlConnection(Constants.CONNECTION_STRING);
+            connection.Open();
+
+            string sqlQuery = @"
+INSERT INTO tags (name, img_path) VALUES
+    (@name, @imgPath)
+";
+
+            using var command = new MySqlCommand(sqlQuery, connection);
+
+            command.Parameters.AddWithValue("@name", tagModel.Name);
+            command.Parameters.AddWithValue("@imgPath", tagModel.ImgPath);
+
+            command.ExecuteNonQuery();
         }
     }
 }
