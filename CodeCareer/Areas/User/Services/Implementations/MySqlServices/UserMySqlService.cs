@@ -163,5 +163,109 @@ WHERE id = @userId
 
             command.ExecuteNonQuery();
         }
+
+        public UserModel GetUserByEmail(string email)
+        {
+            using var connection = new MySqlConnection(Constants.CONNECTION_STRING);
+            connection.Open();
+
+            string sqlQuery = @"
+SELECT *
+FROM users
+WHERE email = @email
+";
+            using var command = new MySqlCommand(sqlQuery, connection);
+
+            command.Parameters.AddWithValue("@email", email);
+
+            using var reader = command.ExecuteReader();
+
+            // создание модели пользователя 
+
+            HashSet<TagModel> skillTags;
+            var tagNames = reader.GetString("skill_tags_names");
+
+            if (tagNames != null && tagNames.Length > 0)
+            {
+                skillTags = _tagService.GetTagModels().Where(t => tagNames.Contains(t.Name)).ToHashSet();
+            }
+            else
+            {
+                skillTags = new HashSet<TagModel>();
+            }
+
+            UserModel model = new UserModel
+            {
+                Id = reader.GetInt32("id"),
+                FullName = reader.GetString("full_name"),
+                Email = reader.GetString("email"),
+                Password = reader.GetString("password"),
+                BirthDate = reader.GetDateTime("birth_date"),
+                Info = reader.GetString("info"),
+                Rating = reader.GetInt32("rating"),
+                Subscribers = reader.GetInt32("subscribers"),
+                SubscribersEmails = reader.GetString("subscribers_emails").Split("; ").ToHashSet(),
+                Subscriptions = reader.GetInt32("subscriptions"),
+                SubscriptionsEmails = reader.GetString("subscriptions_emails").Split("; ").ToHashSet(),
+                Status = reader.GetString("status"),
+                SkillTags = skillTags,
+                ShowSubscriptions = reader.GetBoolean("show_subscriptions"),
+                RegistrationDate = reader.IsDBNull("registration_date") ? DateTime.Now : reader.GetDateTime("registration_date")
+            };
+
+            return model;
+        }
+
+        public UserModel GetUserById(int id)
+        {
+            using var connection = new MySqlConnection(Constants.CONNECTION_STRING);
+            connection.Open();
+
+            string sqlQuery = @"
+SELECT *
+FROM users
+WHERE email = @id
+";
+            using var command = new MySqlCommand(sqlQuery, connection);
+
+            command.Parameters.AddWithValue("@id", id);
+
+            using var reader = command.ExecuteReader();
+
+            // создание модели пользователя 
+
+            HashSet<TagModel> skillTags;
+            var tagNames = reader.GetString("skill_tags_names");
+
+            if (tagNames != null && tagNames.Length > 0)
+            {
+                skillTags = _tagService.GetTagModels().Where(t => tagNames.Contains(t.Name)).ToHashSet();
+            }
+            else
+            {
+                skillTags = new HashSet<TagModel>();
+            }
+
+            UserModel model = new UserModel
+            {
+                Id = reader.GetInt32("id"),
+                FullName = reader.GetString("full_name"),
+                Email = reader.GetString("email"),
+                Password = reader.GetString("password"),
+                BirthDate = reader.GetDateTime("birth_date"),
+                Info = reader.GetString("info"),
+                Rating = reader.GetInt32("rating"),
+                Subscribers = reader.GetInt32("subscribers"),
+                SubscribersEmails = reader.GetString("subscribers_emails").Split("; ").ToHashSet(),
+                Subscriptions = reader.GetInt32("subscriptions"),
+                SubscriptionsEmails = reader.GetString("subscriptions_emails").Split("; ").ToHashSet(),
+                Status = reader.GetString("status"),
+                SkillTags = skillTags,
+                ShowSubscriptions = reader.GetBoolean("show_subscriptions"),
+                RegistrationDate = reader.IsDBNull("registration_date") ? DateTime.Now : reader.GetDateTime("registration_date")
+            };
+
+            return model;
+        }
     }
 }
