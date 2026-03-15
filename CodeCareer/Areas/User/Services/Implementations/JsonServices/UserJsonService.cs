@@ -43,7 +43,7 @@ namespace CodeCareer.Areas.User.Services.Implementations.JsonServices
             File.WriteAllText(_filepath, jsonWrite);
         }
 
-        public void RemoveUserModel(UserModel user)
+        public void RemoveUserModel(int userId)
         {
             List<UserModel> users = new List<UserModel>();
 
@@ -56,7 +56,7 @@ namespace CodeCareer.Areas.User.Services.Implementations.JsonServices
                 }
             }
 
-            users = users.Where(u => !(u.Email == user.Email)).ToList();
+            users = users.Where(u => !(u.Id == userId)).ToList();
             string jsonWrite = JsonSerializer.Serialize(users);
             File.WriteAllText(_filepath, jsonWrite);
         }
