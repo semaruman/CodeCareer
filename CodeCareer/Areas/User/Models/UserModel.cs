@@ -25,7 +25,7 @@ namespace CodeCareer.Areas.User.Models
         public int Subscribers { get; set; } = 0;
 
         [JsonInclude]
-        public List<string> SubscribersEmails = new List<string>();
+        public HashSet<string> SubscribersEmails = new HashSet<string>();
 
         public int Subscriptions { get; set; } = 0;
 
@@ -37,5 +37,7 @@ namespace CodeCareer.Areas.User.Models
         public HashSet<TagModel> SkillTags { get; set; } = new HashSet<TagModel>();
 
         public bool ShowSubscriptions { get; set; } = true;
+
+        public DateTime RegistrationDate { get; set; } = DateTime.Now;
     }
 }
