@@ -37,12 +37,5 @@ namespace CodeCareer.Areas.User.Models
         public HashSet<TagModel> SkillTags { get; set; } = new HashSet<TagModel>();
 
         public bool ShowSubscriptions { get; set; } = true;
-
-        public void CreateUser(UserViewModel user)
-        {
-            FullName = user.FullName;
-            Email = user.Email;
-            Password = user.Password;
-        }
     }
 }
