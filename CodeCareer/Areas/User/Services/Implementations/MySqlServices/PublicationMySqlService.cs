@@ -44,7 +44,7 @@ FROM publications
 
                 var publication = new PublicationModel()
                 {
-                    //Id = reader.IsDBNull("id") ? 0: reader.GetInt32("id"),
+                    Id = reader.GetInt32("id"),
                     CreatedDate = reader.GetDateTime("created_date"),
                     User = _userService.GetUserById(reader.GetInt32("user_id")),
                     Content = reader.GetString("content"),

@@ -28,7 +28,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
 builder.Services.AddAuthorization();
 
-builder.Services.AddScoped<IUserService, UserJsonService>();
+builder.Services.AddScoped<IUserService, UserMySqlService>();
 builder.Services.AddScoped<IPublicationService, PublicationMySqlService>();
 builder.Services.AddScoped<ITagService, TagMySqlService>();
 builder.Services.AddScoped<ITaskService, TaskJsonService>();

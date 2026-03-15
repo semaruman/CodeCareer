@@ -49,7 +49,7 @@ FROM users
                     FullName = reader.GetString("full_name"),
                     Email = reader.GetString("email"),
                     Password = reader.GetString("password"),
-                    BirthDate = reader.GetDateTime("birth_date"),
+                    BirthDate = reader.IsDBNull("birth_date") ? null : reader.GetDateTime("birth_date"),
                     Info = reader.GetString("info"),
                     Rating = reader.GetInt32("rating"),
                     Subscribers = reader.GetInt32("subscribers"),
@@ -74,13 +74,27 @@ FROM users
             connection.Open();
 
             string sqlQuery = @"
-INSERT INTO users(full_name, email, password, birth_date, info, rating, subscribers, subscribers_emails, subscriptions, subscriptions_emails, status, skill_tag_names, show_subscriptions, registration_date) VALUES
+INSERT INTO users(full_name, email, password, birth_date, info, rating, subscribers, subscribers_emails, subscriptions, subscriptions_emails, status, skill_tags_names, show_subscriptions, registration_date) VALUES
     (@fullName, @email, @password, @birthDate, @info, @rating, @subscribers, @subscribersEmails, @subscriptions, @subscriptionsEmails, @status, @skillTagNames, @showSubscriptions, @registrationDate)
 ";
 
-            string subscribersEmails = user.SubscribersEmails.Aggregate((x, y) => x + "; " + y);
-            string subscriptionsEmails = user.SubscriptionsEmails.Aggregate((x, y) => x + "; " + y);
-            string skillTagNames = user.SkillTags.Select(t => t.Name).Aggregate((x, y) => x + "; " + y);
+            string subscribersEmails = ""; 
+            foreach (string subscriberEmail in user.SubscribersEmails)
+            {
+                subscribersEmails += subscriberEmail + "; ";
+            }
+
+            string subscriptionsEmails = "";
+            foreach (string email in user.SubscriptionsEmails)
+            {
+                subscriptionsEmails += email + "; ";
+            }
+
+            string skillTagNames = "";
+            foreach (string tag in user.SkillTags.Select(t => t.Name))
+            {
+                skillTagNames += tag + "; ";
+            }
 
             using var command = new MySqlCommand(sqlQuery, connection);
 
@@ -137,16 +151,31 @@ SET full_name = @fullName,
     subscriptions_emails = @subscriptionsEmails,
     status = @status,
     skill_tags_names = @skillTagNames,
-    show_subscriptions = @showSubscriptions,
+    show_subscriptions = @showSubscriptions
 WHERE id = @userId
 ";
 
-            string subscribersEmails = user.SubscribersEmails.Aggregate((x, y) => x + "; " + y);
-            string subscriptionsEmails = user.SubscriptionsEmails.Aggregate((x, y) => x + "; " + y);
-            string skillTagNames = user.SkillTags.Select(t => t.Name).Aggregate((x, y) => x + "; " + y);
+            string subscribersEmails = "";
+            foreach (string subscriberEmail in user.SubscribersEmails)
+            {
+                subscribersEmails += subscriberEmail + "; ";
+            }
+
+            string subscriptionsEmails = "";
+            foreach (string email in user.SubscriptionsEmails)
+            {
+                subscriptionsEmails += email + "; ";
+            }
+
+            string skillTagNames = "";
+            foreach (string tag in user.SkillTags.Select(t => t.Name))
+            {
+                skillTagNames += tag + "; ";
+            }
 
             using var command = new MySqlCommand(sqlQuery, connection);
 
+            command.Parameters.AddWithValue("@@userId", user.Id);
             command.Parameters.AddWithValue("@fullName", user.FullName);
             command.Parameters.AddWithValue("@email", user.Email);
             command.Parameters.AddWithValue("@password", user.Password);
@@ -179,6 +208,7 @@ WHERE email = @email
             command.Parameters.AddWithValue("@email", email);
 
             using var reader = command.ExecuteReader();
+            reader.Read(); // вызываю 1 раз, т.к. email - уникальный индекс
 
             // создание модели пользователя 
 
@@ -200,7 +230,7 @@ WHERE email = @email
                 FullName = reader.GetString("full_name"),
                 Email = reader.GetString("email"),
                 Password = reader.GetString("password"),
-                BirthDate = reader.GetDateTime("birth_date"),
+                BirthDate = reader.IsDBNull("birth_date") ? null : reader.GetDateTime("birth_date"),
                 Info = reader.GetString("info"),
                 Rating = reader.GetInt32("rating"),
                 Subscribers = reader.GetInt32("subscribers"),
@@ -224,18 +254,19 @@ WHERE email = @email
             string sqlQuery = @"
 SELECT *
 FROM users
-WHERE email = @id
+WHERE id = @idP
 ";
             using var command = new MySqlCommand(sqlQuery, connection);
 
-            command.Parameters.AddWithValue("@id", id);
+            command.Parameters.AddWithValue("@idP", id);
 
             using var reader = command.ExecuteReader();
+            reader.Read(); // вызываю 1 раз, т.к. id - уникальный индекс
 
             // создание модели пользователя 
 
             HashSet<TagModel> skillTags;
-            var tagNames = reader.GetString("skill_tags_names");
+            string tagNames = reader.GetString("skill_tags_names");
 
             if (tagNames != null && tagNames.Length > 0)
             {
@@ -252,7 +283,7 @@ WHERE email = @id
                 FullName = reader.GetString("full_name"),
                 Email = reader.GetString("email"),
                 Password = reader.GetString("password"),
-                BirthDate = reader.GetDateTime("birth_date"),
+                BirthDate = reader.IsDBNull("birth_date") ? null : reader.GetDateTime("birth_date"),
                 Info = reader.GetString("info"),
                 Rating = reader.GetInt32("rating"),
                 Subscribers = reader.GetInt32("subscribers"),
