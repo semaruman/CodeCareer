@@ -193,10 +193,10 @@ namespace CodeCareer.Areas.User.Controllers
         {
             if (user.Info != string.Empty)
             {
-                _userService.RemoveUserModel(currentUser);
+                //_userService.RemoveUserModel(currentUser.Id);
                 currentUser.Info = user.Info;
                 currentUser.ShowSubscriptions = user.ShowSubscriptions;
-                _userService.AddUserModel(currentUser);
+                _userService.UpdateUserModel(currentUser);
 
                 return RedirectToAction("EditProfileSuccess");
             }

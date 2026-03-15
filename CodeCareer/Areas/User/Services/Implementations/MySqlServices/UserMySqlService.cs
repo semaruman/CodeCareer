@@ -101,5 +101,21 @@ INSERT INTO users(full_name, email, password, birth_date, info, rating, subscrib
 
             command.ExecuteNonQuery();
         }
+
+        public void RemoveUserModel(int userId)
+        {
+            using var connection = new MySqlConnection(Constants.CONNECTION_STRING);
+            connection.Open();
+
+            string sqlQuery = @"
+DELETE FROM users WHERE id = @userId
+";
+
+            using var command = new MySqlCommand(sqlQuery, connection);
+
+            command.Parameters.AddWithValue("@userId", userId);
+
+            command.ExecuteNonQuery();
+        }
     }
 }
