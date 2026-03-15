@@ -67,5 +67,39 @@ FROM users
 
             return users;
         }
+
+        public void AddUserModel(UserModel user)
+        {
+            using var connection = new MySqlConnection(Constants.CONNECTION_STRING);
+            connection.Open();
+
+            string sqlQuery = @"
+INSERT INTO users(full_name, email, password, birth_date, info, rating, subscribers, subscribers_emails, subscriptions, subscriptions_emails, status, skill_tag_names, show_subscriptions, registration_date) VALUES
+    (@fullName, @email, @password, @birthDate, @info, @rating, @subscribers, @subscribersEmails, @subscriptions, @subscriptionsEmails, @status, @skillTagNames, @showSubscriptions, @registrationDate)
+";
+
+            string subscribersEmails = user.SubscribersEmails.Aggregate((x, y) => x + "; " + y);
+            string subscriptionsEmails = user.SubscriptionsEmails.Aggregate((x, y) => x + "; " + y);
+            string skillTagNames = user.SkillTags.Select(t => t.Name).Aggregate((x, y) => x + "; " + y);
+
+            using var command = new MySqlCommand(sqlQuery, connection);
+
+            command.Parameters.AddWithValue("@fullName", user.FullName);
+            command.Parameters.AddWithValue("@email", user.Email);
+            command.Parameters.AddWithValue("@password", user.Password);
+            command.Parameters.AddWithValue("@birthDate", user.BirthDate);
+            command.Parameters.AddWithValue("@info", user.Info);
+            command.Parameters.AddWithValue("@rating", user.Rating);
+            command.Parameters.AddWithValue("@subscribers", user.Subscribers);
+            command.Parameters.AddWithValue("@subscribersEmails", subscribersEmails);
+            command.Parameters.AddWithValue("@subscriptions", user.Subscriptions);
+            command.Parameters.AddWithValue("@subscriptionsEmails", subscriptionsEmails);
+            command.Parameters.AddWithValue("@status", user.Status);
+            command.Parameters.AddWithValue("@skillTagNames", skillTagNames);
+            command.Parameters.AddWithValue("@showSubscriptions", user.ShowSubscriptions);
+            command.Parameters.AddWithValue("@registrationDate", user.RegistrationDate);
+
+            command.ExecuteNonQuery();
+        }
     }
 }
