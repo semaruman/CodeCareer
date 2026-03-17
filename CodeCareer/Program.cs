@@ -31,7 +31,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddScoped<IUserService, UserMySqlAdoNetService>();
 builder.Services.AddScoped<IPublicationService, PublicationMySqlAdoNetService>();
 builder.Services.AddScoped<ITagService, TagMySqlAdoNetService>();
-builder.Services.AddScoped<ITaskService, TaskJsonService>();
+builder.Services.AddScoped<ITaskService, TaskMySqlAdoNetService>();
 
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddHttpContextAccessor();
