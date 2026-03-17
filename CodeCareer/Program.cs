@@ -7,22 +7,17 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews()
     .AddJsonOptions(options =>
     {
-        // ��������� �������� �� ��������� ��� ������������
         options.JsonSerializerOptions.DefaultIgnoreCondition =
             System.Text.Json.Serialization.JsonIgnoreCondition.Never;
 
-        // ��� ������������ ������ null ��������
-        // options.JsonSerializerOptions.DefaultIgnoreCondition = 
-        //     System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
     });
 
-// ��������� ��������������
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
         options.LoginPath = "/Authorizate";
         options.LogoutPath = "/LogoutUser";
-        options.ExpireTimeSpan = TimeSpan.FromDays(7); // ���������� �� ������
+        options.ExpireTimeSpan = TimeSpan.FromDays(7); 
         options.SlidingExpiration = true;
     });
 
