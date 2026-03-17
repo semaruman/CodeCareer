@@ -42,7 +42,7 @@ namespace CodeCareer.Areas.User.Services.Implementations.JsonServices
             File.WriteAllText(_filepath, jsonWrite);
         }
 
-        public void RemoveTaskModel(string taskName)
+        public void RemoveTaskModel(int id)
         {
             List<TaskModel> tasks = new List<TaskModel>();
 
@@ -55,7 +55,7 @@ namespace CodeCareer.Areas.User.Services.Implementations.JsonServices
                 }
             }
 
-            tasks = tasks.Where(t => !(t.Name == taskName)).ToList();
+            tasks = tasks.Where(t => !(t.Id == id)).ToList();
             string jsonWrite = JsonSerializer.Serialize(tasks);
             File.WriteAllText(_filepath, jsonWrite);
         }

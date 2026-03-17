@@ -60,5 +60,21 @@ INSERT INTO tasks(name, type, content, input_content, output_content) VALUES
 
             command.ExecuteNonQuery();
         }
+
+        public void RemoveTaskModel(int id)
+        {
+            using var connection = new MySqlConnection(Constants.CONNECTION_STRING);
+            connection.Open();
+
+            string sqlQuery = @"
+DELETE FROM tasks WHERE id == @Id
+";
+
+            using var command = new MySqlCommand(sqlQuery, connection);
+
+            command.Parameters.AddWithValue("@Id", id);
+            
+            command.ExecuteNonQuery();
+        }
     }
 }
