@@ -39,5 +39,26 @@ FROM tasks
 
             return res;
         }
+
+        public void AddTaskModel(TaskModel tag)
+        {
+            using var connection = new MySqlConnection(Constants.CONNECTION_STRING);
+            connection.Open();
+
+            string sqlQuery = @"
+INSERT INTO tasks(name, type, content, input_content, output_content) VALUES
+    (@name, @type, @content, @inputContent, @outputContent)
+";
+
+            using var command = new MySqlCommand(sqlQuery, connection);
+
+            command.Parameters.AddWithValue("@name", tag.Name);
+            command.Parameters.AddWithValue("@type", tag.Type);
+            command.Parameters.AddWithValue("@content", tag.Content);
+            command.Parameters.AddWithValue("@inputContent", tag.InputContent);
+            command.Parameters.AddWithValue("@outputContent", tag.OutputContent);
+
+            command.ExecuteNonQuery();
+        }
     }
 }
