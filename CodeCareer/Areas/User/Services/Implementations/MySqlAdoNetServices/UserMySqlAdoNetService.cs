@@ -3,13 +3,13 @@ using CodeCareer.Areas.User.Models;
 using CodeCareer.Areas.User.Services.Interfaces;
 using MySql.Data.MySqlClient;
 
-namespace CodeCareer.Areas.User.Services.Implementations.MySqlServices
+namespace CodeCareer.Areas.User.Services.Implementations.MySqlAdoNetServices
 {
     // класс для работы с таблицей users при помощи ADO.NET
-    public class UserMySqlService : IUserService
+    public class UserMySqlAdoNetService : IUserService
     {
         private ITagService _tagService;
-        public UserMySqlService(ITagService tagService)
+        public UserMySqlAdoNetService(ITagService tagService)
         {
             _tagService = tagService;
         }

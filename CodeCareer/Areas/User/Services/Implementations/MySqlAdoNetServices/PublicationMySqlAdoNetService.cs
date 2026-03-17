@@ -3,15 +3,15 @@ using CodeCareer.Areas.User.Models;
 using CodeCareer.Areas.User.Services.Interfaces;
 using MySql.Data.MySqlClient;
 
-namespace CodeCareer.Areas.User.Services.Implementations.MySqlServices
+namespace CodeCareer.Areas.User.Services.Implementations.MySqlAdoNetServices
 {
     // Класс для работы с таблицей publications. Использовал ADO.NET
-    public class PublicationMySqlService : IPublicationService
+    public class PublicationMySqlAdoNetService : IPublicationService
     {
         private IUserService _userService { get; set; }
         private ITagService _tagService { get; set; }
 
-        public PublicationMySqlService(IUserService userService, ITagService tagService)
+        public PublicationMySqlAdoNetService(IUserService userService, ITagService tagService)
         {
             _userService = userService;
             _tagService = tagService;

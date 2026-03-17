@@ -3,10 +3,10 @@ using CodeCareer.Areas.User.Models;
 using CodeCareer.Areas.User.Services.Interfaces;
 using MySql.Data.MySqlClient;
 
-namespace CodeCareer.Areas.User.Services.Implementations.MySqlServices
+namespace CodeCareer.Areas.User.Services.Implementations.MySqlAdoNetServices
 {
     // Класс для работы с таблицей tags. Использовал ADO.NET
-    public class TagMySqlService : ITagService
+    public class TagMySqlAdoNetService : ITagService
     {
         public List<TagModel> GetTagModels()
         {
