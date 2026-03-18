@@ -1,5 +1,6 @@
 using CodeCareer.Areas.User.Services.Implementations.JsonServices;
 using CodeCareer.Areas.User.Services.Implementations.MySqlAdoNetServices;
+using CodeCareer.Areas.User.Services.Implementations.MySqlEfServices;
 using CodeCareer.Areas.User.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
@@ -25,7 +26,7 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddScoped<IUserService, UserMySqlAdoNetService>();
 builder.Services.AddScoped<IPublicationService, PublicationMySqlAdoNetService>();
-builder.Services.AddScoped<ITagService, TagMySqlAdoNetService>();
+builder.Services.AddScoped<ITagService, TagMySqlEfService>();
 builder.Services.AddScoped<ITaskService, TaskMySqlAdoNetService>();
 
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();

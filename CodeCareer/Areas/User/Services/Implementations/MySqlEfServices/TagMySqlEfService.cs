@@ -1,6 +1,7 @@
 ﻿using CodeCareer.Areas.User.Data;
 using CodeCareer.Areas.User.Models;
 using CodeCareer.Areas.User.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace CodeCareer.Areas.User.Services.Implementations.MySqlEfServices
 {
@@ -10,7 +11,12 @@ namespace CodeCareer.Areas.User.Services.Implementations.MySqlEfServices
         {
             using var dbContext = new ApplicationDbContext();
 
-            return dbContext.Tags.ToList();
+            return dbContext.Tags.AsNoTracking().Select(t => new TagModel
+            {
+                Id = t.Id,
+                Name = t.Name,
+                ImgPath = t.ImgPath ?? string.Empty
+            }).ToList();
         }
 
         public void AddTagModel(TagModel tag)
