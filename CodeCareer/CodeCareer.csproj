@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Folder Include="Areas\Admin\Data\" />
-    <Folder Include="Areas\User\Services\Implementations\MySqlEfServices\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
