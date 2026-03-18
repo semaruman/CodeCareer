@@ -27,7 +27,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddScoped<IUserService, UserMySqlAdoNetService>();
 builder.Services.AddScoped<IPublicationService, PublicationMySqlAdoNetService>();
 builder.Services.AddScoped<ITagService, TagMySqlEfService>();
-builder.Services.AddScoped<ITaskService, TaskMySqlAdoNetService>();
+builder.Services.AddScoped<ITaskService, TaskMySqlEfService>();
 
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddHttpContextAccessor();
