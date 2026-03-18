@@ -64,7 +64,7 @@ FROM publications
             DateTime createdDateP = publication.CreatedDate;
             int userIdP = publication.User.Id;
             string contentP = publication.Content;
-            string tagNamesP = (publication.Tags == null?"" : string.Join("; ", publication.Tags));
+            string tagNamesP = (publication.Tags == null?"" : string.Join("; ", publication.Tags.Select(t => t.Name)));
 
             string sqlQuery = @"
 INSERT INTO publications (created_date, user_id, content, tag_names) VALUES
