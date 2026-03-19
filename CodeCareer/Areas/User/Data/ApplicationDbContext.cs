@@ -17,5 +17,13 @@ namespace CodeCareer.Areas.User.Data
             string connectionString = config.GetConnectionString("DefaultConnection");
             optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<TagModel>(entity => {
+                entity.Property(p  => p.Name).HasColumnName("name");
+                entity.Property(p => p.ImgPath).HasColumnName("img_path");
+            });
+        }
     }
 }
