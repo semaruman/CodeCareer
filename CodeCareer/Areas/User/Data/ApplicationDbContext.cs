@@ -20,9 +20,20 @@ namespace CodeCareer.Areas.User.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // настройка модели тегов
             modelBuilder.Entity<TagModel>(entity => {
                 entity.Property(p  => p.Name).HasColumnName("name");
                 entity.Property(p => p.ImgPath).HasColumnName("img_path");
+            });
+
+            // настройка модели задач
+            modelBuilder.Entity<TaskModel>(entity =>
+            {
+                entity.Property(p => p.Name).HasColumnName("name");
+                entity.Property(p => p.Type).HasColumnName("type");
+                entity.Property(p => p.Content).HasColumnName("content");
+                entity.Property(p => p.InputContent).HasColumnName("input_content");
+                entity.Property(p => p.OutputContent).HasColumnName("output_content");
             });
         }
     }
