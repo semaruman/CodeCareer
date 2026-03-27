@@ -79,7 +79,7 @@ namespace CodeCareer.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult AddTags(TagModel tag)
         {
-            if (ModelState.IsValid)
+            if (tag.Name != string.Empty)
             {
                 _tagService.AddTagModel(tag);
                 return View(new TagModel());

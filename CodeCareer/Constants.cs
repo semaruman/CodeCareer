@@ -1,4 +1,4 @@
-﻿namespace CodeCareer.Areas.User.Models
+﻿namespace CodeCareer
 {
     public class Constants
     {
