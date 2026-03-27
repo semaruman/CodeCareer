@@ -6,13 +6,21 @@
   ASP.NET core MVC
   
   База данных: MySql(в последней версии приложения), Json(в неактуальной версии)
+
+  EF core (для простых моделей)
+
+  ADO.NET (в тех местах, где важна производительность)
 </div>
 <div>
   
 
 
 
-https://github.com/user-attachments/assets/b10a9953-ac1b-4020-8358-090b40d8640d
+
+
+https://github.com/user-attachments/assets/7cda67a0-a8f3-4f2e-9c90-2de60dc95096
+
+
 
 
 
