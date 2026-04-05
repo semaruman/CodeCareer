@@ -361,5 +361,3 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-/CodeCareer/appsettings.json
-/CodeCareer/Areas/User/Models/Constants.cs
