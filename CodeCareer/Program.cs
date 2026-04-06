@@ -2,6 +2,7 @@ using CodeCareer.Areas.User.Services.Implementations.JsonServices;
 using CodeCareer.Areas.User.Services.Implementations.MySqlAdoNetServices;
 using CodeCareer.Areas.User.Services.Implementations.MySqlEfServices;
 using CodeCareer.Areas.User.Services.Interfaces;
+using CodeCareer.Infrastructure;
 using CodeCareer.Middleware;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
@@ -33,7 +34,14 @@ builder.Services.AddScoped<ITaskService, TaskMySqlEfService>();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddHttpContextAccessor();
 
+//добавляю сервис для обработки всех исключений
+builder.Services.AddExceptionHandler<SmartExceptionHandler>();
+builder.Services.AddProblemDetails();
+
 var app = builder.Build();
+
+//подключаю обработку ошибок
+app.UseExceptionHandler();
 
 //подключаю логгирование
 app.UseLoggingMiddleware();
