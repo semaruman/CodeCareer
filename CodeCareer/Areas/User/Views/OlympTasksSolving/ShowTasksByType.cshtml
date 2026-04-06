@@ -1,0 +1,16 @@
+﻿@inject ITaskService TaskService
+
+@{
+    string taskType = ViewBag.Type;
+    var tasks = TaskService.GetTaskModels()
+    .Where(t => t.Type == taskType);
+    //Console.WriteLine(string.Join(" ", tasks.Select(tt => tt.Name)));
+}
+
+@foreach (var task in tasks){
+    <h4><a 
+    asp-area="User" 
+    asp-controller="OlympTasksSolving" 
+    asp-action="SolveTask" 
+    asp-route-taskName="@task.Name">@task.Name</a></h4>
+}

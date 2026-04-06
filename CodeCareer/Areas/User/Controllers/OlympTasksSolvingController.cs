@@ -21,5 +21,11 @@ namespace CodeCareer.Areas.User.Controllers
         {
             return View();
         }
+
+        public IActionResult ShowTasksByType(string type)
+        {
+            ViewBag.Type = type;
+            return View();
+        }
     }
 }
