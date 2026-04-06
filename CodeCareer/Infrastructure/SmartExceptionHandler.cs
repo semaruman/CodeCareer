@@ -17,9 +17,10 @@ namespace CodeCareer.Infrastructure
             CancellationToken token
             )
         {
-            _logger.LogError("Произошла ошибка в {Method}: {Path}",
+            _logger.LogError("Произошла ошибка в {Method}: {Path}. Текст ошибки: {Message}",
                 context.Request.Method,
-                context.Request.Path
+                context.Request.Path,
+                exception.Message
                 );
 
             //если клиент прервал запрос, то не отправляю ответ
@@ -27,12 +28,15 @@ namespace CodeCareer.Infrastructure
             {
                 return false;
             }
+            
+            //устанавливаю кодировку страницы для понятного ответа на русском языке
+            context.Response.ContentType = "text/plain; charset=utf-8";
 
             switch (exception)
             {
                 case ArgumentException argumentExceprion:
                     context.Response.StatusCode = 400; //BadRequest
-                    await context.Response.WriteAsync($"Некорректные данные: {argumentExceprion.Message}");
+                    await context.Response.WriteAsync($"Некорректные данные. Возможно, вы заполнили не все поля");
                     break;
 
                 case UnauthorizedAccessException:
