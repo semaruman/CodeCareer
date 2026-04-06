@@ -2,6 +2,7 @@ using CodeCareer.Areas.User.Services.Implementations.JsonServices;
 using CodeCareer.Areas.User.Services.Implementations.MySqlAdoNetServices;
 using CodeCareer.Areas.User.Services.Implementations.MySqlEfServices;
 using CodeCareer.Areas.User.Services.Interfaces;
+using CodeCareer.Middleware;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,6 +34,9 @@ builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
+
+//подключаю логгирование
+app.UseLoggingMiddleware();
 
 app.MapControllerRoute(
     name: "areas",
