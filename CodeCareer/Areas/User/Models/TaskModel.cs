@@ -14,7 +14,7 @@ namespace CodeCareer.Areas.User.Models
         public string Name { get; set; }
 
         [Required(ErrorMessage = "Выберите тип задачи")]
-        public string Type {get;set;}
+        public string Type { get; set; }
 
         [Required(ErrorMessage = "Введите содержимое задачи")]
         public string Content { get; set; }
@@ -24,6 +24,14 @@ namespace CodeCareer.Areas.User.Models
 
         [Required(ErrorMessage = "Опишите выходные данные задачи")]
         public string OutputContent { get; set; }
+
+        [NotMapped]
+        public List<string> InputStrings { get; set; } = new List<string> { "", "", "" };
+        public string AllInputStrings { get; set; } //все элементы InputStrings через '; ', чтобы корректно работала БД
+
+        [NotMapped]
+        public List<string> OutputStrings { get; set; } = new List<string> { "", "", "" };
+        public string AllOutputStrings { get; set; } //все элементы OutputStrings через '; ', чтобы корректно работала БД
 
 
         public override bool Equals(object? obj)

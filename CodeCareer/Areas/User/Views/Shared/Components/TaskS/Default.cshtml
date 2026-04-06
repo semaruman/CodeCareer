@@ -9,4 +9,13 @@
    <br />
    <h3>Выходные данные:</h3>
    <p>@Model.OutputContent</p>
+	@for (int i = 0; i < Model.InputStrings.Count - 1; i++)
+	{
+		<h3>Пример @(i+1)</h3>
+		<p>Входные данные</p>
+		<textarea>@Model.InputStrings[i]</textarea>
+		<br />
+		<p>Входные данные</p>
+		<textarea>@Model.OutputStrings[i]</textarea>
+	}
 </div>

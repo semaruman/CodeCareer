@@ -24,6 +24,24 @@
     <textarea asp-for="OutputContent"></textarea>
     <span asp-validation-for="OutputContent"></span>
 
+    <h4>Пример 1</h4>
+    <p>Входные данные</p>
+    <textarea asp-for="InputStrings[0]"></textarea>
+    <p>Выходные данные</p>
+    <textarea asp-for="OutputStrings[0]"></textarea>
+
+    <h4>Пример 2</h4>
+    <p>Входные данные</p>
+    <textarea asp-for="InputStrings[1]"></textarea>
+    <p>Выходные данные</p>
+    <textarea asp-for="OutputStrings[1]"></textarea>
+
+    <h4>Пример 3</h4>
+    <p>Входные данные</p>
+    <textarea asp-for="InputStrings[2]"></textarea>
+    <p>Выходные данные</p>
+    <textarea asp-for="OutputStrings[2]"></textarea>
+
     <button type="submit">Добавить</button>
 
 </form>

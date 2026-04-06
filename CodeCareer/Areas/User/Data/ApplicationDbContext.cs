@@ -34,6 +34,8 @@ namespace CodeCareer.Areas.User.Data
                 entity.Property(p => p.Content).HasColumnName("content");
                 entity.Property(p => p.InputContent).HasColumnName("input_content");
                 entity.Property(p => p.OutputContent).HasColumnName("output_content");
+                entity.Property(p => p.AllInputStrings).HasColumnName("all_input_strings");
+                entity.Property(p => p.AllOutputStrings).HasColumnName("all_output_strings");
             });
         }
     }

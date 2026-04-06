@@ -3,7 +3,7 @@
 @{
     var tasks = TaskService.GetTaskModels()
     .Where(t => t.Type == "Линейный поиск");
-    @*Console.WriteLine(string.Join(" ", tasks.Select(tt => tt.Name)))*@;
+    //Console.WriteLine(string.Join(" ", tasks.Select(tt => tt.Name)));
 }
 
 @foreach (var task in tasks){

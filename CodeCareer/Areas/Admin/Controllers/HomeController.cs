@@ -107,7 +107,7 @@ namespace CodeCareer.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult AddTasks(TaskModel task)
         {
-            if (ModelState.IsValid)
+            if (!string.IsNullOrEmpty(task.Name))
             {
                 _taskService.AddTaskModel(task);
                 return RedirectToAction("AddTasksSuccess");
