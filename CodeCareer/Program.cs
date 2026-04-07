@@ -1,3 +1,5 @@
+using CodeCareer;
+using CodeCareer.Areas.User.Data;
 using CodeCareer.Areas.User.Services.Implementations.JsonServices;
 using CodeCareer.Areas.User.Services.Implementations.MySqlAdoNetServices;
 using CodeCareer.Areas.User.Services.Implementations.MySqlEfServices;
@@ -5,6 +7,7 @@ using CodeCareer.Areas.User.Services.Interfaces;
 using CodeCareer.Infrastructure;
 using CodeCareer.Middleware;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews()

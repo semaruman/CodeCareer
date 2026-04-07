@@ -8,6 +8,11 @@ namespace CodeCareer.Areas.User.Data
         public DbSet<TagModel> Tags { get; set; }
         public DbSet<TaskModel> Tasks { get; set; }
 
+        public ApplicationDbContext()
+        {
+            Database.EnsureCreated();
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             var config = new ConfigurationBuilder()
