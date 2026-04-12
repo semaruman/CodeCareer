@@ -42,7 +42,7 @@ builder.Services.AddExceptionHandler<SmartExceptionHandler>();
 builder.Services.AddProblemDetails();
 
 var app = builder.Build();
-
+app.UseStaticFiles();
 //подключаю обработку ошибок
 app.UseExceptionHandler();
 

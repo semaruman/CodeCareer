@@ -5,30 +5,36 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" 
+	rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" 
+	crossorigin="anonymous">
     <title>@ViewBag.Title</title>
 </head>
 <body>
-	<header>
+	<header class="container-fluid d-flex justify-content-center m-2">
+		<a class="btn btn-outline-primary me-1" asp-area="User" asp-controller="Home" asp-action="Index">Главная</a>
 		@if (CurrentUserService.CurrentUser.FullName == null)
 		{
-			<a asp-area="User" asp-controller="Home" asp-action="Authorizate">Войти в профиль</a>
+			<a class="btn btn-outline-primary me-1" asp-area="User" asp-controller="Home" asp-action="Authorizate">Войти в Профиль</a>
 		}
 		@if (CurrentUserService.CurrentUser.FullName != null)
 		{
-			<a asp-area="User" asp-controller="Home" asp-action="Index">@CurrentUserService.CurrentUser.FullName</a>
+			<a class="btn btn-outline-primary me-1" asp-area="User" asp-controller="Home" asp-action="Profile">@CurrentUserService.CurrentUser.FullName</a>
 		}
-		<a asp-area="User" asp-controller="Home" asp-action="Profile">Профиль</a>
-		<a asp-area="User" asp-controller="Home" asp-action="PublicationFeed">Лента</a>
-		<a asp-area="User" asp-controller="TasksSolving" asp-action="Index">Задачи</a>
-		<a asp-area="User" asp-controller="Home" asp-action="Community">Сообщество</a>
-		<a asp-area="User" asp-controller="Home" asp-action="Top100Users">ТОП-100 лидеров</a>
+		<a class="btn btn-outline-primary me-1" asp-area="User" asp-controller="Home" asp-action="PublicationFeed">Лента</a>
+		<a class="btn btn-outline-primary me-1" asp-area="User" asp-controller="TasksSolving" asp-action="Index">Задачи</a>
+		<a class="btn btn-outline-primary me-1" asp-area="User" asp-controller="Home" asp-action="Community">Сообщество</a>
+		<a class="btn btn-outline-primary me-1" asp-area="User" asp-controller="Home" asp-action="Top100Users">ТОП-100 лидеров</a>
 		@if (CurrentUserService.CurrentUser.FullName != null)
 		{
-			<a asp-area="User" asp-controller="Home" asp-action="LogoutUser">Выход</a>
+			<a class="btn btn-outline-primary" asp-area="User" asp-controller="Home" asp-action="LogoutUser">Выход</a>
 		}
 	</header>
     <main>
         @RenderBody()
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" 
+		integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" 
+		crossorigin="anonymous"></script>
     </main>
 </body>
 </html>
