@@ -1,6 +1,6 @@
 ﻿@model PublicationModel
 
-<div class="d-inline-block card w-75 mb-3 p-2" style="text-align: left">
+<div class="d-inline-block card w-75 mb-4 p-3 shadow rounded-3" style="text-align: left">
 	<h4><a asp-area="User" asp-controller="Home" asp-action="AlienProfile" asp-route-userEmail="@Model.User.Email">@Model.User.FullName</a> - @Model.CreatedDate.Date.ToString("dd.MM.yyyy")</h4>
 	<p>@Model.Content</p>
 	@if (Model.Tags != null)
