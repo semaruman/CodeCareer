@@ -1,8 +1,16 @@
-﻿
-<h1>Найдётся всё!</h1>
+﻿@{
+	ViewBag.Title = "Сообщество";
+}
+
+
+<div style="text-align: center;">
+	<h1 class="d-inline-block">Поиск в CodeCareer</h1>
+</div>
 
 <br />
 
-<a asp-area="User" asp-controller="Home" asp-action="FindUser">Найти пользователя</a>
+<div style="text-align: center;">
+	<a class="btn btn-primary me-3" asp-area="User" asp-controller="Home" asp-action="FindUser">Найти пользователя</a>
+	<a class="btn btn-primary" asp-area="User" asp-controller="Home" asp-action="FindPublication">Найти публикацию</a>
+</div>
 
-<a asp-area="User" asp-controller="Home" asp-action="FindPublication">Найти публикацию</a>
