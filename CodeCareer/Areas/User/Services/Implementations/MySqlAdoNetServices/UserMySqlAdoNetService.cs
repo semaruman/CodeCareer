@@ -36,7 +36,7 @@ FROM users
                 var tagNames = reader.GetString("skill_tags_names");
 
                 if (tagNames != null && tagNames.Length > 0) {
-                    skillTags = _tagService.GetTagModels().Where(t => tagNames.Contains(t.Name)).ToHashSet();
+                    skillTags = tagNames.Split("; ").Select(t => new TagModel { Name = t }).ToHashSet();
                 }
                 else
                 {
@@ -217,7 +217,7 @@ WHERE email = @email
 
             if (tagNames != null && tagNames.Length > 0)
             {
-                skillTags = _tagService.GetTagModels().Where(t => tagNames.Contains(t.Name)).ToHashSet();
+                skillTags = tagNames.Split("; ").Select(t => new TagModel { Name = t }).ToHashSet();
             }
             else
             {
@@ -270,7 +270,7 @@ WHERE id = @idP
 
             if (tagNames != null && tagNames.Length > 0)
             {
-                skillTags = _tagService.GetTagModels().Where(t => tagNames.Contains(t.Name)).ToHashSet();
+                skillTags = tagNames.Split("; ").Select(t => new TagModel { Name = t }).ToHashSet();
             }
             else
             {
