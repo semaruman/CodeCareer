@@ -1,10 +1,16 @@
 @inject ITaskService TaskService
 
 @{
-    var task = TaskService.GetTaskModels()
-    .FirstOrDefault(t => t.Name == ViewBag.TaskName);
+	var task = TaskService.GetTaskModels()
+	.FirstOrDefault(t => t.Name == ViewBag.TaskName);
 }
-
-@await Component.InvokeAsync("TaskS", new {taskP = task})
-<br />
-@await Component.InvokeAsync("OlympCompiler")
+@{
+	ViewBag.Title = "Решение задач";
+}
+<div style="text-align: center;">
+	<div class="card shadow p-2 w-75 d-inline-block" style="text-align: left;">
+		@await Component.InvokeAsync("TaskS", new { taskP = task })
+		<br />
+		@await Component.InvokeAsync("OlympCompiler")
+	</div>
+</div>
