@@ -47,38 +47,42 @@
 		}).ToList();
 	}
 }
-
-<form asp-area="User" asp-controller="Home" asp-action="FindPublication" method="post">
+<div style="text-align: center;">
 	<h3>Введите часть содержимого публикации</h3>
-	<textarea asp-for="FindPublicationText"></textarea>
+	<div class="card shadow p-2 w-75 d-inline-block" style="text-align: left">
+		<form asp-area="User" asp-controller="Home" asp-action="FindPublication" method="post">
+			<label>Вводить здесь...</label><br />
+			<textarea asp-for="FindPublicationText"></textarea>
 
-	<h3>Выберите теги</h3>
-	@foreach (var tag in tags)
-	{
-		if (Model.TagNames.Contains(tag.Name))
-		{
-			<div>
-				<input type="checkbox"
-					   name="tagNames"
-					   value="@tag.Name"
-					   checked />
-				<label>@tag.Name</label>
-			</div>
-		}
-		else
-		{
-			<div>
-				<input type="checkbox"
-					   name="tagNames"
-					   value="@tag.Name" />
-				<label>@tag.Name</label>
-			</div>
-		}
-	}
-	<button type="submit">Искать</button>
-</form>
+			<h3>Выберите теги</h3>
+			@foreach (var tag in tags)
+			{
+				if (Model.TagNames.Contains(tag.Name))
+				{
+					<div>
+						<input type="checkbox"
+							   name="tagNames"
+							   value="@tag.Name"
+							   checked />
+						<label>@tag.Name</label>
+					</div>
+				}
+				else
+				{
+					<div>
+						<input type="checkbox"
+							   name="tagNames"
+							   value="@tag.Name" />
+						<label>@tag.Name</label>
+					</div>
+				}
+			}
+			<button type="submit">Искать</button>
+		</form>
+	</div>
+</div>
 
-<div>
+<div style="text-align: center">
 	<h2>Найденные публикации:</h2>
 	@foreach (var publication in publications)
 	{
