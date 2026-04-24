@@ -1,4 +1,15 @@
-﻿<h1>Решение задач</h1>
+﻿@{
+	ViewBag.Title = "Решение задач";
+}
 
-<h3><a asp-area="User" asp-controller="TasksSolving" asp-action="OlympSolving">Олимпиадные задачи (C++, Python, C#)</a></h3>
-<h3><a asp-area="User" asp-controller="TasksSolving" asp-action="FrontendSolving">Front-end задачи (HTML, CSS, JS)</a></h3>
+<div style="text-align: center;">
+	<h1 class="d-inline-block">Решение задач</h1>
+</div>
+
+<div style="text-align: center;">
+	<div class="card shadow p-2 w-75 d-inline-block">
+		<h3><a asp-area="User" asp-controller="TasksSolving" asp-action="OlympSolving">Олимпиадные задачи (C++, Python, C#)</a></h3>
+		<h3><a asp-area="User" asp-controller="TasksSolving" asp-action="FrontendSolving">Front-end задачи (HTML, CSS, JS)</a></h3>
+	</div>
+</div>
+
