@@ -4,6 +4,10 @@
 @inject IUserService UserService
 
 @{
+	ViewBag.Title = "Поиск пользователя";
+}
+
+@{
 	var tags = TagService.GetTagModels();
 
 	IEnumerable<UserModel> users;
@@ -43,40 +47,50 @@
 	}
 }
 
-<form asp-area="User" asp-controller="Home" asp-action="FindUser" method="post">
-	<h3>Введите имя пользователя</h3>
-	<input asp-for="FindUserName" value="@Model.FindUserName"/>
+<div style="text-align: center;" class="mb-4">
+	<div class="card shadow p-2 w-75 d-inline-block" style="text-align: left">
+		<form asp-area="User" asp-controller="Home" asp-action="FindUser" method="post">
+			<h3>Введите имя пользователя</h3>
+			<input asp-for="FindUserName" value="@Model.FindUserName" />
 
-	<h3>Выберите навыки</h3>
-	@foreach (var tag in tags)
-	{
-		if (Model.SkillTagNames.Contains(tag.Name))
-		{
-			<div>
-				<input type="checkbox"
-					   name="skillTagNames"
-					   value="@tag.Name"
-					   checked />
-				<label>@tag.Name</label>
+			<h3>Выберите навыки</h3>
+			@foreach (var tag in tags)
+			{
+				if (Model.SkillTagNames.Contains(tag.Name))
+				{
+					<div>
+						<input type="checkbox"
+							   name="skillTagNames"
+							   value="@tag.Name"
+							   checked />
+						<label>@tag.Name</label>
+					</div>
+				}
+				else
+				{
+					<div>
+						<input type="checkbox"
+							   name="skillTagNames"
+							   value="@tag.Name" />
+						<label>@tag.Name</label>
+					</div>
+				}
+			}
+			<div style="text-align: center;">
+				<button type="submit" class="btn btn-primary">Искать</button>
 			</div>
-		}
-		else
-		{
-			<div>
-				<input type="checkbox"
-					   name="skillTagNames"
-					   value="@tag.Name" />
-				<label>@tag.Name</label>
-			</div>
-		}
-	}
-	<button type="submit">Искать</button>
-</form>
+		</form>
+	</div>
+</div>
 
-<div>
+<div style="text-align: center;">
 	<h2>Найденные пользователи:</h2>
-	@foreach (var user in users)
-	{
-		<h4><a asp-area="User" asp-controller="Home" asp-action="AlienProfile" asp-route-userEmail="@user.Email">@user.FullName</a></h4>
-	}
+</div>
+<div style="text-align: center;">
+	<div class="card shadow p-2 w-75 d-inline-block">
+		@foreach (var user in users)
+		{
+			<h4><a asp-area="User" asp-controller="Home" asp-action="AlienProfile" asp-route-userEmail="@user.Email">@user.FullName</a></h4>
+		}
+	</div>
 </div>
