@@ -5,6 +5,8 @@
     var tasks = TaskService.GetTaskModels()
     .Where(t => t.Type == taskType);
     //Console.WriteLine(string.Join(" ", tasks.Select(tt => tt.Name)));
+
+    ViewBag.Title = $"Задачи на {taskType}";
 }
 
 <div style="text-align: center;">
