@@ -4,24 +4,28 @@
 	ViewData["isWrongPassword"] = string.Empty;
 }
 
-<h1>Авторизация пользователя</h1>
-<form asp-area="User" asp-controller="Home" asp-action="Authorizate" method="post">
-	<h3>Имя пользователя:</h3>
-	<input asp-for="FullName"/>
-	<span asp-validation-for="FullName"></span>
+<div style="text-align: center;">
+	<h1>Авторизация пользователя</h1>
+	<div class="card shadow p-2 w-25 d-inline-block" style="text-align: center;">
+		<form asp-area="User" asp-controller="Home" asp-action="Authorizate" method="post">
+			<h3>Имя пользователя:</h3>
+			<input asp-for="FullName" />
+			<span asp-validation-for="FullName"></span>
 
-	<h3>Почта:</h3>
-	<input type="email" asp-for="Email" />
-	<span asp-validation-for="Email"></span>
+			<h3>Почта:</h3>
+			<input type="email" asp-for="Email" />
+			<span asp-validation-for="Email"></span>
 
-	<h3>Пароль:</h3>
-	<input type="password" asp-for="Password" />
-	<span asp-validation-for="Password"></span>
-	<br />
-	@if (ViewData["isWrongPassword"] != string.Empty)
-	{
-		<h4>Неверный пароль!</h4>
-	}
+			<h3>Пароль:</h3>
+			<input type="password" asp-for="Password" />
+			<span asp-validation-for="Password"></span>
+			<br />
+			@if (ViewData["isWrongPassword"] != string.Empty)
+			{
+				<h4>Неверный пароль!</h4>
+			}
 
-	<button type="submit">Войти</button>
-</form>
+			<button class="btn btn-primary" type="submit">Войти</button>
+		</form>
+	</div>
+</div>
