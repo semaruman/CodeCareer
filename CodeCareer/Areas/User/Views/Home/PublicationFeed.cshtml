@@ -8,6 +8,8 @@
 @model PublicationFeedViewModel
 
 @{
+	ViewBag.Title = "Лента публикаций";
+
 	var currentUser = UserService.GetUserModels().FirstOrDefault(u => u.Email == Model.CurrentUserEmail);
 	List<PublicationModel> publications;
 	if (Model.TagNames == null || Model.TagNames.Count() == 0)
