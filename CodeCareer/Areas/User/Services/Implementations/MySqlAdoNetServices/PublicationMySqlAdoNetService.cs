@@ -32,13 +32,17 @@ FROM publications
             using var reader = command.ExecuteReader();
 
             List<PublicationModel> publicationsList = new List<PublicationModel>();
+
+            var allUsers = _userService.GetUserModels().ToDictionary(u => u.Id, u => u);
+            //var allTags = _tagService.GetTagModels().ToDictionary(t => t.Name, t => t);
+
             while (reader.Read())
             {
                 HashSet<TagModel> tags = new HashSet<TagModel>();
                 string tagNames = reader.GetString("tag_names");
                 if (!string.IsNullOrEmpty(tagNames))
                 {
-                    tags = _tagService.GetTagModels().Where(t => tagNames.Contains(t.Name)).ToHashSet();
+                    tags = tagNames.Split("; ").Select(t => new TagModel { Name = t}).ToHashSet();
 
                 }
 
@@ -46,7 +50,7 @@ FROM publications
                 {
                     Id = reader.GetInt32("id"),
                     CreatedDate = reader.GetDateTime("created_date"),
-                    User = _userService.GetUserById(reader.GetInt32("user_id")),
+                    User = allUsers[reader.GetInt32("user_id")],
                     Content = reader.GetString("content"),
                     Tags = tags
                 };
