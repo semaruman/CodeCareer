@@ -9,26 +9,29 @@
 	var tags = TagService.GetTagModels();
 }
 
+<div style="text-align: center;">
+	<h1>Создание публикации:</h1>
+	<div class="card shadow p-2 w-25 d-inline-block" style="text-align: left;">
+		<form asp-area="User" asp-controller="Home" asp-action="CreatePublication" method="post">
 
-<h1>Создание публикации:</h1>
+			<span>Введите содержимое...</span><br />
+			<textarea class="w-75" asp-for="Content"></textarea>
+			<span asp-validation-for="Content"></span>
 
-<form asp-area="User" asp-controller="Home" asp-action="CreatePublication" method="post">
-
-	<textarea asp-for="Content"></textarea>
-	<span asp-validation-for="Content"></span>
-
-	<h5>Выберите теги</h5>
-	@foreach (var tag in tags)
-	{
-		<div>
-			<input type="checkbox"
-				   name="TagNames"
-				   value="@tag.Name" />
-			<label>@tag.Name</label>
-		</div>
-	}
-
-	<button type="submit">Создать</button>
-</form>
-
-<h4><a asp-area="User" asp-controller="Home" asp-action="Profile">Отменить создание публикации</a></h4>
+			<h5>Выберите теги</h5>
+			@foreach (var tag in tags)
+			{
+				<div>
+					<input type="checkbox"
+						   name="TagNames"
+						   value="@tag.Name" />
+					<label>@tag.Name</label>
+				</div>
+			}
+			<div style="text-align: center">
+				<button class="btn btn-primary" type="submit">Создать</button>
+			</div>
+		</form>
+	</div>
+	<h4><a asp-area="User" asp-controller="Home" asp-action="Profile">Отменить создание публикации</a></h4>
+</div>
