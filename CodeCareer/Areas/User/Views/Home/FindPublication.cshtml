@@ -5,6 +5,10 @@
 @inject IPublicationService PublicationService
 
 @{
+	ViewBag.Title = "Поиск публикации";
+}
+
+@{
 	var tags = TagService.GetTagModels();
 
 	if (Model.FindPublicationText == null)
