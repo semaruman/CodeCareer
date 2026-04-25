@@ -58,7 +58,9 @@ Database        : MySQL 8.0+ (через Pomelo.EntityFrameworkCore.MySql)
 git clone https://github.com/semaruman/CodeCareer.git
 cd CodeCareer/CodeCareer
 
-# 2. Настроить строку подключения
+# 2. Выполнить скрипт Schema.sql из папки Database(создаёт БД codecareer и необходимые таблицы)
+
+# 3. Настроить строку подключения
 # Отредактируйте appsettings.json и Constants.cs(рядом с Program.cs), укажите вашу строку для MySqlConnection
 
 # 4. Запустить проект
