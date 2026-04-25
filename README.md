@@ -24,7 +24,42 @@
 
 ```text
 Frontend        : ASP.NET Core MVC + Razor 
-Backend         : C# 
+Backend         : C# (.NET 8)
 ORM             : Entity Framework Core (CRUD, простые модели)
 Performance     : ADO.NET (тяжёлые операции с преобразованиями)
-Database        : MySQL 8
+Database        : MySQL 8.0+ (через Pomelo.EntityFrameworkCore.MySql)
+```
+---
+
+## 🧠 Также использовал
+
+- DI контейнер для быстрого переключения сервисов ADO.NET и EF core
+- Логгирование и LoggingMiddleware для отслеживания всех запросов
+- Свою реализацию ExceptionHandler для отлова всех исключений
+- Areas/ViewComponents для правильной организации кода
+- Cookie для аутентификации/авторизации
+
+## 🚧 Планы развития
+
+- [ ] Контейнеризация: написать Dockerfile и `docker-compose.yml` для быстрого поднятия БД и приложения
+- [ ] Покрыть основную бизнес-логику модульными и интеграционными тестами (проект `CodeCareer.Tests` уже создан)
+- [ ] Добавить профессиональный дизайн
+- [ ] Подключить judge0 для проверки решения задач
+- [ ] Добавить ачивки в профиль
+- [ ] Автоматическое изменение статуса при достижении определённого рейтинга
+- [ ] Добавить аватарки и загрузку изображений в публикацию
+
+## 📦 Быстрый старт (локальный запуск)
+
+**Требования:** .NET 8 SDK, MySQL Server 8.0+
+
+```bash
+# 1. Клонировать репозиторий
+git clone https://github.com/semaruman/CodeCareer.git
+cd CodeCareer/CodeCareer
+
+# 2. Настроить строку подключения
+# Отредактируйте appsettings.json и Constants.cs(рядом с Program.cs), укажите вашу строку для MySqlConnection
+
+# 4. Запустить проект
+dotnet run
