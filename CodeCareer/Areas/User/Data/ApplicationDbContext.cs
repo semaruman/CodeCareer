@@ -1,5 +1,6 @@
 ﻿using CodeCareer.Areas.User.Models;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CodeCareer.Areas.User.Data
 {
@@ -27,6 +28,7 @@ namespace CodeCareer.Areas.User.Data
         {
             // настройка модели тегов
             modelBuilder.Entity<TagModel>(entity => {
+                entity.ToTable("tags");
                 entity.Property(p  => p.Name).HasColumnName("name");
                 entity.Property(p => p.ImgPath).HasColumnName("img_path");
             });
@@ -34,6 +36,7 @@ namespace CodeCareer.Areas.User.Data
             // настройка модели задач
             modelBuilder.Entity<TaskModel>(entity =>
             {
+                entity.ToTable("tasks");
                 entity.Property(p => p.Name).HasColumnName("name");
                 entity.Property(p => p.Type).HasColumnName("type");
                 entity.Property(p => p.Content).HasColumnName("content");

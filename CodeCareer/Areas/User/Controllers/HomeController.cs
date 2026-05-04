@@ -50,11 +50,15 @@ namespace CodeCareer.Areas.User.Controllers
         [HttpPost]
         public async Task<IActionResult> Authorizate(UserViewModel user)
         {
+            if (string.IsNullOrEmpty(user.FullName) || string.IsNullOrEmpty(user.Email) || string.IsNullOrEmpty(user.Password))
+            {
+                return View(user);
+            }
+
             var dbUser = _userService.GetUserByEmail(user.Email);
 
             if (dbUser != null && user.Password == dbUser.Password)
             {
-                // Те же шаги - создаем claims и вызываем SignInAsync
                 var claims = new List<Claim>
                     {
                         new Claim(ClaimTypes.Name, user.FullName),
@@ -68,8 +72,31 @@ namespace CodeCareer.Areas.User.Controllers
 
                 return RedirectToAction("Index", "Home");
             }
+            else if (dbUser == null)
+            {
+                _userService.AddUserModel(new UserModel
+                {
+                    FullName = user.FullName,
+                    Email = user.Email,
+                    Password = user.Password,
+                });
+                var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Name, user.FullName),
+                        new Claim(ClaimTypes.Email, user.Email)
+                    };
 
-            return View(user);
+                var claimsIdentity = new ClaimsIdentity(claims, "CookieAuth");
+                var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+
+                await HttpContext.SignInAsync(claimsPrincipal);
+
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                return View(user);
+            }
             
         }
         public IActionResult SuccessAuthorizate()

@@ -41,6 +41,8 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddExceptionHandler<SmartExceptionHandler>();
 builder.Services.AddProblemDetails();
 
+Constants.Initialize(builder.Configuration);
+
 var app = builder.Build();
 app.UseStaticFiles();
 //подключаю обработку ошибок

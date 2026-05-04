@@ -208,7 +208,12 @@ WHERE email = @email
             command.Parameters.AddWithValue("@email", email);
 
             using var reader = command.ExecuteReader();
-            reader.Read(); // вызываю 1 раз, т.к. email - уникальный индекс
+            bool isUserExists = reader.Read(); // вызываю 1 раз, т.к. email - уникальный индекс
+
+            if (!isUserExists)
+            {
+                return null;
+            }
 
             // создание модели пользователя 
 
