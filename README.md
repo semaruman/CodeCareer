@@ -1,5 +1,4 @@
 
-
 https://github.com/user-attachments/assets/ceceb6d1-aaa2-4e1e-b2c5-0aeae366782b
 
 
@@ -7,6 +6,7 @@ https://github.com/user-attachments/assets/ceceb6d1-aaa2-4e1e-b2c5-0aeae366782b
 # 💻 CodeCareer — экосистема для профессионального роста программистов
 
 > Платформа, объединяющая решение алгоритмических задач, технический блог и портфолио в одном месте.
+> Доступна в браузере: http://semenruman-001-site1.site4future.com/
 
 **🎯 Цель проекта:**  
 Создать среду, где разработчик может практиковать навыки (как на LeetCode), вести профессиональный блог (как на Habr) и поддерживать актуальное портфолио — без переключения между 3+ сервисами.
@@ -56,6 +56,7 @@ Database        : MySQL 8.0+ (через Pomelo.EntityFrameworkCore.MySql)
 - [ ] Добавить аватарки и загрузку изображений в публикацию
 
 ## 📦 Быстрый старт (локальный запуск)
+> Можно перейти по ссылке: http://semenruman-001-site1.site4future.com/
 
 **Требования:** .NET 8 SDK, MySQL Server 8.0+
 
@@ -67,7 +68,7 @@ cd CodeCareer/CodeCareer
 # 2. Выполнить скрипт Schema.sql из папки Database(создаёт БД codecareer и необходимые таблицы) в MySql среде (у меня MySql Workbench)
 
 # 3. Настроить строку подключения
-# Отредактируйте appsettings.json и Constants.cs(рядом с Program.cs), укажите вашу строку для MySqlConnection
+# Отредактируйте appsettings.json, укажите вашу строку для MySqlConnection
 
 # 4. Запустить проект
 dotnet run
