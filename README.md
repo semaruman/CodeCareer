@@ -74,11 +74,4 @@ cd CodeCareer/CodeCareer
 dotnet run
 ```
 
-## Обо мне
-Автор: Семён Румянцев (semaruman)
 
-GitHub: github.com/semaruman
-
-Telegram: @RumDevCs
-
-Email: semaruman@yandex.ru
