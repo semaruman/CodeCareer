@@ -1,0 +1,41 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: codecareer-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: codecareer
+      MYSQL_USER: ${MYSQL_USER:-codecareer}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-codecareer_password}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./Database/Schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-rootpassword}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: codecareer-web
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__DefaultConnection: >-
+        Server=db;Port=3306;Database=codecareer;User=${MYSQL_USER:-codecareer};Password=${MYSQL_PASSWORD:-codecareer_password};
+
+volumes:
+  mysql_data:

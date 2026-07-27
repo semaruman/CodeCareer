@@ -1,0 +1,14 @@
+**/.git
+**/.idea
+**/.vs
+**/bin
+**/obj
+**/*.user
+**/*.suo
+**/node_modules
+CodeCareer.Tests/
+README.md
+*.md
+docker-compose*.yml
+Dockerfile
+.env
