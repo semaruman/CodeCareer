@@ -16,11 +16,7 @@ namespace CodeCareer.Areas.User.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var config = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
-                .Build();
-
-            string connectionString = config.GetConnectionString("DefaultConnection");
+            string connectionString = Constants.CONNECTION_STRING;
             optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
         }
 
