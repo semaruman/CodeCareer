@@ -4,6 +4,7 @@
 
 @inject IPublicationService PublicationService
 @inject IUserService UserService
+@inject IProgressService ProgressService
 
 @{
 	UserModel user = UserService.GetUserModels().FirstOrDefault(u => u.Email == Model.AlienUserEmail);
@@ -12,6 +13,8 @@
 	publications.Reverse();
 
 	var currentUser = UserService.GetUserModels().FirstOrDefault(u => u.Email == Model.CurrentUserEmail);
+	var solved = ProgressService.CountSolvedTasks(user.Email);
+	var readNotes = ProgressService.CountReadNotes(user.Email);
 }
 <div class="mx-auto max-w-4xl">
 	<div class="mb-6 rounded-3xl border border-white/20 bg-white/10 p-6 shadow-xl backdrop-blur-xl sm:p-8">
@@ -27,6 +30,12 @@
 			<p class="mb-1"><a class="text-cc-soft underline-offset-2 hover:text-white hover:underline" asp-area="User" asp-controller="Home" asp-action="ShowSubscriptions" asp-route-userEmail="@user.Email">@user.Subscriptions подписок</a></p>
 		}
 		<p class="mb-4 text-white/85">@user.Rating рейтинга</p>
+		<div class="mb-4 rounded-2xl border border-white/15 bg-white/5 p-4">
+			<h5 class="mb-2 font-semibold text-cc-soft">Прогресс обучения</h5>
+			<p class="text-sm text-white/85">Решено задач: @solved</p>
+			<p class="text-sm text-white/85">Прочитано конспектов: @readNotes</p>
+			<a class="mt-2 inline-block text-sm text-cc-soft hover:underline" asp-area="User" asp-controller="Learning" asp-action="Index">Перейти к обучению</a>
+		</div>
 		<div class="mb-4 flex flex-wrap gap-2">
 			@foreach (var tag in user.SkillTags)
 			{
