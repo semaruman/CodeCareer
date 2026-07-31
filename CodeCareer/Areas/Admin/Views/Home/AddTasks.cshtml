@@ -1,56 +1,58 @@
 @model TaskModel
 
-<h2>Добавление задачи</h2>
-<form asp-area="Admin" asp-controller="Home" asp-action="AddTasks" method="post">
-    <h4>Введите название задачи</h4>
-    <input asp-for="Name"/>
-    <span asp-validation-for="Name"></span>
+<div class="mx-auto max-w-2xl">
+	<h2 class="mb-6 text-center text-3xl font-semibold text-white">Добавление задачи</h2>
+	<form asp-area="Admin" asp-controller="Home" asp-action="AddTasks" method="post" class="space-y-4 rounded-3xl border border-white/20 bg-white/10 p-6 shadow-xl backdrop-blur-xl sm:p-8">
+		<h4 class="text-sm font-medium text-white">Введите название задачи</h4>
+		<input asp-for="Name" class="w-full rounded-xl border border-white/80 bg-transparent px-4 py-3 text-white" />
+		<span asp-validation-for="Name"></span>
 
-    <h4>Выберите тип задачи</h4>
-    <select asp-for="Type">
-        <option value="Линейный поиск">"Линейный поиск"</option>
-        <option value="Бинарный поиск">Бинарный поиск</option>
-        <option value="Квадратичные сортировки">Квадратичные сортировки</option>
-        <option value="Быстрые сортировки">Быстрые сортировки</option>
-        <option value="Линейные сортировки">Линейные сортировки</option>
-        <option value="Массивы и списки">Массивы и списки</option>
-        <option value="Стек и очередь">Стек и очередь</option>
-        <option value="Хеш-таблицы">Хеш-таблицы</option>
-        <option value="Связные списки">Связные списки</option>
-        <option value="Деревья">Деревья</option>
-    </select>
-    <span asp-validation-for="Type"></span>
+		<h4 class="text-sm font-medium text-white">Выберите тип задачи</h4>
+		<select asp-for="Type" class="w-full rounded-xl border border-white/80 bg-cc-deep px-4 py-3 text-white">
+			<option value="Линейный поиск">"Линейный поиск"</option>
+			<option value="Бинарный поиск">Бинарный поиск</option>
+			<option value="Квадратичные сортировки">Квадратичные сортировки</option>
+			<option value="Быстрые сортировки">Быстрые сортировки</option>
+			<option value="Линейные сортировки">Линейные сортировки</option>
+			<option value="Массивы и списки">Массивы и списки</option>
+			<option value="Стек и очередь">Стек и очередь</option>
+			<option value="Хеш-таблицы">Хеш-таблицы</option>
+			<option value="Связные списки">Связные списки</option>
+			<option value="Деревья">Деревья</option>
+		</select>
+		<span asp-validation-for="Type"></span>
 
-    <h4>Введите содержимое задачи</h4>
-    <textarea asp-for="Content"></textarea>
-    <span asp-validation-for="Content"></span>
+		<h4 class="text-sm font-medium text-white">Введите содержимое задачи</h4>
+		<textarea asp-for="Content" class="w-full rounded-xl border border-white/80 bg-transparent px-4 py-3 text-white" rows="4"></textarea>
+		<span asp-validation-for="Content"></span>
 
-    <h4>Опишите входные данные задачи</h4>
-    <textarea asp-for="InputContent"></textarea>
-    <span asp-validation-for="InputContent"></span>
+		<h4 class="text-sm font-medium text-white">Опишите входные данные задачи</h4>
+		<textarea asp-for="InputContent" class="w-full rounded-xl border border-white/80 bg-transparent px-4 py-3 text-white" rows="3"></textarea>
+		<span asp-validation-for="InputContent"></span>
 
-    <h4>Опишите выходные данные задачи</h4>
-    <textarea asp-for="OutputContent"></textarea>
-    <span asp-validation-for="OutputContent"></span>
+		<h4 class="text-sm font-medium text-white">Опишите выходные данные задачи</h4>
+		<textarea asp-for="OutputContent" class="w-full rounded-xl border border-white/80 bg-transparent px-4 py-3 text-white" rows="3"></textarea>
+		<span asp-validation-for="OutputContent"></span>
 
-    <h4>Пример 1</h4>
-    <p>Входные данные</p>
-    <textarea asp-for="InputStrings[0]"></textarea>
-    <p>Выходные данные</p>
-    <textarea asp-for="OutputStrings[0]"></textarea>
+		<h4 class="pt-2 text-lg font-semibold text-cc-soft">Пример 1</h4>
+		<p class="text-sm text-white/80">Входные данные</p>
+		<textarea asp-for="InputStrings[0]" class="w-full rounded-xl border border-white/80 bg-transparent px-4 py-3 text-white" rows="2"></textarea>
+		<p class="text-sm text-white/80">Выходные данные</p>
+		<textarea asp-for="OutputStrings[0]" class="w-full rounded-xl border border-white/80 bg-transparent px-4 py-3 text-white" rows="2"></textarea>
 
-    <h4>Пример 2</h4>
-    <p>Входные данные</p>
-    <textarea asp-for="InputStrings[1]"></textarea>
-    <p>Выходные данные</p>
-    <textarea asp-for="OutputStrings[1]"></textarea>
+		<h4 class="pt-2 text-lg font-semibold text-cc-soft">Пример 2</h4>
+		<p class="text-sm text-white/80">Входные данные</p>
+		<textarea asp-for="InputStrings[1]" class="w-full rounded-xl border border-white/80 bg-transparent px-4 py-3 text-white" rows="2"></textarea>
+		<p class="text-sm text-white/80">Выходные данные</p>
+		<textarea asp-for="OutputStrings[1]" class="w-full rounded-xl border border-white/80 bg-transparent px-4 py-3 text-white" rows="2"></textarea>
 
-    <h4>Пример 3</h4>
-    <p>Входные данные</p>
-    <textarea asp-for="InputStrings[2]"></textarea>
-    <p>Выходные данные</p>
-    <textarea asp-for="OutputStrings[2]"></textarea>
+		<h4 class="pt-2 text-lg font-semibold text-cc-soft">Пример 3</h4>
+		<p class="text-sm text-white/80">Входные данные</p>
+		<textarea asp-for="InputStrings[2]" class="w-full rounded-xl border border-white/80 bg-transparent px-4 py-3 text-white" rows="2"></textarea>
+		<p class="text-sm text-white/80">Выходные данные</p>
+		<textarea asp-for="OutputStrings[2]" class="w-full rounded-xl border border-white/80 bg-transparent px-4 py-3 text-white" rows="2"></textarea>
 
-    <button type="submit">Добавить</button>
+		<button type="submit" class="w-full rounded-xl bg-gradient-to-r from-purple-500 to-indigo-400 py-3 font-semibold text-white shadow-lg transition hover:brightness-110">Добавить</button>
 
-</form>
+	</form>
+</div>

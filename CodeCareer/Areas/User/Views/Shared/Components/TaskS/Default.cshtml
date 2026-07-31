@@ -1,21 +1,18 @@
 @model TaskModel
 
-<div>
-   <h1>@Model.Name</h1>
-   <p>@Model.Content</p>
-   <br />
-   <h3>Входные данные:</h3>
-   <p>@Model.InputContent</p>
-   <br />
-   <h3>Выходные данные:</h3>
-   <p>@Model.OutputContent</p>
+<div class="space-y-4 text-left text-white">
+   <h1 class="text-2xl font-semibold">@Model.Name</h1>
+   <p class="whitespace-pre-wrap text-white/90">@Model.Content</p>
+   <h3 class="text-lg font-semibold text-cc-soft">Входные данные:</h3>
+   <p class="whitespace-pre-wrap text-white/85">@Model.InputContent</p>
+   <h3 class="text-lg font-semibold text-cc-soft">Выходные данные:</h3>
+   <p class="whitespace-pre-wrap text-white/85">@Model.OutputContent</p>
 	@for (int i = 0; i < Model.InputStrings.Count - 1; i++)
 	{
-		<h3>Пример @(i+1)</h3>
-		<p>Входные данные</p>
-		<textarea>@Model.InputStrings[i]</textarea>
-		<br />
-		<p>Входные данные</p>
-		<textarea>@Model.OutputStrings[i]</textarea>
+		<h3 class="text-lg font-semibold text-white">Пример @(i+1)</h3>
+		<p class="text-sm font-medium text-white/80">Входные данные</p>
+		<textarea class="w-full rounded-xl border border-white/80 bg-transparent px-4 py-3 text-white" rows="3">@Model.InputStrings[i]</textarea>
+		<p class="text-sm font-medium text-white/80">Входные данные</p>
+		<textarea class="w-full rounded-xl border border-white/80 bg-transparent px-4 py-3 text-white" rows="3">@Model.OutputStrings[i]</textarea>
 	}
 </div>

@@ -9,29 +9,30 @@
 	var tags = TagService.GetTagModels();
 }
 
-<div style="text-align: center;">
-	<h1>Создание публикации:</h1>
-	<div class="card shadow p-2 w-25 d-inline-block" style="text-align: left;">
-		<form asp-area="User" asp-controller="Home" asp-action="CreatePublication" method="post">
+<div class="mx-auto max-w-lg text-center">
+	<h1 class="mb-6 text-3xl font-semibold text-white">Создание публикации:</h1>
+	<div class="mb-6 rounded-3xl border border-white/20 bg-white/10 p-6 text-left shadow-xl backdrop-blur-xl sm:p-8">
+		<form asp-area="User" asp-controller="Home" asp-action="CreatePublication" method="post" class="space-y-4">
 
-			<span>Введите содержимое...</span><br />
-			<textarea class="w-75" asp-for="Content"></textarea>
+			<span class="mb-1.5 block text-sm font-medium text-white">Введите содержимое...</span>
+			<textarea class="w-full rounded-xl border border-white/80 bg-transparent px-4 py-3 text-white" asp-for="Content" rows="5"></textarea>
 			<span asp-validation-for="Content"></span>
 
-			<h5>Выберите теги</h5>
+			<h5 class="text-base font-semibold text-white">Выберите теги</h5>
 			@foreach (var tag in tags)
 			{
-				<div>
+				<div class="flex items-center gap-2">
 					<input type="checkbox"
 						   name="TagNames"
-						   value="@tag.Name" />
-					<label>@tag.Name</label>
+						   value="@tag.Name"
+						   class="rounded border-white/50 bg-transparent text-purple-500" />
+					<label class="text-white/90">@tag.Name</label>
 				</div>
 			}
-			<div style="text-align: center">
-				<button class="btn btn-primary" type="submit">Создать</button>
+			<div class="pt-2 text-center">
+				<button class="rounded-xl bg-gradient-to-r from-purple-500 to-indigo-400 px-5 py-2.5 font-semibold text-white shadow-lg transition hover:brightness-110" type="submit">Создать</button>
 			</div>
 		</form>
 	</div>
-	<h4><a asp-area="User" asp-controller="Home" asp-action="Profile">Отменить создание публикации</a></h4>
+	<h4><a class="text-cc-soft underline-offset-2 hover:text-white hover:underline" asp-area="User" asp-controller="Home" asp-action="Profile">Отменить создание публикации</a></h4>
 </div>

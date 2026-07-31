@@ -13,28 +13,26 @@
 
 	var currentUser = UserService.GetUserModels().FirstOrDefault(u => u.Email == Model.CurrentUserEmail);
 }
-<div class="container">
-	<div class="card mb-4 p-4 shadow rounded-3">
+<div class="mx-auto max-w-4xl">
+	<div class="mb-6 rounded-3xl border border-white/20 bg-white/10 p-6 shadow-xl backdrop-blur-xl sm:p-8">
 		<div>
 			@*Шапка*@
 
 		</div>
-		<h4>@user.FullName - @user.Status</h4>
-		<p>@user.Info</p>
-		<p><a asp-area="User" asp-controller="Home" asp-action="ShowSubscribes" asp-route-userEmail="@user.Email">@user.Subscribers подписчиков</a></p>
+		<h4 class="mb-2 text-2xl font-semibold text-white">@user.FullName - @user.Status</h4>
+		<p class="mb-3 text-white/85">@user.Info</p>
+		<p class="mb-1"><a class="text-cc-soft underline-offset-2 hover:text-white hover:underline" asp-area="User" asp-controller="Home" asp-action="ShowSubscribes" asp-route-userEmail="@user.Email">@user.Subscribers подписчиков</a></p>
 		@if (user.ShowSubscriptions)
 		{
-			<p><a asp-area="User" asp-controller="Home" asp-action="ShowSubscriptions" asp-route-userEmail="@user.Email">@user.Subscriptions подписок</a></p>
+			<p class="mb-1"><a class="text-cc-soft underline-offset-2 hover:text-white hover:underline" asp-area="User" asp-controller="Home" asp-action="ShowSubscriptions" asp-route-userEmail="@user.Email">@user.Subscriptions подписок</a></p>
 		}
-		<p>@user.Rating рейтинга</p>
-		<br />
-		<div d-inline-block>
+		<p class="mb-4 text-white/85">@user.Rating рейтинга</p>
+		<div class="mb-4 flex flex-wrap gap-2">
 			@foreach (var tag in user.SkillTags)
 			{
 				@await Component.InvokeAsync("Tag", new { tagP = tag })
 			}
 		</div>
-		<br />
 		@*Кнопка "подписаться"*@
 		@if (currentUser != null)
 		{
@@ -44,14 +42,14 @@
 				<input type="hidden" asp-for="WantsToSubscribe" value="@(!currentUser.SubscriptionsEmails.Contains(Model.AlienUserEmail))" />
 
 				@*Если у текущего пользователя нет в подписках создателя публикации, то значение кнопки - подписаться*@
-				<button type="submit" class="btn btn-primary">@(!currentUser.SubscriptionsEmails.Contains(Model.AlienUserEmail) ? "Подписаться" : "Отписаться")</button>
+				<button type="submit" class="rounded-xl bg-gradient-to-r from-purple-500 to-indigo-400 px-5 py-2.5 font-semibold text-white shadow-lg transition hover:brightness-110">@(!currentUser.SubscriptionsEmails.Contains(Model.AlienUserEmail) ? "Подписаться" : "Отписаться")</button>
 			</form>
 		}
 	</div>
 	@if (publications.Count() != 0)
 	{
-		<div style="text-align: center">
-			<h2>Публикации</h2>
+		<div class="flex flex-col items-center gap-4 text-center">
+			<h2 class="text-2xl font-semibold text-white">Публикации</h2>
 			@foreach (var publication in publications)
 			{
 				@await Component.InvokeAsync("Publication", new { publicationP = publication })

@@ -9,10 +9,11 @@
     ViewBag.Title = $"Задачи на {taskType}";
 }
 
-<div style="text-align: center;">
-	<div class="card shadow p-2 w-75 d-inline-block" style="text-align: left;">
+<div class="mx-auto max-w-3xl">
+	<div class="rounded-3xl border border-white/20 bg-white/10 p-6 text-left shadow-xl backdrop-blur-xl space-y-3 sm:p-8">
         @foreach (var task in tasks){
-            <h4><a 
+            <h4 class="text-lg font-medium"><a 
+                class="text-cc-soft underline-offset-2 hover:text-white hover:underline"
                 asp-area="User" 
                 asp-controller="OlympTasksSolving" 
                 asp-action="SolveTask" 

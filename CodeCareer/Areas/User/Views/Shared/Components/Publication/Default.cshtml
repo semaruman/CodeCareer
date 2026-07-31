@@ -1,13 +1,15 @@
 ﻿@model PublicationModel
 
-<div class="d-inline-block card w-75 mb-4 p-3 shadow rounded-3" style="text-align: left">
-	<h4><a asp-area="User" asp-controller="Home" asp-action="AlienProfile" asp-route-userEmail="@Model.User.Email">@Model.User.FullName</a> - @Model.CreatedDate.Date.ToString("dd.MM.yyyy")</h4>
-	<p>@Model.Content</p>
+<div class="mb-4 w-full max-w-3xl rounded-3xl border border-white/20 bg-white/10 p-5 text-left shadow-xl backdrop-blur-xl sm:p-6">
+	<h4 class="mb-3 text-lg font-semibold text-white"><a class="text-cc-soft underline-offset-2 hover:text-white hover:underline" asp-area="User" asp-controller="Home" asp-action="AlienProfile" asp-route-userEmail="@Model.User.Email">@Model.User.FullName</a> - @Model.CreatedDate.Date.ToString("dd.MM.yyyy")</h4>
+	<p class="mb-3 whitespace-pre-wrap text-white/90">@Model.Content</p>
 	@if (Model.Tags != null)
 	{
-		@foreach (var tag in Model.Tags)
-		{
-			@await Component.InvokeAsync("Tag", new { tagP = tag })
-		}
+		<div class="flex flex-wrap gap-2">
+			@foreach (var tag in Model.Tags)
+			{
+				@await Component.InvokeAsync("Tag", new { tagP = tag })
+			}
+		</div>
 	}
 </div>

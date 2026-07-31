@@ -1,11 +1,13 @@
 ﻿@model TagModel
 
-<h2>Добавление тегов</h2>
-<form asp-area="Admin" asp-controller="Home" asp-action="AddTags" method="post">
-	<h3>Название тега:</h3>
-	<input asp-for="Name"/>
-	<span asp-validation-for="Name"></span>
+<div class="mx-auto max-w-lg">
+	<h2 class="mb-6 text-center text-3xl font-semibold text-white">Добавление тегов</h2>
+	<form asp-area="Admin" asp-controller="Home" asp-action="AddTags" method="post" class="mb-6 space-y-4 rounded-3xl border border-white/20 bg-white/10 p-6 shadow-xl backdrop-blur-xl sm:p-8">
+		<h3 class="text-sm font-medium text-white">Название тега:</h3>
+		<input asp-for="Name" class="w-full rounded-xl border border-white/80 bg-transparent px-4 py-3 text-white" />
+		<span asp-validation-for="Name"></span>
 
-	<button type="submit">Добавить</button>
-</form>
-<a asp-area="Admin" asp-controller="Home" asp-action="Index">Перестать добавлять теги</a>
+		<button type="submit" class="w-full rounded-xl bg-gradient-to-r from-purple-500 to-indigo-400 py-3 font-semibold text-white shadow-lg transition hover:brightness-110">Добавить</button>
+	</form>
+	<p class="text-center"><a class="text-cc-soft underline-offset-2 hover:text-white hover:underline" asp-area="Admin" asp-controller="Home" asp-action="Index">Перестать добавлять теги</a></p>
+</div>

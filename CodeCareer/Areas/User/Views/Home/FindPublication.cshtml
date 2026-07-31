@@ -51,45 +51,47 @@
 		}).ToList();
 	}
 }
-<div style="text-align: center;">
-	<h3>Введите часть содержимого публикации</h3>
-	<div class="card shadow p-2 w-75 d-inline-block" style="text-align: left">
-		<form asp-area="User" asp-controller="Home" asp-action="FindPublication" method="post">
-			<label>Вводить здесь...</label><br />
-			<textarea asp-for="FindPublicationText"></textarea>
+<div class="mx-auto mb-8 max-w-3xl text-center">
+	<h3 class="mb-4 text-xl font-semibold text-white">Введите часть содержимого публикации</h3>
+	<div class="rounded-3xl border border-white/20 bg-white/10 p-6 text-left shadow-xl backdrop-blur-xl sm:p-8">
+		<form asp-area="User" asp-controller="Home" asp-action="FindPublication" method="post" class="space-y-4">
+			<label class="mb-1.5 block text-sm font-medium text-white">Вводить здесь...</label>
+			<textarea asp-for="FindPublicationText" class="w-full rounded-xl border border-white/80 bg-transparent px-4 py-3 text-white" rows="4"></textarea>
 
-			<h3>Выберите теги</h3>
+			<h3 class="text-xl font-semibold text-white">Выберите теги</h3>
 			@foreach (var tag in tags)
 			{
 				if (Model.TagNames.Contains(tag.Name))
 				{
-					<div>
+					<div class="flex items-center gap-2">
 						<input type="checkbox"
 							   name="tagNames"
 							   value="@tag.Name"
-							   checked />
-						<label>@tag.Name</label>
+							   checked
+							   class="rounded border-white/50 bg-transparent text-purple-500" />
+						<label class="text-white/90">@tag.Name</label>
 					</div>
 				}
 				else
 				{
-					<div>
+					<div class="flex items-center gap-2">
 						<input type="checkbox"
 							   name="tagNames"
-							   value="@tag.Name" />
-						<label>@tag.Name</label>
+							   value="@tag.Name"
+							   class="rounded border-white/50 bg-transparent text-purple-500" />
+						<label class="text-white/90">@tag.Name</label>
 					</div>
 				}
 			}
-			<div style="text-align: center;">
-				<button type="submit" class="btn btn-primary">Искать</button>
+			<div class="pt-2 text-center">
+				<button type="submit" class="rounded-xl bg-gradient-to-r from-purple-500 to-indigo-400 px-5 py-2.5 font-semibold text-white shadow-lg transition hover:brightness-110">Искать</button>
 			</div>
 		</form>
 	</div>
 </div>
 
-<div style="text-align: center">
-	<h2>Найденные публикации:</h2>
+<div class="mx-auto flex max-w-3xl flex-col items-center gap-4 text-center">
+	<h2 class="text-2xl font-semibold text-white">Найденные публикации:</h2>
 	@foreach (var publication in publications)
 	{
 		@await Component.InvokeAsync("Publication", new { publicationP = publication })

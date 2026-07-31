@@ -6,10 +6,13 @@
     //Console.WriteLine(string.Join(" ", tasks.Select(tt => tt.Name)));
 }
 
+<div class="mx-auto max-w-3xl rounded-3xl border border-white/20 bg-white/10 p-6 shadow-xl backdrop-blur-xl space-y-3 sm:p-8">
 @foreach (var task in tasks){
-    <h4><a 
+    <h4 class="text-lg font-medium"><a 
+    class="text-cc-soft underline-offset-2 hover:text-white hover:underline"
     asp-area="User" 
     asp-controller="OlympTasksSolving" 
     asp-action="SolveTask" 
     asp-route-taskName="@task.Name">@task.Name</a></h4>
 }
+</div>

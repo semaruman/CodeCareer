@@ -3,23 +3,50 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        cc: {
+                            deep: '#1a0033',
+                            mid: '#2e0249',
+                            accent: '#a78bfa',
+                            soft: '#c4b5fd',
+                        },
+                    },
+                },
+            },
+        };
+    </script>
+    <link rel="stylesheet" href="~/css/theme.css" />
     <title>@ViewBag.Title</title>
 </head>
-<body>
-    <header>
-        @if (!HomeController.admin.IsAuthorizate)
-        {
-            <a asp-area="Admin" asp-controller="Home" asp-action="Authorization">Войти в аккаунт</a>
-        }
-        else{
-            <a asp-area="Admin" asp-controller="Home" asp-action="LogoutAdmin">Выйти из аккаунта</a>
-        }
-        <a asp-area="Admin" asp-controller="Home" asp-action="AddTags">Добавить теги</a>
-        <a asp-area="Admin" asp-controller="Home" asp-action="AddTasks">Добавить задачу</a>
-        <a asp-area="User" asp-controller="Home" asp-action="Index">Войти в панель пользователя</a>
+<body class="font-sans antialiased text-white min-h-screen">
+    <header class="sticky top-0 z-50 px-4 py-3">
+        <nav class="mx-auto max-w-6xl flex flex-wrap items-center justify-center gap-2 rounded-2xl border border-white/20 bg-white/10 backdrop-blur-xl px-3 py-2 shadow-xl">
+            @if (!HomeController.admin.IsAuthorizate)
+            {
+                <a class="rounded-xl border border-white/30 bg-white/5 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-white/15 hover:border-cc-soft/60" asp-area="Admin" asp-controller="Home" asp-action="Authorization">Войти в аккаунт</a>
+            }
+            else
+            {
+                <a class="rounded-xl bg-gradient-to-r from-purple-500 to-indigo-400 px-3 py-1.5 text-sm font-semibold text-white shadow-md transition hover:brightness-110" asp-area="Admin" asp-controller="Home" asp-action="LogoutAdmin">Выйти из аккаунта</a>
+            }
+            <a class="rounded-xl border border-white/30 bg-white/5 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-white/15 hover:border-cc-soft/60" asp-area="Admin" asp-controller="Home" asp-action="AddTags">Добавить теги</a>
+            <a class="rounded-xl border border-white/30 bg-white/5 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-white/15 hover:border-cc-soft/60" asp-area="Admin" asp-controller="Home" asp-action="AddTasks">Добавить задачу</a>
+            <a class="rounded-xl border border-white/30 bg-white/5 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-white/15 hover:border-cc-soft/60" asp-area="User" asp-controller="Home" asp-action="Index">Войти в панель пользователя</a>
+        </nav>
     </header>
-    <div>
+    <main class="px-4 pb-10 pt-4">
         @RenderBody()
-    </div>
+    </main>
 </body>
 </html>

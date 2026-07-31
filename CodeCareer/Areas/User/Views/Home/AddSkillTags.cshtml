@@ -4,29 +4,33 @@
 	var tags = TagService.GetTagModels();
 }
 
-<form asp-area="User" asp-controller="Home" asp-action="AddSkillTags" method="post">
-	<h1>Выберите навыки</h1>
-	@foreach (var tag in tags)
-	{
-		if (CurrentUserService.CurrentUser.SkillTags.Contains(tag))
+<div class="mx-auto max-w-lg">
+	<form asp-area="User" asp-controller="Home" asp-action="AddSkillTags" method="post" class="rounded-3xl border border-white/20 bg-white/10 p-6 shadow-xl backdrop-blur-xl sm:p-8 space-y-4">
+		<h1 class="text-2xl font-semibold text-white">Выберите навыки</h1>
+		@foreach (var tag in tags)
 		{
-			<div>
-				<input type="checkbox"
-					   name="skillTagNames"
-					   value="@tag.Name"
-					   checked />
-				<label>@tag.Name</label>
-			</div>
+			if (CurrentUserService.CurrentUser.SkillTags.Contains(tag))
+			{
+				<div class="flex items-center gap-2">
+					<input type="checkbox"
+						   name="skillTagNames"
+						   value="@tag.Name"
+						   checked
+						   class="rounded border-white/50 bg-transparent text-purple-500" />
+					<label class="text-white/90">@tag.Name</label>
+				</div>
+			}
+			else
+			{
+				<div class="flex items-center gap-2">
+					<input type="checkbox"
+						   name="skillTagNames"
+						   value="@tag.Name"
+						   class="rounded border-white/50 bg-transparent text-purple-500" />
+					<label class="text-white/90">@tag.Name</label>
+				</div>
+			}
 		}
-		else
-		{
-			<div>
-				<input type="checkbox"
-					   name="skillTagNames"
-					   value="@tag.Name" />
-				<label>@tag.Name</label>
-			</div>
-		}
-	}
-	<button type="submit">Добавить</button>
-</form>
+		<button type="submit" class="w-full rounded-xl bg-gradient-to-r from-purple-500 to-indigo-400 py-3 font-semibold text-white shadow-lg transition hover:brightness-110">Добавить</button>
+	</form>
+</div>

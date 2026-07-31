@@ -4,28 +4,41 @@
 	ViewData["isWrongPassword"] = string.Empty;
 }
 
-<div style="text-align: center;">
-	<h1>Авторизация пользователя</h1>
-	<div class="card shadow p-2 w-25 d-inline-block" style="text-align: center;">
-		<form asp-area="User" asp-controller="Home" asp-action="Authorizate" method="post">
-			<h3>Имя пользователя:</h3>
-			<input asp-for="FullName" />
-			<span asp-validation-for="FullName"></span>
+<div class="flex min-h-[75vh] items-center justify-center py-8">
+	<div class="w-full max-w-md rounded-3xl border border-white/20 bg-white/10 p-8 shadow-xl backdrop-blur-xl sm:p-10">
+		<div class="mb-8 text-center">
+			<div class="mx-auto mb-3 flex h-10 w-10 items-center justify-center gap-1">
+				<span class="h-8 w-2.5 -rotate-12 rounded-full bg-gradient-to-b from-purple-400 to-indigo-400"></span>
+				<span class="h-8 w-2.5 -rotate-12 rounded-full bg-gradient-to-b from-purple-300 to-indigo-500"></span>
+			</div>
+			<p class="text-xs font-semibold uppercase tracking-[0.2em] text-cc-soft">CodeCareer</p>
+			<h1 class="mt-4 text-2xl font-semibold text-white sm:text-3xl">Авторизация пользователя</h1>
+		</div>
+		<form asp-area="User" asp-controller="Home" asp-action="Authorizate" method="post" class="space-y-5 text-left">
+			<div>
+				<label class="mb-1.5 block text-sm font-medium text-white" for="FullName">Имя пользователя:</label>
+				<input asp-for="FullName" class="w-full rounded-xl border border-white/80 bg-transparent px-4 py-3 text-white placeholder-white/40" />
+				<span asp-validation-for="FullName"></span>
+			</div>
 
-			<h3>Почта:</h3>
-			<input type="email" asp-for="Email" />
-			<span asp-validation-for="Email"></span>
+			<div>
+				<label class="mb-1.5 block text-sm font-medium text-white" for="Email">Почта:</label>
+				<input type="email" asp-for="Email" class="w-full rounded-xl border border-white/80 bg-transparent px-4 py-3 text-white placeholder-white/40" />
+				<span asp-validation-for="Email"></span>
+			</div>
 
-			<h3>Пароль:</h3>
-			<input type="password" asp-for="Password" />
-			<span asp-validation-for="Password"></span>
-			<br />
+			<div>
+				<label class="mb-1.5 block text-sm font-medium text-white" for="Password">Пароль:</label>
+				<input type="password" asp-for="Password" class="w-full rounded-xl border border-white/80 bg-transparent px-4 py-3 text-white placeholder-white/40" />
+				<span asp-validation-for="Password"></span>
+			</div>
+
 			@if (ViewData["isWrongPassword"] != string.Empty)
 			{
-				<h4>Неверный пароль!</h4>
+				<h4 class="text-center text-base font-medium text-rose-300">Неверный пароль!</h4>
 			}
 
-			<button class="btn btn-primary" type="submit">Войти</button>
+			<button class="mt-2 w-full rounded-xl bg-gradient-to-r from-purple-500 to-indigo-400 py-3 text-base font-semibold text-white shadow-lg transition hover:brightness-110" type="submit">Войти</button>
 		</form>
 	</div>
 </div>

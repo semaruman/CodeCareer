@@ -8,30 +8,28 @@
 	ViewBag.Title = "Редактировать Профиль";
 }
 
-<div>
+<div class="mx-auto max-w-lg">
 	<div>
 		@*Шапка*@
 
 	</div>
-	<form asp-area="User" asp-controller="Home" asp-action="EditProfile" method="post">
-		<h4>@Model.FullName - @Model.Status</h4>
-		<p>Введите краткую информацию о себе</p>
-		<textarea asp-for="Info">@Model.Info</textarea>
+	<form asp-area="User" asp-controller="Home" asp-action="EditProfile" method="post" class="rounded-3xl border border-white/20 bg-white/10 p-6 shadow-xl backdrop-blur-xl sm:p-8 space-y-4">
+		<h4 class="text-2xl font-semibold text-white">@Model.FullName - @Model.Status</h4>
+		<p class="text-sm font-medium text-white">Введите краткую информацию о себе</p>
+		<textarea asp-for="Info" class="w-full rounded-xl border border-white/80 bg-transparent px-4 py-3 text-white" rows="4">@Model.Info</textarea>
 		<span asp-validation-for="Info"></span>
 
-		<p>@Model.Subscribers подписчиков</p>
-		<p>@Model.Rating рейтинга</p>
+		<p class="text-white/85">@Model.Subscribers подписчиков</p>
+		<p class="text-white/85">@Model.Rating рейтинга</p>
 
-		<p>Отображать подписки?</p>
-		<select asp-for="ShowSubscriptions"> 
+		<p class="text-sm font-medium text-white">Отображать подписки?</p>
+		<select asp-for="ShowSubscriptions" class="w-full rounded-xl border border-white/80 bg-transparent px-4 py-3 text-white"> 
 			<option value="@(true)">Да</option>
 			<option value="@(false)">Нет</option>
 		</select>
-		<br />
-		<br />
 
-		<button type="submit">Сохранить изменения</button>
+		<button type="submit" class="w-full rounded-xl bg-gradient-to-r from-purple-500 to-indigo-400 py-3 font-semibold text-white shadow-lg transition hover:brightness-110">Сохранить изменения</button>
 	</form>
 </div>
 
-<h4><a asp-area="User" asp-controller="Home" asp-action="Profile">Отменить изменения</a></h4>
+<h4 class="mt-6 text-center"><a class="text-cc-soft underline-offset-2 hover:text-white hover:underline" asp-area="User" asp-controller="Home" asp-action="Profile">Отменить изменения</a></h4>

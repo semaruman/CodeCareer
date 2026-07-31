@@ -11,13 +11,15 @@
 	var subscribers = UserService.GetUserModels().Where(u => Model.SubscribersEmails.Contains(u.Email));
 }
 
-<h1>Подписчики <a asp-area="User" asp-controller="Home" asp-action="AlienProfile" asp-route-userEmail="@Model.Email">@Model.FullName</a></h1>
+<div class="mx-auto max-w-2xl">
+	<h1 class="mb-6 text-3xl font-semibold text-white">Подписчики <a class="text-cc-soft underline-offset-2 hover:text-white hover:underline" asp-area="User" asp-controller="Home" asp-action="AlienProfile" asp-route-userEmail="@Model.Email">@Model.FullName</a></h1>
 
-<div>
-	@foreach (var sub in subscribers)
-	{
-		<div>
-			<a asp-area="User" asp-controller="Home" asp-action="AlienProfile" asp-route-userEmail="@sub.Email">@sub.FullName</a>
-		</div>
-	}
+	<div class="rounded-3xl border border-white/20 bg-white/10 p-6 shadow-xl backdrop-blur-xl space-y-3">
+		@foreach (var sub in subscribers)
+		{
+			<div>
+				<a class="text-cc-soft underline-offset-2 hover:text-white hover:underline" asp-area="User" asp-controller="Home" asp-action="AlienProfile" asp-route-userEmail="@sub.Email">@sub.FullName</a>
+			</div>
+		}
+	</div>
 </div>

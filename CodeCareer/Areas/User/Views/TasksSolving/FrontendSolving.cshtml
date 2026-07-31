@@ -2,6 +2,8 @@
 	ViewBag.Title = "Frontend задачи";
 }
 
-<h2>Front-end задачи - в разработке</h2>
+<div class="mx-auto max-w-4xl space-y-6">
+	<h2 class="text-center text-2xl font-semibold text-white">Front-end задачи - в разработке</h2>
 
-@await Component.InvokeAsync("FrontendCompiler")
+	@await Component.InvokeAsync("FrontendCompiler")
+</div>
