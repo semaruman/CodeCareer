@@ -1,0 +1,15 @@
+@model SectionModel
+@{
+	ViewBag.Title = "Раздел";
+}
+
+<div class="mx-auto max-w-lg">
+	<h2 class="mb-6 text-center text-3xl font-semibold">Добавить раздел</h2>
+	<form asp-area="Admin" asp-controller="Home" asp-action="AddSection" method="post" class="space-y-4 rounded-3xl border border-white/20 bg-white/10 p-6 shadow-xl backdrop-blur-xl">
+		<label class="text-sm">Название</label>
+		<input asp-for="Title" class="w-full rounded-xl border border-white/80 bg-transparent px-4 py-3 text-white" />
+		<label class="text-sm">Порядок</label>
+		<input asp-for="SortOrder" type="number" class="w-full rounded-xl border border-white/80 bg-transparent px-4 py-3 text-white" />
+		<button type="submit" class="w-full rounded-xl bg-gradient-to-r from-purple-500 to-indigo-400 py-3 font-semibold text-white">Добавить</button>
+	</form>
+</div>

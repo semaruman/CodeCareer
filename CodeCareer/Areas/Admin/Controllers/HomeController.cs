@@ -13,11 +13,25 @@ namespace CodeCareer.Areas.Admin.Controllers
 
         private readonly ITagService _tagService;
         private readonly ITaskService _taskService;
+        private readonly ISectionService _sectionService;
+        private readonly ITopicService _topicService;
+        private readonly INoteService _noteService;
+        private readonly ICourseService _courseService;
 
-        public HomeController(ITagService tagService,ITaskService taskService)
+        public HomeController(
+            ITagService tagService,
+            ITaskService taskService,
+            ISectionService sectionService,
+            ITopicService topicService,
+            INoteService noteService,
+            ICourseService courseService)
         {
             _tagService = tagService;
             _taskService = taskService;
+            _sectionService = sectionService;
+            _topicService = topicService;
+            _noteService = noteService;
+            _courseService = courseService;
         }
 
         public IActionResult Index()
@@ -45,17 +59,12 @@ namespace CodeCareer.Areas.Admin.Controllers
                 admin.IsAuthorizate = true;
                 return RedirectToAction("AuthorizationSuccess");
             }
-            else
-            {
-                ViewBag.WrongPassword = "Неверный пароль!";
-                return View(admin);
-            }
+
+            ViewBag.WrongPassword = "Неверный пароль!";
+            return View(admin);
         }
 
-        public IActionResult AuthorizationSuccess()
-        {
-            return View();
-        }
+        public IActionResult AuthorizationSuccess() => View();
 
         public IActionResult LogoutAdmin()
         {
@@ -66,62 +75,129 @@ namespace CodeCareer.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult AddTags()
         {
-            if (admin.IsAuthorizate)
-            {
-                return View(new TagModel());
-            }
-            else
-            {
-                return RedirectToAction("Authorization");
-            }
+            if (!admin.IsAuthorizate) return RedirectToAction("Authorization");
+            return View(new TagModel());
         }
 
         [HttpPost]
         public IActionResult AddTags(TagModel tag)
         {
+            if (!admin.IsAuthorizate) return RedirectToAction("Authorization");
             if (tag.Name != string.Empty)
             {
                 _tagService.AddTagModel(tag);
                 return View(new TagModel());
             }
-            else
-            {
-                return View(tag);
-            }
+            return View(tag);
         }
-
 
         [HttpGet]
         public IActionResult AddTasks()
         {
-            if (admin.IsAuthorizate)
-            {
-                return View(new TaskModel());
-            }
-            else
-            {
-                return RedirectToAction("Authorization");
-            }
+            if (!admin.IsAuthorizate) return RedirectToAction("Authorization");
+            ViewBag.Topics = _topicService.GetAll(onlyPublished: false);
+            return View(new TaskModel());
         }
 
         [HttpPost]
         public IActionResult AddTasks(TaskModel task)
         {
+            if (!admin.IsAuthorizate) return RedirectToAction("Authorization");
+            ViewBag.Topics = _topicService.GetAll(onlyPublished: false);
             if (!string.IsNullOrEmpty(task.Name))
             {
                 _taskService.AddTaskModel(task);
                 return RedirectToAction("AddTasksSuccess");
             }
-            else
-            {
-                return View(task);
-            }
+            return View(task);
         }
 
         [HttpGet]
-        public IActionResult AddTasksSuccess()
+        public IActionResult AddTasksSuccess() => View();
+
+        [HttpGet]
+        public IActionResult ManageTopics()
         {
-            return View();
+            if (!admin.IsAuthorizate) return RedirectToAction("Authorization");
+            ViewBag.Sections = _sectionService.GetSectionsWithTopics(onlyPublishedTopics: false);
+            return View(new TopicModel());
+        }
+
+        [HttpPost]
+        public IActionResult ManageTopics(TopicModel topic)
+        {
+            if (!admin.IsAuthorizate) return RedirectToAction("Authorization");
+            if (!string.IsNullOrWhiteSpace(topic.Title) && !string.IsNullOrWhiteSpace(topic.Slug) && topic.SectionId > 0)
+            {
+                topic.Slug = topic.Slug.Trim().ToLowerInvariant().Replace(' ', '-');
+                _topicService.Add(topic);
+                return RedirectToAction("ManageTopics");
+            }
+            ViewBag.Sections = _sectionService.GetSectionsWithTopics(onlyPublishedTopics: false);
+            return View(topic);
+        }
+
+        [HttpGet]
+        public IActionResult AddSection()
+        {
+            if (!admin.IsAuthorizate) return RedirectToAction("Authorization");
+            return View(new SectionModel());
+        }
+
+        [HttpPost]
+        public IActionResult AddSection(SectionModel section)
+        {
+            if (!admin.IsAuthorizate) return RedirectToAction("Authorization");
+            if (!string.IsNullOrWhiteSpace(section.Title))
+            {
+                _sectionService.Add(section);
+                return RedirectToAction("ManageTopics");
+            }
+            return View(section);
+        }
+
+        [HttpGet]
+        public IActionResult ManageNotes()
+        {
+            if (!admin.IsAuthorizate) return RedirectToAction("Authorization");
+            ViewBag.Topics = _topicService.GetAll(onlyPublished: false);
+            return View(new NoteModel());
+        }
+
+        [HttpPost]
+        public IActionResult ManageNotes(NoteModel note)
+        {
+            if (!admin.IsAuthorizate) return RedirectToAction("Authorization");
+            ViewBag.Topics = _topicService.GetAll(onlyPublished: false);
+            if (!string.IsNullOrWhiteSpace(note.Title) && !string.IsNullOrWhiteSpace(note.BodyMarkdown) && note.TopicId > 0)
+            {
+                _noteService.Add(note);
+                return RedirectToAction("ManageNotes");
+            }
+            return View(note);
+        }
+
+        [HttpGet]
+        public IActionResult ManageCourses()
+        {
+            if (!admin.IsAuthorizate) return RedirectToAction("Authorization");
+            ViewBag.Courses = _courseService.GetPublishedCourses();
+            ViewBag.Topics = _topicService.GetAll(onlyPublished: false);
+            return View(new CourseModel());
+        }
+
+        [HttpPost]
+        public IActionResult ManageCourses(CourseModel course)
+        {
+            if (!admin.IsAuthorizate) return RedirectToAction("Authorization");
+            if (!string.IsNullOrWhiteSpace(course.Title))
+            {
+                _courseService.Add(course);
+                return RedirectToAction("ManageCourses");
+            }
+            ViewBag.Courses = _courseService.GetPublishedCourses();
+            ViewBag.Topics = _topicService.GetAll(onlyPublished: false);
+            return View(course);
         }
     }
 }

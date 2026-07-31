@@ -1,0 +1,35 @@
+@model CourseModel
+@{
+	var courses = ViewBag.Courses as List<CourseModel> ?? new List<CourseModel>();
+	ViewBag.Title = "Курсы";
+}
+
+<div class="mx-auto max-w-2xl space-y-8">
+	<h2 class="text-center text-3xl font-semibold">Курсы</h2>
+	<form asp-area="Admin" asp-controller="Home" asp-action="ManageCourses" method="post" class="space-y-4 rounded-3xl border border-white/20 bg-white/10 p-6 shadow-xl backdrop-blur-xl">
+		<label class="text-sm">Название курса</label>
+		<input asp-for="Title" class="w-full rounded-xl border border-white/80 bg-transparent px-4 py-3 text-white" />
+		<label class="text-sm">Описание</label>
+		<textarea asp-for="Description" rows="3" class="w-full rounded-xl border border-white/80 bg-transparent px-4 py-3 text-white"></textarea>
+		<label class="text-sm">Порядок</label>
+		<input asp-for="SortOrder" type="number" class="w-full rounded-xl border border-white/80 bg-transparent px-4 py-3 text-white" />
+		<label class="flex items-center gap-2 text-sm"><input asp-for="IsPublished" /> Опубликован</label>
+		<button type="submit" class="w-full rounded-xl bg-gradient-to-r from-purple-500 to-indigo-400 py-3 font-semibold text-white">Добавить курс</button>
+	</form>
+
+	<div class="rounded-3xl border border-white/20 bg-white/10 p-6 shadow-xl backdrop-blur-xl space-y-4">
+		@foreach (var c in courses)
+		{
+			<div>
+				<h3 class="font-semibold text-cc-soft">@c.Title</h3>
+				<p class="text-sm text-white/70">@c.Description</p>
+				<ul class="mt-2 list-disc pl-5 text-sm">
+					@foreach (var ct in c.CourseTopics.OrderBy(x => x.SortOrder))
+					{
+						<li>@ct.Topic?.Title</li>
+					}
+				</ul>
+			</div>
+		}
+	</div>
+</div>

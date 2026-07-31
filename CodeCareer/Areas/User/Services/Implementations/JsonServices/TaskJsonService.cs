@@ -59,5 +59,33 @@ namespace CodeCareer.Areas.User.Services.Implementations.JsonServices
             string jsonWrite = JsonSerializer.Serialize(tasks);
             File.WriteAllText(_filepath, jsonWrite);
         }
+
+        public List<TaskModel> GetByTopicId(int topicId) =>
+            GetTaskModels().Where(t => t.TopicId == topicId).ToList();
+
+        public TaskModel? GetByName(string name) =>
+            GetTaskModels().FirstOrDefault(t => t.Name == name);
+
+        public TaskModel? GetById(int id) =>
+            GetTaskModels().FirstOrDefault(t => t.Id == id);
+
+        public List<TaskModel> Search(string query)
+        {
+            if (string.IsNullOrWhiteSpace(query)) return new List<TaskModel>();
+            var q = query.Trim().ToLowerInvariant();
+            return GetTaskModels()
+                .Where(t => (t.Name ?? "").ToLower().Contains(q) || (t.Content ?? "").ToLower().Contains(q) || (t.Type ?? "").ToLower().Contains(q))
+                .Take(50)
+                .ToList();
+        }
+
+        public bool CheckSampleOutput(int taskId, int sampleIndex, string actualOutput)
+        {
+            var task = GetById(taskId);
+            if (task == null || sampleIndex < 0 || sampleIndex >= task.OutputStrings.Count) return false;
+            var expected = (task.OutputStrings[sampleIndex] ?? "").Trim().Replace("\r\n", "\n");
+            var actual = (actualOutput ?? "").Trim().Replace("\r\n", "\n");
+            return string.Equals(expected, actual, StringComparison.Ordinal);
+        }
     }
 }

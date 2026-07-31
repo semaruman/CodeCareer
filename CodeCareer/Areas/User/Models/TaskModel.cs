@@ -14,7 +14,12 @@ namespace CodeCareer.Areas.User.Models
         public string Name { get; set; }
 
         [Required(ErrorMessage = "Выберите тип задачи")]
-        public string Type { get; set; }
+        public string Type { get; set; } = string.Empty;
+
+        public int? TopicId { get; set; }
+
+        [ForeignKey(nameof(TopicId))]
+        public TopicModel? Topic { get; set; }
 
         [Required(ErrorMessage = "Введите содержимое задачи")]
         public string Content { get; set; }

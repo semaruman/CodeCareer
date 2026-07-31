@@ -1,0 +1,45 @@
+@model TopicModel
+@{
+	var sections = ViewBag.Sections as List<SectionModel> ?? new List<SectionModel>();
+	ViewBag.Title = "Темы";
+}
+
+<div class="mx-auto max-w-3xl space-y-8">
+	<h2 class="text-center text-3xl font-semibold text-white">Управление темами</h2>
+
+	<form asp-area="Admin" asp-controller="Home" asp-action="ManageTopics" method="post" class="space-y-4 rounded-3xl border border-white/20 bg-white/10 p-6 shadow-xl backdrop-blur-xl">
+		<h3 class="text-xl font-semibold">Добавить тему</h3>
+		<label class="block text-sm">Раздел</label>
+		<select asp-for="SectionId" class="w-full rounded-xl border border-white/80 bg-cc-deep px-4 py-3 text-white">
+			@foreach (var s in sections)
+			{
+				<option value="@s.Id">@s.Title</option>
+			}
+		</select>
+		<label class="block text-sm">Название</label>
+		<input asp-for="Title" class="w-full rounded-xl border border-white/80 bg-transparent px-4 py-3 text-white" />
+		<label class="block text-sm">Slug (латиница)</label>
+		<input asp-for="Slug" class="w-full rounded-xl border border-white/80 bg-transparent px-4 py-3 text-white" />
+		<label class="block text-sm">Порядок</label>
+		<input asp-for="SortOrder" type="number" class="w-full rounded-xl border border-white/80 bg-transparent px-4 py-3 text-white" />
+		<label class="flex items-center gap-2 text-sm"><input asp-for="IsPublished" /> Опубликована</label>
+		<button type="submit" class="w-full rounded-xl bg-gradient-to-r from-purple-500 to-indigo-400 py-3 font-semibold text-white">Сохранить тему</button>
+	</form>
+
+	<div class="rounded-3xl border border-white/20 bg-white/10 p-6 shadow-xl backdrop-blur-xl space-y-4">
+	@foreach (var sec in sections)
+	{
+		<h3 class="text-lg font-semibold text-cc-soft">@sec.Title</h3>
+		<ul class="mb-4 space-y-1 pl-4">
+			@foreach (var topic in sec.Topics)
+			{
+				<li class="text-white/90">@topic.Title <span class="text-white/50">(@topic.Slug)</span> @(topic.IsPublished ? "" : "— скрыта")</li>
+			}
+		</ul>
+	}
+	</div>
+
+	<p class="text-center">
+		<a class="text-cc-soft hover:underline" asp-area="Admin" asp-controller="Home" asp-action="AddSection">Добавить раздел</a>
+	</p>
+</div>

@@ -1,0 +1,70 @@
+@model TaskModel
+@{
+	ViewBag.Title = Model.Name;
+	var topic = ViewBag.Topic as TopicModel;
+	var isSolved = ViewBag.IsSolved as bool? ?? false;
+	var checkResult = ViewBag.CheckResult as string;
+}
+
+<div class="mx-auto max-w-4xl space-y-4">
+	<nav class="text-sm text-white/60">
+		<a class="hover:text-cc-soft" asp-area="User" asp-controller="Learning" asp-action="Index">Обучение</a>
+		@if (topic != null)
+		{
+			<span> / </span>
+			<a class="hover:text-cc-soft" asp-area="User" asp-controller="Learning" asp-action="Topic" asp-route-slug="@topic.Slug">@topic.Title</a>
+			<span> / </span>
+			<a class="hover:text-cc-soft" asp-area="User" asp-controller="Learning" asp-action="Tasks" asp-route-slug="@topic.Slug">Задачи</a>
+		}
+		<span> / </span>
+		<span class="text-white">@Model.Name</span>
+	</nav>
+
+	<div class="rounded-3xl border border-white/20 bg-white/10 p-6 text-left shadow-xl backdrop-blur-xl space-y-6 sm:p-8">
+		@if (topic != null)
+		{
+			var firstNote = topic.Notes?.OrderBy(n => n.SortOrder).FirstOrDefault();
+			if (firstNote != null)
+			{
+				<p>
+					<a class="text-cc-soft hover:underline" asp-area="User" asp-controller="Learning" asp-action="Note" asp-route-id="@firstNote.Id">К конспекту темы</a>
+				</p>
+			}
+		}
+
+		@await Component.InvokeAsync("TaskS", new { taskP = Model })
+
+		@if (!string.IsNullOrEmpty(checkResult))
+		{
+			<p class="rounded-xl border border-white/20 bg-white/5 px-4 py-2 text-sm @(checkResult.StartsWith("Верно") ? "text-cc-soft" : "text-rose-300")">@checkResult</p>
+		}
+
+		<div class="rounded-2xl border border-white/15 bg-white/5 p-4 space-y-3">
+			<h3 class="font-semibold text-cc-soft">Проверка примера (сравнение вывода)</h3>
+			<form asp-area="User" asp-controller="Learning" asp-action="CheckSample" method="post" class="space-y-3">
+				<input type="hidden" name="taskId" value="@Model.Id" />
+				<input type="hidden" name="taskName" value="@Model.Name" />
+				<label class="text-sm">Номер примера (0–2)</label>
+				<input type="number" name="sampleIndex" value="0" min="0" max="2" class="w-full rounded-xl border border-white/80 bg-transparent px-3 py-2" />
+				<label class="text-sm">Ваш вывод программы</label>
+				<textarea name="actualOutput" rows="3" class="w-full rounded-xl border border-white/80 bg-transparent px-3 py-2"></textarea>
+				<button type="submit" class="rounded-xl bg-gradient-to-r from-purple-500 to-indigo-400 px-4 py-2 text-sm font-semibold">Проверить</button>
+			</form>
+		</div>
+
+		@if (!isSolved)
+		{
+			<form asp-area="User" asp-controller="Learning" asp-action="MarkTaskSolved" method="post">
+				<input type="hidden" name="taskId" value="@Model.Id" />
+				<input type="hidden" name="taskName" value="@Model.Name" />
+				<button type="submit" class="rounded-xl border border-white/30 px-4 py-2 text-sm hover:bg-white/10">Отметить решённой вручную</button>
+			</form>
+		}
+		else
+		{
+			<p class="text-sm text-cc-soft">✓ Задача отмечена как решённая</p>
+		}
+
+		@await Component.InvokeAsync("OlympCompiler")
+	</div>
+</div>

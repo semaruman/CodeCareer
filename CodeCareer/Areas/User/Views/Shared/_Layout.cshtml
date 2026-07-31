@@ -44,7 +44,7 @@
 				<a class="rounded-xl border border-white/30 bg-white/5 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-white/15 hover:border-cc-soft/60" asp-area="User" asp-controller="Home" asp-action="Profile">@CurrentUserService.CurrentUser.FullName</a>
 			}
 			<a class="rounded-xl border border-white/30 bg-white/5 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-white/15 hover:border-cc-soft/60" asp-area="User" asp-controller="Home" asp-action="PublicationFeed">Лента</a>
-			<a class="rounded-xl border border-white/30 bg-white/5 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-white/15 hover:border-cc-soft/60" asp-area="User" asp-controller="TasksSolving" asp-action="Index">Задачи</a>
+			<a class="rounded-xl border border-white/30 bg-white/5 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-white/15 hover:border-cc-soft/60" asp-area="User" asp-controller="Learning" asp-action="Index">Обучение</a>
 			<a class="rounded-xl border border-white/30 bg-white/5 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-white/15 hover:border-cc-soft/60" asp-area="User" asp-controller="Home" asp-action="Community">Сообщество</a>
 			<a class="rounded-xl border border-white/30 bg-white/5 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-white/15 hover:border-cc-soft/60" asp-area="User" asp-controller="Home" asp-action="Top100Users">ТОП-100 лидеров</a>
 			@if (CurrentUserService.CurrentUser.FullName != null)

@@ -1,13 +1,11 @@
 using CodeCareer;
 using CodeCareer.Areas.User.Data;
-using CodeCareer.Areas.User.Services.Implementations.JsonServices;
 using CodeCareer.Areas.User.Services.Implementations.MySqlAdoNetServices;
 using CodeCareer.Areas.User.Services.Implementations.MySqlEfServices;
 using CodeCareer.Areas.User.Services.Interfaces;
 using CodeCareer.Infrastructure;
 using CodeCareer.Middleware;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews()
@@ -23,7 +21,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     {
         options.LoginPath = "/Authorizate";
         options.LogoutPath = "/LogoutUser";
-        options.ExpireTimeSpan = TimeSpan.FromDays(7); 
+        options.ExpireTimeSpan = TimeSpan.FromDays(7);
         options.SlidingExpiration = true;
     });
 
@@ -33,22 +31,27 @@ builder.Services.AddScoped<IUserService, UserMySqlAdoNetService>();
 builder.Services.AddScoped<IPublicationService, PublicationMySqlAdoNetService>();
 builder.Services.AddScoped<ITagService, TagMySqlEfService>();
 builder.Services.AddScoped<ITaskService, TaskMySqlEfService>();
+builder.Services.AddScoped<ISectionService, SectionMySqlEfService>();
+builder.Services.AddScoped<ITopicService, TopicMySqlEfService>();
+builder.Services.AddScoped<INoteService, NoteMySqlEfService>();
+builder.Services.AddScoped<IProgressService, ProgressMySqlEfService>();
+builder.Services.AddScoped<ICourseService, CourseMySqlEfService>();
+builder.Services.AddScoped<IChatHistoryService, ChatHistoryMySqlEfService>();
 
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddHttpContextAccessor();
 
-//добавляю сервис для обработки всех исключений
 builder.Services.AddExceptionHandler<SmartExceptionHandler>();
 builder.Services.AddProblemDetails();
 
 Constants.Initialize(builder.Configuration);
 
 var app = builder.Build();
-app.UseStaticFiles();
-//подключаю обработку ошибок
-app.UseExceptionHandler();
 
-//подключаю логгирование
+LearningDatabaseInitializer.Initialize();
+
+app.UseStaticFiles();
+app.UseExceptionHandler();
 app.UseLoggingMiddleware();
 
 app.MapControllerRoute(

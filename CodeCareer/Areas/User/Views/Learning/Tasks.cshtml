@@ -1,0 +1,41 @@
+@model List<TaskModel>
+@{
+	var topic = ViewBag.Topic as TopicModel;
+	ViewBag.Title = topic != null ? $"Задачи: {topic.Title}" : "Задачи";
+	var solved = ViewBag.SolvedIds as HashSet<int> ?? new HashSet<int>();
+}
+
+<div class="mx-auto max-w-3xl space-y-4">
+	<nav class="text-sm text-white/60">
+		<a class="hover:text-cc-soft" asp-area="User" asp-controller="Learning" asp-action="Index">Обучение</a>
+		@if (topic != null)
+		{
+			<span> / </span>
+			<a class="hover:text-cc-soft" asp-area="User" asp-controller="Learning" asp-action="Topic" asp-route-slug="@topic.Slug">@topic.Title</a>
+		}
+		<span> / </span>
+		<span class="text-white">Задачи</span>
+	</nav>
+
+	<div class="rounded-3xl border border-white/20 bg-white/10 p-6 shadow-xl backdrop-blur-xl space-y-3">
+		<h1 class="mb-4 text-2xl font-semibold">@(topic?.Title ?? "Задачи")</h1>
+		@if (Model.Any())
+		{
+			@foreach (var task in Model)
+			{
+				<div class="flex items-center justify-between gap-2 rounded-xl border border-white/15 bg-white/5 px-4 py-3">
+					<a class="text-cc-soft hover:underline"
+					   asp-area="User" asp-controller="Learning" asp-action="Solve" asp-route-taskName="@task.Name">@task.Name</a>
+					@if (solved.Contains(task.Id))
+					{
+						<span class="text-xs text-cc-soft">✓ решено</span>
+					}
+				</div>
+			}
+		}
+		else
+		{
+			<p class="text-white/60">Задач пока нет.</p>
+		}
+	</div>
+</div>

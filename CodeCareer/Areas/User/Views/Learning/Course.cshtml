@@ -1,0 +1,27 @@
+@model CourseModel
+@{
+	ViewBag.Title = Model.Title;
+}
+
+<div class="mx-auto max-w-3xl space-y-4">
+	<nav class="text-sm text-white/60">
+		<a class="hover:text-cc-soft" asp-area="User" asp-controller="Learning" asp-action="Index">Обучение</a>
+		<span> / </span>
+		<span class="text-white">@Model.Title</span>
+	</nav>
+	<div class="rounded-3xl border border-white/20 bg-white/10 p-6 shadow-xl backdrop-blur-xl space-y-4">
+		<h1 class="text-3xl font-semibold">@Model.Title</h1>
+		<p class="text-white/80">@Model.Description</p>
+		<ol class="list-decimal space-y-2 pl-5">
+			@foreach (var ct in Model.CourseTopics.OrderBy(x => x.SortOrder))
+			{
+				if (ct.Topic != null)
+				{
+					<li>
+						<a class="text-cc-soft hover:underline" asp-area="User" asp-controller="Learning" asp-action="Topic" asp-route-slug="@ct.Topic.Slug">@ct.Topic.Title</a>
+					</li>
+				}
+			}
+		</ol>
+	</div>
+</div>

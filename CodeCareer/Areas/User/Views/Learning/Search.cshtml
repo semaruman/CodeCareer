@@ -1,0 +1,42 @@
+@{
+	ViewBag.Title = "Поиск";
+	var q = ViewBag.Query as string ?? "";
+	var notes = ViewBag.Notes as List<NoteModel> ?? new List<NoteModel>();
+	var tasks = ViewBag.Tasks as List<TaskModel> ?? new List<TaskModel>();
+}
+
+<div class="mx-auto max-w-3xl space-y-6">
+	<h1 class="text-3xl font-semibold text-center">Поиск</h1>
+	<form method="get" class="flex gap-2">
+		<input name="q" value="@q" class="flex-1 rounded-xl border border-white/80 bg-transparent px-4 py-2" placeholder="Запрос..." />
+		<button class="rounded-xl bg-gradient-to-r from-purple-500 to-indigo-400 px-4 py-2 font-semibold" type="submit">Найти</button>
+	</form>
+
+	<div class="rounded-3xl border border-white/20 bg-white/10 p-6 shadow-xl backdrop-blur-xl">
+		<h2 class="mb-3 text-xl text-cc-soft">Конспекты</h2>
+		@if (notes.Any())
+		{
+			<ul class="space-y-2">
+				@foreach (var n in notes)
+				{
+					<li><a class="hover:text-cc-soft hover:underline" asp-area="User" asp-controller="Learning" asp-action="Note" asp-route-id="@n.Id">@n.Title</a></li>
+				}
+			</ul>
+		}
+		else { <p class="text-white/60">Ничего не найдено</p>; }
+	</div>
+
+	<div class="rounded-3xl border border-white/20 bg-white/10 p-6 shadow-xl backdrop-blur-xl">
+		<h2 class="mb-3 text-xl text-cc-soft">Задачи</h2>
+		@if (tasks.Any())
+		{
+			<ul class="space-y-2">
+				@foreach (var t in tasks)
+				{
+					<li><a class="hover:text-cc-soft hover:underline" asp-area="User" asp-controller="Learning" asp-action="Solve" asp-route-taskName="@t.Name">@t.Name</a></li>
+				}
+			</ul>
+		}
+		else { <p class="text-white/60">Ничего не найдено</p>; }
+	</div>
+</div>

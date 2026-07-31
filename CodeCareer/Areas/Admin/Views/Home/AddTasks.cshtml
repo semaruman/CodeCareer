@@ -1,5 +1,9 @@
 @model TaskModel
 
+@{
+	var topics = ViewBag.Topics as List<TopicModel> ?? new List<TopicModel>();
+}
+
 <div class="mx-auto max-w-2xl">
 	<h2 class="mb-6 text-center text-3xl font-semibold text-white">Добавление задачи</h2>
 	<form asp-area="Admin" asp-controller="Home" asp-action="AddTasks" method="post" class="space-y-4 rounded-3xl border border-white/20 bg-white/10 p-6 shadow-xl backdrop-blur-xl sm:p-8">
@@ -7,20 +11,15 @@
 		<input asp-for="Name" class="w-full rounded-xl border border-white/80 bg-transparent px-4 py-3 text-white" />
 		<span asp-validation-for="Name"></span>
 
-		<h4 class="text-sm font-medium text-white">Выберите тип задачи</h4>
-		<select asp-for="Type" class="w-full rounded-xl border border-white/80 bg-cc-deep px-4 py-3 text-white">
-			<option value="Линейный поиск">"Линейный поиск"</option>
-			<option value="Бинарный поиск">Бинарный поиск</option>
-			<option value="Квадратичные сортировки">Квадратичные сортировки</option>
-			<option value="Быстрые сортировки">Быстрые сортировки</option>
-			<option value="Линейные сортировки">Линейные сортировки</option>
-			<option value="Массивы и списки">Массивы и списки</option>
-			<option value="Стек и очередь">Стек и очередь</option>
-			<option value="Хеш-таблицы">Хеш-таблицы</option>
-			<option value="Связные списки">Связные списки</option>
-			<option value="Деревья">Деревья</option>
+		<h4 class="text-sm font-medium text-white">Выберите тему</h4>
+		<select asp-for="TopicId" class="w-full rounded-xl border border-white/80 bg-cc-deep px-4 py-3 text-white">
+			<option value="">— выберите тему —</option>
+			@foreach (var topic in topics)
+			{
+				<option value="@topic.Id">@topic.Title</option>
+			}
 		</select>
-		<span asp-validation-for="Type"></span>
+		<input type="hidden" asp-for="Type" value="pending" />
 
 		<h4 class="text-sm font-medium text-white">Введите содержимое задачи</h4>
 		<textarea asp-for="Content" class="w-full rounded-xl border border-white/80 bg-transparent px-4 py-3 text-white" rows="4"></textarea>
@@ -53,6 +52,5 @@
 		<textarea asp-for="OutputStrings[2]" class="w-full rounded-xl border border-white/80 bg-transparent px-4 py-3 text-white" rows="2"></textarea>
 
 		<button type="submit" class="w-full rounded-xl bg-gradient-to-r from-purple-500 to-indigo-400 py-3 font-semibold text-white shadow-lg transition hover:brightness-110">Добавить</button>
-
 	</form>
 </div>

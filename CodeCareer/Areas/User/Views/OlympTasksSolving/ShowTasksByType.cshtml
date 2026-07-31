@@ -3,20 +3,21 @@
 @{
     string taskType = ViewBag.Type;
     var tasks = TaskService.GetTaskModels()
-    .Where(t => t.Type == taskType);
-    //Console.WriteLine(string.Join(" ", tasks.Select(tt => tt.Name)));
+        .Where(t => t.Type == taskType)
+        .ToList();
 
     ViewBag.Title = $"Задачи на {taskType}";
 }
 
-<div class="mx-auto max-w-3xl">
+<div class="mx-auto max-w-3xl space-y-4">
+	<p class="text-sm text-white/70">Рекомендуем открывать темы через <a class="text-cc-soft hover:underline" asp-area="User" asp-controller="Learning" asp-action="Index">Обучение</a>.</p>
 	<div class="rounded-3xl border border-white/20 bg-white/10 p-6 text-left shadow-xl backdrop-blur-xl space-y-3 sm:p-8">
         @foreach (var task in tasks){
             <h4 class="text-lg font-medium"><a 
                 class="text-cc-soft underline-offset-2 hover:text-white hover:underline"
                 asp-area="User" 
-                asp-controller="OlympTasksSolving" 
-                asp-action="SolveTask" 
+                asp-controller="Learning" 
+                asp-action="Solve" 
                 asp-route-taskName="@task.Name">@task.Name</a></h4>
         }
     </div>

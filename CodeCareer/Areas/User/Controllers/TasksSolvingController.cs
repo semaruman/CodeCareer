@@ -14,13 +14,13 @@ namespace CodeCareer.Areas.User.Controllers
         [HttpGet]
         public IActionResult OlympSolving()
         {
-            return View();
+            return RedirectToAction("Index", "Learning");
         }
 
         [HttpGet]
         public IActionResult FrontendSolving()
         {
-            return View();
+            return RedirectToAction("Topic", "Learning", new { slug = "html-basics" });
         }
     }
 }

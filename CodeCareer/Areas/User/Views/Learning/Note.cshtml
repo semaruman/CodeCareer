@@ -1,0 +1,89 @@
+@model NoteModel
+@{
+	ViewBag.Title = Model.Title;
+	var htmlBody = ViewBag.HtmlBody as string ?? string.Empty;
+	var aiBase = ViewBag.AiChatBaseUrl as string ?? "";
+	var aiPath = ViewBag.AiChatPath as string ?? "/api/chat";
+	var isRead = ViewBag.IsRead as bool? ?? false;
+	var history = ViewBag.ChatHistory as List<ChatHistoryModel> ?? new List<ChatHistoryModel>();
+	var contextPreview = Model.BodyMarkdown ?? string.Empty;
+	if (contextPreview.Length > 12000) contextPreview = contextPreview.Substring(0, 12000);
+}
+
+<div class="mx-auto max-w-6xl space-y-4">
+	<nav class="text-sm text-white/60">
+		<a class="hover:text-cc-soft" asp-area="User" asp-controller="Learning" asp-action="Index">Обучение</a>
+		<span> / </span>
+		@if (Model.Topic != null)
+		{
+			<a class="hover:text-cc-soft" asp-area="User" asp-controller="Learning" asp-action="Topic" asp-route-slug="@Model.Topic.Slug">@Model.Topic.Title</a>
+			<span> / </span>
+		}
+		<span class="text-white">Конспект</span>
+	</nav>
+
+	<div class="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
+		<div class="rounded-3xl border border-white/20 bg-white/10 p-6 shadow-xl backdrop-blur-xl sm:p-8">
+			<h1 class="mb-4 text-2xl font-semibold">@Model.Title</h1>
+			<article class="prose prose-invert max-w-none note-md text-white/90 [&_a]:text-cc-soft [&_code]:rounded [&_code]:bg-white/10 [&_code]:px-1 [&_h1]:text-2xl [&_h2]:text-xl [&_pre]:overflow-x-auto [&_pre]:rounded-xl [&_pre]:bg-black/30 [&_pre]:p-3">
+				@Html.Raw(htmlBody)
+			</article>
+			<div class="mt-6 flex flex-wrap gap-3">
+				@if (Model.Topic != null)
+				{
+					<a class="rounded-xl border border-white/30 px-4 py-2 text-sm hover:bg-white/10"
+					   asp-area="User" asp-controller="Learning" asp-action="Tasks" asp-route-slug="@Model.Topic.Slug">К задачам темы</a>
+				}
+				@if (!isRead)
+				{
+					<form asp-area="User" asp-controller="Learning" asp-action="MarkNoteRead" method="post">
+						<input type="hidden" name="noteId" value="@Model.Id" />
+						<input type="hidden" name="topicId" value="@Model.TopicId" />
+						<button type="submit" class="rounded-xl bg-gradient-to-r from-purple-500 to-indigo-400 px-4 py-2 text-sm font-semibold">Отметить прочитанным</button>
+					</form>
+				}
+				else
+				{
+					<span class="text-sm text-cc-soft">✓ Конспект прочитан</span>
+				}
+			</div>
+		</div>
+
+		<div class="flex max-h-[80vh] flex-col rounded-3xl border border-white/20 bg-white/10 shadow-xl backdrop-blur-xl"
+			 id="note-chat"
+			 data-api-base="@aiBase"
+			 data-api-path="@aiPath"
+			 data-note-id="@Model.Id"
+			 data-note-title="@Model.Title"
+			 data-save-url="@Url.Action("SaveChatMessage", "Learning", new { area = "User" })">
+			<textarea id="note-chat-context" class="hidden" readonly>@contextPreview</textarea>
+			<div class="border-b border-white/15 px-4 py-3">
+				<h2 class="font-semibold text-cc-soft">AI-помощник</h2>
+				<p class="text-xs text-white/60">Вопросы по этому конспекту</p>
+			</div>
+			<div id="note-chat-messages" class="flex-1 space-y-3 overflow-y-auto px-4 py-3 text-sm">
+				@foreach (var msg in history)
+				{
+					<div class="rounded-xl px-3 py-2 @(msg.Role == "user" ? "bg-purple-500/30 ml-6" : "bg-white/10 mr-6")">
+						<span class="mb-1 block text-[10px] uppercase tracking-wide text-white/50">@msg.Role</span>
+						@msg.Content
+					</div>
+				}
+				@if (!history.Any())
+				{
+					<p class="text-white/50" id="note-chat-empty">Задайте вопрос по материалу конспекта.</p>
+				}
+			</div>
+			<div class="border-t border-white/15 p-3">
+				<form id="note-chat-form" class="flex gap-2">
+					<input id="note-chat-input" type="text" autocomplete="off" placeholder="Спросить..."
+						   class="flex-1 rounded-xl border border-white/80 bg-transparent px-3 py-2 text-sm text-white" />
+					<button type="submit" class="rounded-xl bg-gradient-to-r from-purple-500 to-indigo-400 px-3 py-2 text-sm font-semibold">Спросить</button>
+				</form>
+				<p id="note-chat-status" class="mt-2 text-xs text-white/50"></p>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script src="~/js/note-chat.js"></script>

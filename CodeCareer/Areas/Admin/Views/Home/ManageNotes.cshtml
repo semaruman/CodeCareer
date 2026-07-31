@@ -1,0 +1,25 @@
+@model NoteModel
+@{
+	var topics = ViewBag.Topics as List<TopicModel> ?? new List<TopicModel>();
+	ViewBag.Title = "Конспекты";
+}
+
+<div class="mx-auto max-w-2xl">
+	<h2 class="mb-6 text-center text-3xl font-semibold">Добавить конспект</h2>
+	<form asp-area="Admin" asp-controller="Home" asp-action="ManageNotes" method="post" class="space-y-4 rounded-3xl border border-white/20 bg-white/10 p-6 shadow-xl backdrop-blur-xl">
+		<label class="text-sm">Тема</label>
+		<select asp-for="TopicId" class="w-full rounded-xl border border-white/80 bg-cc-deep px-4 py-3 text-white">
+			@foreach (var t in topics)
+			{
+				<option value="@t.Id">@t.Title</option>
+			}
+		</select>
+		<label class="text-sm">Заголовок</label>
+		<input asp-for="Title" class="w-full rounded-xl border border-white/80 bg-transparent px-4 py-3 text-white" />
+		<label class="text-sm">Текст (Markdown)</label>
+		<textarea asp-for="BodyMarkdown" rows="12" class="w-full rounded-xl border border-white/80 bg-transparent px-4 py-3 text-white font-mono text-sm"></textarea>
+		<label class="text-sm">Порядок</label>
+		<input asp-for="SortOrder" type="number" class="w-full rounded-xl border border-white/80 bg-transparent px-4 py-3 text-white" />
+		<button type="submit" class="w-full rounded-xl bg-gradient-to-r from-purple-500 to-indigo-400 py-3 font-semibold text-white">Сохранить конспект</button>
+	</form>
+</div>

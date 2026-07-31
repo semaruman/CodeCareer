@@ -1,0 +1,80 @@
+@using CodeCareer.Areas.User.Models
+@using CodeCareer.Areas.User.Services.Interfaces
+@model List<SectionModel>
+@{
+	ViewBag.Title = "Обучение";
+	var courses = ViewBag.Courses as List<CourseModel> ?? new List<CourseModel>();
+	var email = ViewBag.UserEmail as string;
+	var progress = ViewBag.ProgressService as IProgressService;
+	var taskService = ViewBag.TaskService as ITaskService;
+	var noteService = ViewBag.NoteService as INoteService;
+}
+
+<div class="mx-auto max-w-4xl space-y-8">
+	<div class="text-center">
+		<h1 class="text-3xl font-semibold text-white">Обучение</h1>
+		<p class="mt-2 text-white/75">Конспекты, задачи и курсы CodeCareer</p>
+		<form asp-area="User" asp-controller="Learning" asp-action="Search" method="get" class="mx-auto mt-4 flex max-w-md gap-2">
+			<input name="q" placeholder="Поиск по конспектам и задачам..." class="flex-1 rounded-xl border border-white/80 bg-transparent px-4 py-2 text-white" />
+			<button type="submit" class="rounded-xl bg-gradient-to-r from-purple-500 to-indigo-400 px-4 py-2 font-semibold">Найти</button>
+		</form>
+	</div>
+
+	@if (courses.Any())
+	{
+		<div class="rounded-3xl border border-white/20 bg-white/10 p-6 shadow-xl backdrop-blur-xl">
+			<h2 class="mb-4 text-xl font-semibold text-cc-soft">Курсы</h2>
+			<div class="space-y-3">
+				@foreach (var course in courses)
+				{
+					<a class="block rounded-xl border border-white/20 bg-white/5 px-4 py-3 hover:bg-white/10"
+					   asp-area="User" asp-controller="Learning" asp-action="Course" asp-route-id="@course.Id">
+						<span class="font-medium">@course.Title</span>
+						<span class="mt-1 block text-sm text-white/70">@course.Description</span>
+					</a>
+				}
+			</div>
+		</div>
+	}
+
+	@foreach (var sec in Model)
+	{
+		<div class="rounded-3xl border border-white/20 bg-white/10 p-6 shadow-xl backdrop-blur-xl space-y-3">
+			<h2 class="text-xl font-semibold text-cc-soft">@sec.Title</h2>
+			@foreach (var topic in sec.Topics)
+			{
+				var notesCount = noteService?.GetByTopicId(topic.Id).Count ?? 0;
+				var tasksCount = taskService?.GetByTopicId(topic.Id).Count ?? 0;
+				double pct = 0;
+				if (!string.IsNullOrEmpty(email) && progress != null)
+				{
+					pct = progress.GetTopicCompletionPercent(email, topic.Id, notesCount, tasksCount);
+				}
+				<div class="rounded-xl border border-white/15 bg-white/5 px-4 py-3">
+					<div class="flex flex-wrap items-center justify-between gap-2">
+						<a class="text-lg font-medium text-white hover:text-cc-soft"
+						   asp-area="User" asp-controller="Learning" asp-action="Topic" asp-route-slug="@topic.Slug">@topic.Title</a>
+						@if (!string.IsNullOrEmpty(email))
+						{
+							<span class="text-sm text-white/60">@pct%</span>
+						}
+					</div>
+					<div class="mt-2 flex flex-wrap gap-3 text-sm">
+						<a class="text-cc-soft hover:underline" asp-area="User" asp-controller="Learning" asp-action="Topic" asp-route-slug="@topic.Slug">Обзор</a>
+						<a class="text-cc-soft hover:underline" asp-area="User" asp-controller="Learning" asp-action="Tasks" asp-route-slug="@topic.Slug">Задачи</a>
+					</div>
+					@if (!string.IsNullOrEmpty(email) && pct > 0)
+					{
+						<div class="mt-2 h-1.5 overflow-hidden rounded-full bg-white/10">
+							<div class="h-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-400" style="width:@pct%"></div>
+						</div>
+					}
+				</div>
+			}
+			@if (!sec.Topics.Any())
+			{
+				<p class="text-white/60">Скоро...</p>
+			}
+		</div>
+	}
+</div>
