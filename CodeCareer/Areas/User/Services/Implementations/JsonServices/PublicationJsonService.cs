@@ -24,6 +24,9 @@ namespace CodeCareer.Areas.User.Services.Implementations.JsonServices
             return publications;
         }
 
+        public PublicationModel? GetById(int id) =>
+            GetPublicationModels().FirstOrDefault(p => p.Id == id);
+
         public void AddPublicationModel(PublicationModel publication)
         {
             List<PublicationModel> publications = new List<PublicationModel>();

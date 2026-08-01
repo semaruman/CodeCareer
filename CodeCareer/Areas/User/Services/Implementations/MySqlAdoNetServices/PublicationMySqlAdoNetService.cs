@@ -60,6 +60,11 @@ FROM publications
             return publicationsList;
         }
 
+        public PublicationModel? GetById(int id)
+        {
+            return GetPublicationModels().FirstOrDefault(p => p.Id == id);
+        }
+
         public void AddPublicationModel(PublicationModel publication)
         {
             using var connection = new MySqlConnection(Constants.CONNECTION_STRING);

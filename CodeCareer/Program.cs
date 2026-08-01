@@ -29,6 +29,7 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddScoped<IUserService, UserMySqlAdoNetService>();
 builder.Services.AddScoped<IPublicationService, PublicationMySqlAdoNetService>();
+builder.Services.AddScoped<ICommentService, CommentMySqlAdoNetService>();
 builder.Services.AddScoped<ITagService, TagMySqlEfService>();
 builder.Services.AddScoped<ITaskService, TaskMySqlEfService>();
 builder.Services.AddScoped<ISectionService, SectionMySqlEfService>();

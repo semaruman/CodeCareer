@@ -18,6 +18,7 @@ namespace CodeCareer.Areas.User.Controllers
         private readonly IUserService _userService;
         private readonly IPublicationService _publicationService;
         private readonly ITagService _tagService;
+        private readonly ICommentService _commentService;
 
         public UserModel currentUser
         {
@@ -25,12 +26,18 @@ namespace CodeCareer.Areas.User.Controllers
             set => _currentUserService.CurrentUser = value;
         }
 
-        public HomeController(IUserService userService, IPublicationService publicationService, ITagService tagService, ICurrentUserService currentUserService)
+        public HomeController(
+            IUserService userService,
+            IPublicationService publicationService,
+            ITagService tagService,
+            ICurrentUserService currentUserService,
+            ICommentService commentService)
         {
             _userService = userService;
             _publicationService = publicationService;
             _tagService = tagService;
             _currentUserService = currentUserService;
+            _commentService = commentService;
         }
 
         [HttpGet]
@@ -260,6 +267,64 @@ namespace CodeCareer.Areas.User.Controllers
                 return RedirectToAction("Profile");
             }
             return View(viewModel);
+        }
+
+        [HttpGet]
+        public IActionResult Publication(int id)
+        {
+            var publication = _publicationService.GetById(id);
+            if (publication == null)
+            {
+                return NotFound();
+            }
+
+            var viewModel = new PublicationDetailsViewModel
+            {
+                Publication = publication,
+                Comments = _commentService.GetByPublicationId(id),
+            };
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult AddComment(int publicationId, string newCommentContent)
+        {
+            if (string.IsNullOrEmpty(currentUser.Email))
+            {
+                return RedirectToAction("Authorizate");
+            }
+
+            var publication = _publicationService.GetById(publicationId);
+            if (publication == null)
+            {
+                return NotFound();
+            }
+
+            var content = (newCommentContent ?? string.Empty).Trim();
+            if (string.IsNullOrEmpty(content) || content.Length > 1000)
+            {
+                var viewModel = new PublicationDetailsViewModel
+                {
+                    Publication = publication,
+                    Comments = _commentService.GetByPublicationId(publicationId),
+                    NewCommentContent = newCommentContent ?? string.Empty,
+                };
+                ModelState.AddModelError(nameof(PublicationDetailsViewModel.NewCommentContent),
+                    string.IsNullOrEmpty(content)
+                        ? "Введите текст комментария"
+                        : "Максимальная длина — 1000 символов");
+                return View("Publication", viewModel);
+            }
+
+            _commentService.Add(new CommentModel
+            {
+                PublicationId = publicationId,
+                User = currentUser,
+                Content = content,
+                CreatedDate = DateTime.Now,
+            });
+
+            return RedirectToAction(nameof(Publication), new { id = publicationId });
         }
 
         [HttpGet]
