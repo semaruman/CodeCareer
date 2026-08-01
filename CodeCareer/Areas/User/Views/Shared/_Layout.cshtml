@@ -2,9 +2,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="ru">
 <head>
-    <meta name="viewport" content="width=device-width" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -31,30 +32,41 @@
     <link rel="stylesheet" href="~/css/theme.css" />
     <title>@ViewBag.Title</title>
 </head>
-<body class="font-sans antialiased text-white min-h-screen">
-	<header class="sticky top-0 z-50 px-4 py-3">
-		<nav class="mx-auto max-w-6xl flex flex-wrap items-center justify-center gap-2 rounded-2xl border border-white/20 bg-white/10 backdrop-blur-xl px-3 py-2 shadow-xl">
-			<a class="rounded-xl border border-white/30 bg-white/5 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-white/15 hover:border-cc-soft/60" asp-area="User" asp-controller="Home" asp-action="Index">Главная</a>
-			@if (CurrentUserService.CurrentUser.FullName == null)
-			{
-				<a class="rounded-xl border border-white/30 bg-white/5 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-white/15 hover:border-cc-soft/60" asp-area="User" asp-controller="Home" asp-action="Authorizate">Войти в Профиль</a>
-			}
-			@if (CurrentUserService.CurrentUser.FullName != null)
-			{
-				<a class="rounded-xl border border-white/30 bg-white/5 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-white/15 hover:border-cc-soft/60" asp-area="User" asp-controller="Home" asp-action="Profile">@CurrentUserService.CurrentUser.FullName</a>
-			}
-			<a class="rounded-xl border border-white/30 bg-white/5 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-white/15 hover:border-cc-soft/60" asp-area="User" asp-controller="Home" asp-action="PublicationFeed">Лента</a>
-			<a class="rounded-xl border border-white/30 bg-white/5 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-white/15 hover:border-cc-soft/60" asp-area="User" asp-controller="Learning" asp-action="Index">Обучение</a>
-			<a class="rounded-xl border border-white/30 bg-white/5 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-white/15 hover:border-cc-soft/60" asp-area="User" asp-controller="Home" asp-action="Community">Сообщество</a>
-			<a class="rounded-xl border border-white/30 bg-white/5 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-white/15 hover:border-cc-soft/60" asp-area="User" asp-controller="Home" asp-action="Top100Users">ТОП-100 лидеров</a>
-			@if (CurrentUserService.CurrentUser.FullName != null)
-			{
-				<a class="rounded-xl bg-gradient-to-r from-purple-500 to-indigo-400 px-3 py-1.5 text-sm font-semibold text-white shadow-md transition hover:brightness-110" asp-area="User" asp-controller="Home" asp-action="LogoutUser">Выход</a>
-			}
+<body class="font-sans antialiased text-white min-h-screen overflow-x-hidden">
+	<header class="sticky top-0 z-50 px-3 py-3 sm:px-4">
+		<nav class="mx-auto max-w-6xl rounded-2xl border border-white/20 bg-white/10 px-3 py-2 shadow-xl backdrop-blur-xl">
+			<div class="flex items-center justify-between gap-3 md:block">
+				<div class="flex w-full items-center justify-between md:hidden">
+					<a class="text-sm font-semibold tracking-wide text-cc-soft" asp-area="User" asp-controller="Home" asp-action="Index">CodeCareer</a>
+					<button type="button" id="nav-toggle" class="rounded-xl border border-white/30 bg-white/5 px-3 py-2 text-sm font-medium text-white" aria-expanded="false" aria-controls="nav-menu">
+						Меню
+					</button>
+				</div>
+				<div id="nav-menu" class="mt-2 hidden flex-col gap-2 md:mt-0 md:flex md:flex-row md:flex-wrap md:items-center md:justify-center">
+					<a class="rounded-xl border border-white/30 bg-white/5 px-3 py-2 text-center text-sm font-medium text-white transition hover:bg-white/15 hover:border-cc-soft/60" asp-area="User" asp-controller="Home" asp-action="Index">Главная</a>
+					@if (CurrentUserService.CurrentUser.FullName == null)
+					{
+						<a class="rounded-xl border border-white/30 bg-white/5 px-3 py-2 text-center text-sm font-medium text-white transition hover:bg-white/15 hover:border-cc-soft/60" asp-area="User" asp-controller="Home" asp-action="Authorizate">Войти в Профиль</a>
+					}
+					@if (CurrentUserService.CurrentUser.FullName != null)
+					{
+						<a class="max-w-full truncate rounded-xl border border-white/30 bg-white/5 px-3 py-2 text-center text-sm font-medium text-white transition hover:bg-white/15 hover:border-cc-soft/60" asp-area="User" asp-controller="Home" asp-action="Profile">@CurrentUserService.CurrentUser.FullName</a>
+					}
+					<a class="rounded-xl border border-white/30 bg-white/5 px-3 py-2 text-center text-sm font-medium text-white transition hover:bg-white/15 hover:border-cc-soft/60" asp-area="User" asp-controller="Home" asp-action="PublicationFeed">Лента</a>
+					<a class="rounded-xl border border-white/30 bg-white/5 px-3 py-2 text-center text-sm font-medium text-white transition hover:bg-white/15 hover:border-cc-soft/60" asp-area="User" asp-controller="Learning" asp-action="Index">Обучение</a>
+					<a class="rounded-xl border border-white/30 bg-white/5 px-3 py-2 text-center text-sm font-medium text-white transition hover:bg-white/15 hover:border-cc-soft/60" asp-area="User" asp-controller="Home" asp-action="Community">Сообщество</a>
+					<a class="rounded-xl border border-white/30 bg-white/5 px-3 py-2 text-center text-sm font-medium text-white transition hover:bg-white/15 hover:border-cc-soft/60" asp-area="User" asp-controller="Home" asp-action="Top100Users">ТОП-100</a>
+					@if (CurrentUserService.CurrentUser.FullName != null)
+					{
+						<a class="rounded-xl bg-gradient-to-r from-purple-500 to-indigo-400 px-3 py-2 text-center text-sm font-semibold text-white shadow-md transition hover:brightness-110" asp-area="User" asp-controller="Home" asp-action="LogoutUser">Выход</a>
+					}
+				</div>
+			</div>
 		</nav>
 	</header>
-    <main class="px-4 pb-10 pt-4">
+    <main class="mx-auto w-full max-w-6xl px-3 pb-10 pt-4 sm:px-4">
         @RenderBody()
     </main>
+	<script src="~/js/site-nav.js"></script>
 </body>
 </html>

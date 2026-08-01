@@ -4,15 +4,15 @@
 	ViewData["isWrongPassword"] = string.Empty;
 }
 
-<div class="flex min-h-[75vh] items-center justify-center py-8">
-	<div class="w-full max-w-md rounded-3xl border border-white/20 bg-white/10 p-8 shadow-xl backdrop-blur-xl sm:p-10">
-		<div class="mb-8 text-center">
+<div class="flex min-h-[70vh] items-center justify-center py-4 sm:py-8">
+	<div class="w-full max-w-md rounded-3xl border border-white/20 bg-white/10 p-5 shadow-xl backdrop-blur-xl sm:p-10">
+		<div class="mb-6 text-center sm:mb-8">
 			<div class="mx-auto mb-3 flex h-10 w-10 items-center justify-center gap-1">
 				<span class="h-8 w-2.5 -rotate-12 rounded-full bg-gradient-to-b from-purple-400 to-indigo-400"></span>
 				<span class="h-8 w-2.5 -rotate-12 rounded-full bg-gradient-to-b from-purple-300 to-indigo-500"></span>
 			</div>
 			<p class="text-xs font-semibold uppercase tracking-[0.2em] text-cc-soft">CodeCareer</p>
-			<h1 class="mt-4 text-2xl font-semibold text-white sm:text-3xl">Авторизация пользователя</h1>
+			<h1 class="mt-4 text-xl font-semibold text-white sm:text-3xl">Авторизация пользователя</h1>
 		</div>
 		<form asp-area="User" asp-controller="Home" asp-action="Authorizate" method="post" class="space-y-5 text-left">
 			<div>

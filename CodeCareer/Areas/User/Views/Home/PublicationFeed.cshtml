@@ -52,14 +52,14 @@
 }
 
 <div class="relative mx-auto max-w-5xl">
-	<div class="mb-8 text-center">
-		<h2 class="inline-block text-3xl font-semibold text-white">Лента публикаций</h2>
+	<div class="mb-6 text-center sm:mb-8">
+		<h2 class="inline-block text-2xl font-semibold text-white sm:text-3xl">Лента публикаций</h2>
 	</div>
 
-	<div class="mb-6 w-full max-w-[11rem] rounded-3xl border border-white/20 bg-white/10 p-4 shadow-xl backdrop-blur-xl lg:absolute lg:left-0 lg:top-16 lg:mb-0">
+	<div class="mb-6 w-full rounded-3xl border border-white/20 bg-white/10 p-4 shadow-xl backdrop-blur-xl lg:absolute lg:left-0 lg:top-16 lg:mb-0 lg:max-w-[11rem]">
 		<form asp-area="Users" asp-controller="Home" asp-action="PublicationFeed" method="post" class="space-y-3">
 			<h5 class="text-base font-semibold text-white">Теги</h5>
-			<div class="space-y-2">
+			<div class="flex flex-wrap gap-2 space-y-0 lg:block lg:space-y-2">
 				@foreach (var tag in TagService.GetTagModels())
 				{
 					if (Model.TagNames.Contains(tag.Name))
@@ -91,7 +91,7 @@
 		</form>
 	</div>
 	
-	<div class="mx-auto flex max-w-3xl flex-col items-center gap-4 lg:pl-48">
+	<div class="mx-auto flex w-full max-w-3xl flex-col items-stretch gap-4 sm:items-center lg:pl-48">
 		@foreach (var publication in publications)
 		{
 			@await Component.InvokeAsync("Publication", new { publicationP = publication })

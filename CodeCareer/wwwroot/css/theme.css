@@ -5,12 +5,21 @@
   --cc-accent-soft: #c4b5fd;
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 html {
   min-height: 100%;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
   min-height: 100vh;
+  min-height: 100dvh;
   margin: 0;
   font-family: "Poppins", system-ui, sans-serif;
   color: #ffffff;
@@ -19,8 +28,17 @@ body {
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
-  background-attachment: fixed;
+  background-attachment: scroll;
   position: relative;
+  overflow-x: hidden;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 768px) {
+  body {
+    background-attachment: fixed;
+  }
 }
 
 /* Лёгкое затемнение, чтобы текст и glass читались поверх фото */
@@ -43,6 +61,18 @@ body > * {
   z-index: 1;
 }
 
+img,
+video,
+iframe,
+svg {
+  max-width: 100%;
+  height: auto;
+}
+
+iframe {
+  width: 100%;
+}
+
 /* Усиленный glassmorphism для карточек, навбара и чипов */
 [class*="backdrop-blur"] {
   background: rgba(255, 255, 255, 0.08) !important;
@@ -55,11 +85,32 @@ body > * {
     inset 0 -1px 0 rgba(255, 255, 255, 0.06) !important;
 }
 
+@media (max-width: 767px) {
+  [class*="backdrop-blur"] {
+    backdrop-filter: blur(16px) saturate(150%) !important;
+    -webkit-backdrop-filter: blur(16px) saturate(150%) !important;
+  }
+}
+
 input,
 textarea,
 select,
 button {
   font-family: inherit;
+  font-size: 16px; /* iOS: без автозума при фокусе */
+  max-width: 100%;
+}
+
+input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
+textarea,
+select {
+  width: 100%;
+}
+
+button,
+input[type="checkbox"],
+input[type="radio"] {
+  width: auto;
 }
 
 input:focus,
@@ -86,4 +137,16 @@ select option {
 
 a {
   color: inherit;
+}
+
+pre,
+code {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
 }

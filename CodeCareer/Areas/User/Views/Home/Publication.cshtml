@@ -7,21 +7,21 @@
 	var isLoggedIn = !string.IsNullOrEmpty(CurrentUserService.CurrentUser.Email);
 }
 
-<div class="mx-auto max-w-3xl space-y-6">
+<div class="mx-auto max-w-3xl space-y-4 px-0 sm:space-y-6">
 	<nav class="text-sm text-white/60">
 		<a class="hover:text-cc-soft" asp-area="User" asp-controller="Home" asp-action="PublicationFeed">Лента</a>
 		<span> / </span>
 		<span class="text-white">Публикация</span>
 	</nav>
 
-	<div class="rounded-3xl border border-white/20 bg-white/10 p-6 shadow-xl backdrop-blur-xl sm:p-8">
-		<h1 class="mb-3 text-xl font-semibold text-white">
+	<div class="rounded-3xl border border-white/20 bg-white/10 p-4 shadow-xl backdrop-blur-xl sm:p-6 md:p-8">
+		<h1 class="mb-3 text-lg font-semibold text-white sm:text-xl">
 			<a class="text-cc-soft underline-offset-2 hover:text-white hover:underline"
 			   asp-area="User" asp-controller="Home" asp-action="AlienProfile"
 			   asp-route-userEmail="@publication.User.Email">@publication.User.FullName</a>
-			<span class="text-base font-normal text-white/60"> — @publication.CreatedDate.ToString("dd.MM.yyyy")</span>
+			<span class="text-sm font-normal text-white/60 sm:text-base"> — @publication.CreatedDate.ToString("dd.MM.yyyy")</span>
 		</h1>
-		<p class="mb-4 whitespace-pre-wrap text-white/90">@publication.Content</p>
+		<p class="mb-4 whitespace-pre-wrap break-words text-white/90">@publication.Content</p>
 		@if (publication.Tags != null && publication.Tags.Any())
 		{
 			<div class="flex flex-wrap gap-2">
@@ -33,8 +33,8 @@
 		}
 	</div>
 
-	<div class="rounded-3xl border border-white/20 bg-white/10 p-6 shadow-xl backdrop-blur-xl sm:p-8 space-y-4">
-		<h2 class="text-xl font-semibold text-cc-soft">Комментарии (@Model.Comments.Count)</h2>
+	<div class="rounded-3xl border border-white/20 bg-white/10 p-4 shadow-xl backdrop-blur-xl sm:p-6 md:p-8 space-y-4">
+		<h2 class="text-lg font-semibold text-cc-soft sm:text-xl">Комментарии (@Model.Comments.Count)</h2>
 
 		@if (Model.Comments.Any())
 		{

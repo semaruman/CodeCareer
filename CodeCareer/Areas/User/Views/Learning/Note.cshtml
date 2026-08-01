@@ -49,7 +49,7 @@
 			</div>
 		</div>
 
-		<div class="flex max-h-[80vh] flex-col rounded-3xl border border-white/20 bg-white/10 shadow-xl backdrop-blur-xl"
+		<div class="flex min-h-[50vh] max-h-[70vh] flex-col rounded-3xl border border-white/20 bg-white/10 shadow-xl backdrop-blur-xl lg:max-h-[80vh]"
 			 id="note-chat"
 			 data-api-base="@aiBase"
 			 data-api-path="@aiPath"
@@ -61,10 +61,10 @@
 				<h2 class="font-semibold text-cc-soft">AI-помощник</h2>
 				<p class="text-xs text-white/60">Вопросы по этому конспекту</p>
 			</div>
-			<div id="note-chat-messages" class="flex-1 space-y-3 overflow-y-auto px-4 py-3 text-sm">
+			<div id="note-chat-messages" class="min-h-[12rem] flex-1 space-y-3 overflow-y-auto px-4 py-3 text-sm">
 				@foreach (var msg in history)
 				{
-					<div class="rounded-xl px-3 py-2 @(msg.Role == "user" ? "bg-purple-500/30 ml-6" : "bg-white/10 mr-6")">
+					<div class="rounded-xl px-3 py-2 break-words @(msg.Role == "user" ? "bg-purple-500/30 ml-4 sm:ml-6" : "bg-white/10 mr-4 sm:mr-6")">
 						<span class="mb-1 block text-[10px] uppercase tracking-wide text-white/50">@msg.Role</span>
 						@msg.Content
 					</div>
@@ -75,10 +75,10 @@
 				}
 			</div>
 			<div class="border-t border-white/15 p-3">
-				<form id="note-chat-form" class="flex gap-2">
+				<form id="note-chat-form" class="flex flex-col gap-2 sm:flex-row">
 					<input id="note-chat-input" type="text" autocomplete="off" placeholder="Спросить..."
-						   class="flex-1 rounded-xl border border-white/80 bg-transparent px-3 py-2 text-sm text-white" />
-					<button type="submit" class="rounded-xl bg-gradient-to-r from-purple-500 to-indigo-400 px-3 py-2 text-sm font-semibold">Спросить</button>
+						   class="min-w-0 flex-1 rounded-xl border border-white/80 bg-transparent px-3 py-2 text-white" />
+					<button type="submit" class="shrink-0 rounded-xl bg-gradient-to-r from-purple-500 to-indigo-400 px-3 py-2 text-sm font-semibold">Спросить</button>
 				</form>
 				<p id="note-chat-status" class="mt-2 text-xs text-white/50"></p>
 			</div>
