@@ -3,8 +3,7 @@
 <div class="mb-4 w-full max-w-3xl rounded-3xl border border-white/20 bg-white/10 p-4 text-left shadow-xl backdrop-blur-xl sm:p-5 md:p-6">
 	<h4 class="mb-3 text-base font-semibold text-white sm:text-lg"><a class="text-cc-soft underline-offset-2 hover:text-white hover:underline" asp-area="User" asp-controller="Home" asp-action="AlienProfile" asp-route-userEmail="@Model.User.Email">@Model.User.FullName</a> - @Model.CreatedDate.Date.ToString("dd.MM.yyyy")</h4>
 	<p class="mb-3 whitespace-pre-wrap break-words text-white/90">
-		<a class="text-inherit no-underline hover:text-cc-soft"
-		   asp-area="User" asp-controller="Home" asp-action="Publication" asp-route-id="@Model.Id">@Model.Content</a>
+		<span class="text-inherit no-underline">@Model.Content</span>
 	</p>
 	@if (Model.Tags != null)
 	{
