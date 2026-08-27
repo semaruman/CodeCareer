@@ -1,0 +1,10 @@
+{
+  "name": "codecareer-frontend",
+  "private": true,
+  "scripts": {
+    "build:css": "tailwindcss -i ./wwwroot/css/tailwind.input.css -o ./wwwroot/css/tailwind.css --minify"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.17"
+  }
+}

@@ -1,77 +1,113 @@
+# CodeCareer
 
-https://github.com/user-attachments/assets/ceceb6d1-aaa2-4e1e-b2c5-0aeae366782b
+![CI](https://github.com/semaruman/CodeCareer/actions/workflows/ci.yml/badge.svg)
 
+Единая платформа для профессионального роста программистов: социальная лента, обучение, автопроверка задач (Judge0), AI-ассистент по конспектам.
 
+## Features
 
-# 💻 CodeCareer — экосистема для профессионального роста программистов
+- **Social** — публикации, комментарии, подписки, рейтинг, поиск
+- **Learning** — темы, конспекты (Markdown + sanitization), курсы, прогресс
+- **Coding challenges** — отправка кода → Judge0 → submissions history → auto progress
+- **AI** — отдельный сервис `CodeCareer.AiChat` с internal API key и rate limit
+- **Profiles** — аватар, навыки, достижения, уведомления
+- **Admin** — role `Admin` через cookie auth (без hardcoded пароля)
 
-> Платформа, объединяющая решение алгоритмических задач, технический блог и портфолио в одном месте.
-> Доступна в браузере: http://semenruman-001-site1.site4future.com/
+## Architecture
 
-**🎯 Цель проекта:**  
-Создать среду, где разработчик может практиковать навыки (как на LeetCode), вести профессиональный блог (как на Habr) и поддерживать актуальное портфолио — без переключения между 3+ сервисами.
-
----
-
-## 🚀 Ключевые возможности
-
-<ul>
-  <li>Создание публикаций</li>
-  <li>Решение задач</li>
-  <li>Редактирование профиля</li>
-  <li>Добавление навыков</li>
-  <li>Список лидеров</li>
-  <li>Поиск пользователей/публикаций</li>
-</ul>
-
----
-
-## ⚙️ Технологический стек
-
-```text
-Frontend        : ASP.NET Core MVC + Razor 
-Backend         : C# (.NET 8)
-ORM             : Entity Framework Core (CRUD, простые модели)
-Performance     : ADO.NET (тяжёлые операции с преобразованиями)
-Database        : MySQL 8.0+ (через Pomelo.EntityFrameworkCore.MySql)
+```mermaid
+flowchart TB
+  Browser --> MVC[ASP.NET Core MVC]
+  MVC --> Social[Social module]
+  MVC --> Learning[Learning module]
+  MVC --> Auth[Cookie Auth + Roles]
+  MVC --> AiProxy[HTTP to AiChat]
+  MVC --> JudgeProxy[ICodeJudge → Judge0]
+  AiProxy --> AiChat[CodeCareer.AiChat]
+  JudgeProxy --> Judge0[Judge0 sandbox]
+  MVC --> MySQL[(MySQL via EF Core)]
 ```
----
 
-## 🧠 Также использовал
+## Tech Stack
 
-- DI контейнер для быстрого переключения сервисов ADO.NET и EF core
-- Логгирование и LoggingMiddleware для отслеживания всех запросов
-- Свою реализацию ExceptionHandler для отлова всех исключений
-- Areas/ViewComponents для правильной организации кода
-- Cookie для аутентификации/авторизации
+- .NET 8, ASP.NET Core MVC, Razor
+- EF Core 8 + Pomelo MySQL (единая схема + migrations)
+- Judge0 для sandbox execution
+- Tailwind CSS (build pipeline в Docker/CI)
+- xUnit + WebApplicationFactory
 
-## 🚧 Планы развития
-
-- [ ] Контейнеризация: написать Dockerfile и `docker-compose.yml` для быстрого поднятия БД и приложения
-- [ ] Покрыть основную бизнес-логику модульными и интеграционными тестами (проект `CodeCareer.Tests` уже создан)
-- [ ] Добавить профессиональный дизайн
-- [ ] Подключить judge0 для проверки решения задач
-- [ ] Добавить ачивки в профиль
-- [ ] Автоматическое изменение статуса при достижении определённого рейтинга
-- [ ] Добавить аватарки и загрузку изображений в публикацию
-
-## 📦 Быстрый старт (локальный запуск)
-> Можно перейти по ссылке: http://semenruman-001-site1.site4future.com/
-
-**Требования:** .NET 8 SDK, MySQL Server 8.0+
+## Local development
 
 ```bash
-# 1. Клонировать репозиторий
 git clone https://github.com/semaruman/CodeCareer.git
-cd CodeCareer/CodeCareer
+cd CodeCareer
+cp .env.example .env   # заполните секреты
 
-# 2. Выполнить скрипт Schema.sql из папки Database(создаёт БД codecareer и необходимые таблицы) в MySql среде (у меня MySql Workbench)
-
-# 3. Настроить строку подключения
-# Отредактируйте appsettings.json, укажите вашу строку для MySqlConnection
-
-# 4. Запустить проект
-dotnet run
+docker compose up --build
 ```
 
+Приложение: http://localhost:8080  
+AiChat: http://localhost:7300  
+Judge0: http://localhost:2358
 
+### Без Docker
+
+```bash
+cd CodeCareer
+dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Server=localhost;..."
+dotnet ef database update --project CodeCareer
+dotnet run --project CodeCareer
+```
+
+### Admin access
+
+Зарегистрируйте обычный аккаунт, затем назначьте роль в MySQL:
+
+```sql
+UPDATE users SET role = 'Admin' WHERE email = 'your@email.com';
+```
+
+После повторного входа откройте `/Admin/Index`.
+
+## Environment variables
+
+| Variable | Description |
+|----------|-------------|
+| `ConnectionStrings__DefaultConnection` | MySQL connection |
+| `AiChat__BaseUrl` | URL AiChat service |
+| `AiChat__InternalApiKey` | Shared secret MVC ↔ AiChat |
+| `Judge__BaseUrl` | Judge0 API URL |
+| `Llm__ApiKey` | OpenAI-compatible key (AiChat only) |
+
+## Database
+
+```bash
+dotnet ef database update --project CodeCareer/CodeCareer
+```
+
+Миграции: `CodeCareer/Areas/User/Data/Migrations/`  
+Legacy denormalized data migrated on startup via `LegacyDataMigrator`.
+
+## Tests
+
+```bash
+dotnet test CodeCareer.sln
+```
+
+31 tests (28 unit + 3 integration smoke).
+
+## Security
+
+- Password hashing (`PasswordHasher`, legacy plaintext upgrade on login)
+- Cookie auth + `[Authorize]` + Admin role policy
+- CSRF (`AutoValidateAntiforgeryToken`)
+- Rate limiting (login, AI, submissions, writes)
+- HTML sanitization for Markdown notes
+- Secrets via env / user-secrets only
+
+## Architecture decisions
+
+- **EF Core** — единый источник схемы; ADO.NET и JSON legacy удалены
+- **Judge0** — пользовательский код не выполняется в процессе MVC
+- **AiChat** — изолированный сервис, LLM keys только там
+- **Docker** — app + mysql + aichat + judge0 для полного local stack

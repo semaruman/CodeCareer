@@ -4,22 +4,64 @@ services:
     container_name: codecareer-db
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: codecareer
-      MYSQL_USER: ${MYSQL_USER:-codecareer}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-codecareer_password}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./Database/Schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-rootpassword}"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
       interval: 5s
       timeout: 5s
       retries: 10
       start_period: 30s
 
+  judge0-db:
+    image: postgres:13-alpine
+    environment:
+      POSTGRES_USER: judge0
+      POSTGRES_PASSWORD: ${JUDGE0_DB_PASSWORD}
+      POSTGRES_DB: judge0
+    volumes:
+      - judge0_db_data:/var/lib/postgresql/data
+
+  judge0-redis:
+    image: redis:6-alpine
+
+  judge0:
+    image: judge0/judge0:1.13.0
+    ports:
+      - "2358:2358"
+    privileged: true
+    depends_on:
+      - judge0-db
+      - judge0-redis
+    environment:
+      REDIS_HOST: judge0-redis
+      REDIS_PORT: 6379
+      POSTGRES_HOST: judge0-db
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: judge0
+      POSTGRES_PASSWORD: ${JUDGE0_DB_PASSWORD}
+      POSTGRES_DB: judge0
+
+  aichat:
+    build:
+      context: .
+      dockerfile: CodeCareer.AiChat/Dockerfile
+    container_name: codecareer-aichat
+    depends_on:
+      - db
+    ports:
+      - "7300:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      InternalApiKey: ${AICHAT_INTERNAL_API_KEY}
+      Llm__ApiKey: ${LLM_API_KEY:-}
+      Llm__Model: ${LLM_MODEL:-gpt-4o-mini}
 
   web:
     build:
@@ -30,12 +72,20 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      aichat:
+        condition: service_started
+      judge0:
+        condition: service_started
     ports:
       - "8080:8080"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ConnectionStrings__DefaultConnection: >-
-        Server=db;Port=3306;Database=codecareer;User=${MYSQL_USER:-codecareer};Password=${MYSQL_PASSWORD:-codecareer_password};
+        Server=db;Port=3306;Database=codecareer;User=${MYSQL_USER};Password=${MYSQL_PASSWORD};
+      AiChat__BaseUrl: http://aichat:8080
+      AiChat__InternalApiKey: ${AICHAT_INTERNAL_API_KEY}
+      Judge__BaseUrl: http://judge0:2358
 
 volumes:
   mysql_data:
+  judge0_db_data:
