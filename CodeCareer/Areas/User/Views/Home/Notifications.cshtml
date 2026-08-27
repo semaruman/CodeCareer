@@ -1,0 +1,31 @@
+@{
+	ViewBag.Title = "Уведомления";
+	var notifications = ViewBag.Notifications as List<NotificationModel> ?? new List<NotificationModel>();
+}
+
+<div class="mx-auto max-w-2xl space-y-4">
+	<h1 class="text-2xl font-bold">Уведомления</h1>
+	@if (!notifications.Any())
+	{
+		<p class="text-white/60">Нет уведомлений</p>
+	}
+	else
+	{
+		<ul class="space-y-2">
+			@foreach (var n in notifications)
+			{
+				<li class="rounded-xl border border-white/20 bg-white/10 p-4 @(n.IsRead ? "opacity-60" : "")">
+					<p class="text-sm">@n.Message</p>
+					<p class="text-xs text-white/50">@n.CreatedAt.ToLocalTime()</p>
+					@if (!n.IsRead)
+					{
+						<form asp-action="MarkNotificationRead" method="post" class="mt-2">
+							<input type="hidden" name="notificationId" value="@n.Id" />
+							<button type="submit" class="text-xs text-cc-soft hover:underline">Отметить прочитанным</button>
+						</form>
+					}
+				</li>
+			}
+		</ul>
+	}
+</div>

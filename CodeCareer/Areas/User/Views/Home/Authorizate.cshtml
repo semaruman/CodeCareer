@@ -1,7 +1,6 @@
 ﻿@model UserViewModel
 @{
 	ViewBag.Title = "Авторизация";
-	ViewData["isWrongPassword"] = string.Empty;
 }
 
 <div class="flex min-h-[70vh] items-center justify-center py-4 sm:py-8">
@@ -13,30 +12,29 @@
 			</div>
 			<p class="text-xs font-semibold uppercase tracking-[0.2em] text-cc-soft">CodeCareer</p>
 			<h1 class="mt-4 text-xl font-semibold text-white sm:text-3xl">Авторизация пользователя</h1>
+			<p class="mt-3 text-sm text-white/70">Войдите по email и паролю. Если аккаунта нет — он создастся автоматически.</p>
 		</div>
 		<form asp-area="User" asp-controller="Home" asp-action="Authorizate" method="post" class="space-y-5 text-left">
+			<div asp-validation-summary="All" class="validation-summary-errors rounded-xl border border-rose-400/30 bg-rose-500/10 px-4 py-3"></div>
+
 			<div>
 				<label class="mb-1.5 block text-sm font-medium text-white" for="FullName">Имя пользователя:</label>
 				<input asp-for="FullName" class="w-full rounded-xl border border-white/80 bg-transparent px-4 py-3 text-white placeholder-white/40" />
-				<span asp-validation-for="FullName"></span>
+				<span asp-validation-for="FullName" class="field-validation-error mt-1 block"></span>
 			</div>
 
 			<div>
 				<label class="mb-1.5 block text-sm font-medium text-white" for="Email">Почта:</label>
 				<input type="email" asp-for="Email" class="w-full rounded-xl border border-white/80 bg-transparent px-4 py-3 text-white placeholder-white/40" />
-				<span asp-validation-for="Email"></span>
+				<span asp-validation-for="Email" class="field-validation-error mt-1 block"></span>
 			</div>
 
 			<div>
 				<label class="mb-1.5 block text-sm font-medium text-white" for="Password">Пароль:</label>
 				<input type="password" asp-for="Password" class="w-full rounded-xl border border-white/80 bg-transparent px-4 py-3 text-white placeholder-white/40" />
-				<span asp-validation-for="Password"></span>
+				<span asp-validation-for="Password" class="field-validation-error mt-1 block"></span>
+				<p class="mt-1.5 text-xs text-white/55">Минимум 8 символов</p>
 			</div>
-
-			@if (ViewData["isWrongPassword"] != string.Empty)
-			{
-				<h4 class="text-center text-base font-medium text-rose-300">Неверный пароль!</h4>
-			}
 
 			<button class="mt-2 w-full rounded-xl bg-gradient-to-r from-purple-500 to-indigo-400 py-3 text-base font-semibold text-white shadow-lg transition hover:brightness-110" type="submit">Войти</button>
 		</form>

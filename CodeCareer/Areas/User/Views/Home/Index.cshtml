@@ -2,31 +2,14 @@
 	ViewBag.Title = "Главная";
 }
 
-@*
-@model UserModel
-
-<h1>Главная</h1>
-<div>
-	@if (Model.FullName == null)
-	{
-		<a asp-area="User" asp-controller="Home" asp-action="Authorizate">Войти в профиль</a>
-	}
-	@if (Model.FullName != null)
-	{
-		<a asp-area="User" asp-controller="Home" asp-action="Index">@Model.FullName</a>
-	}
-	<a asp-area="User" asp-controller="Home" asp-action="Profile">Профиль</a>
-	<a asp-area="User" asp-controller="Home" asp-action="Index">Лента</a>
-	<a asp-area="User" asp-controller="Home" asp-action="Index">Задачи</a>
-	<a asp-area="User" asp-controller="Home" asp-action="Index">Сообщество</a>
-	<a asp-area="User" asp-controller="Home" asp-action="Index">ТОП-100 лидеров</a>
-	@if (Model.FullName != null)
-	{
-		<a asp-area="User" asp-controller="Home" asp-action="LogoutUser">Выход</a>
-	}
-</div>
-*@
 <div class="mx-auto max-w-3xl px-0 text-center sm:px-0">
+	@if (!CurrentUserService.IsAuthenticated)
+	{
+		<div class="mb-6 flex flex-wrap items-center justify-center gap-3">
+			<a class="inline-block rounded-xl bg-gradient-to-r from-purple-500 to-indigo-400 px-6 py-3 text-base font-semibold text-white shadow-lg transition hover:brightness-110" asp-area="User" asp-controller="Home" asp-action="Authorizate">Войти / Регистрация</a>
+			<a class="inline-block rounded-xl border border-white/30 bg-white/5 px-6 py-3 text-base font-medium text-white transition hover:bg-white/15" asp-area="User" asp-controller="Home" asp-action="PublicationFeed">Смотреть ленту</a>
+		</div>
+	}
 	<h2 class="mb-3 mt-4 text-2xl font-semibold text-white sm:mb-4 sm:mt-8 sm:text-4xl">CodeCareer — сообщество, где растут программисты</h2>
 	<h4 class="mb-6 text-base font-medium text-white/80 sm:mb-8 sm:text-lg">Решайте задачи, редактируйте профиль, выкладывайте посты - становитесь лучше каждый день</h4>
 	<div class="mb-8 rounded-3xl border border-white/20 bg-white/10 p-4 text-left shadow-xl backdrop-blur-xl sm:p-8">

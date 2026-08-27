@@ -1,6 +1,4 @@
 ﻿@using CodeCareer.Areas.User.Services.Interfaces
-@using CodeCareer.Areas.User.Services.Implementations.JsonServices
-
 @inject IPublicationService PublicationService
 @inject IUserService UserService
 @inject ITagService TagService
@@ -57,7 +55,7 @@
 	</div>
 
 	<div class="mb-6 w-full rounded-3xl border border-white/20 bg-white/10 p-4 shadow-xl backdrop-blur-xl lg:absolute lg:left-0 lg:top-16 lg:mb-0 lg:max-w-[11rem]">
-		<form asp-area="Users" asp-controller="Home" asp-action="PublicationFeed" method="post" class="space-y-3">
+		<form asp-area="User" asp-controller="Home" asp-action="PublicationFeed" method="post" class="space-y-3">
 			<h5 class="text-base font-semibold text-white">Теги</h5>
 			<div class="flex flex-wrap gap-2 space-y-0 lg:block lg:space-y-2">
 				@foreach (var tag in TagService.GetTagModels())
@@ -98,7 +96,7 @@
 
 			@if (currentUser != null)
 			{
-				<form asp-area="Users" asp-controller="Home" asp-action="PublicationFeed" method="post">
+				<form asp-area="User" asp-controller="Home" asp-action="PublicationFeed" method="post">
 
 					<input asp-for="PublicationUserEmail" value="@publication.User.Email" type="hidden" />
 

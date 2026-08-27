@@ -1,4 +1,4 @@
-﻿@using CodeCareer.Areas.User.Controllers;
+﻿@using CodeCareer.Areas.User.Controllers
 
 <!DOCTYPE html>
 
@@ -9,27 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Poppins', 'system-ui', 'sans-serif'],
-                    },
-                    colors: {
-                        cc: {
-                            deep: '#1a0033',
-                            mid: '#2e0249',
-                            accent: '#a78bfa',
-                            soft: '#c4b5fd',
-                        },
-                    },
-                },
-            },
-        };
-    </script>
-    <link rel="stylesheet" href="~/css/theme.css" />
+    <partial name="_TailwindStyles" />
+    <link rel="stylesheet" href="~/css/theme.css" asp-append-version="true" />
     <title>@ViewBag.Title</title>
 </head>
 <body class="font-sans antialiased text-white min-h-screen overflow-x-hidden">
@@ -44,11 +25,11 @@
 				</div>
 				<div id="nav-menu" class="mt-2 hidden flex-col gap-2 md:mt-0 md:flex md:flex-row md:flex-wrap md:items-center md:justify-center">
 					<a class="rounded-xl border border-white/30 bg-white/5 px-3 py-2 text-center text-sm font-medium text-white transition hover:bg-white/15 hover:border-cc-soft/60" asp-area="User" asp-controller="Home" asp-action="Index">Главная</a>
-					@if (CurrentUserService.CurrentUser.FullName == null)
+					@if (!CurrentUserService.IsAuthenticated)
 					{
 						<a class="rounded-xl border border-white/30 bg-white/5 px-3 py-2 text-center text-sm font-medium text-white transition hover:bg-white/15 hover:border-cc-soft/60" asp-area="User" asp-controller="Home" asp-action="Authorizate">Войти в Профиль</a>
 					}
-					@if (CurrentUserService.CurrentUser.FullName != null)
+					else
 					{
 						<a class="max-w-full truncate rounded-xl border border-white/30 bg-white/5 px-3 py-2 text-center text-sm font-medium text-white transition hover:bg-white/15 hover:border-cc-soft/60" asp-area="User" asp-controller="Home" asp-action="Profile">@CurrentUserService.CurrentUser.FullName</a>
 					}
@@ -56,7 +37,7 @@
 					<a class="rounded-xl border border-white/30 bg-white/5 px-3 py-2 text-center text-sm font-medium text-white transition hover:bg-white/15 hover:border-cc-soft/60" asp-area="User" asp-controller="Learning" asp-action="Index">Обучение</a>
 					<a class="rounded-xl border border-white/30 bg-white/5 px-3 py-2 text-center text-sm font-medium text-white transition hover:bg-white/15 hover:border-cc-soft/60" asp-area="User" asp-controller="Home" asp-action="Community">Сообщество</a>
 					<a class="rounded-xl border border-white/30 bg-white/5 px-3 py-2 text-center text-sm font-medium text-white transition hover:bg-white/15 hover:border-cc-soft/60" asp-area="User" asp-controller="Home" asp-action="Top100Users">ТОП-100</a>
-					@if (CurrentUserService.CurrentUser.FullName != null)
+					@if (CurrentUserService.IsAuthenticated)
 					{
 						<a class="rounded-xl bg-gradient-to-r from-purple-500 to-indigo-400 px-3 py-2 text-center text-sm font-semibold text-white shadow-md transition hover:brightness-110" asp-area="User" asp-controller="Home" asp-action="LogoutUser">Выход</a>
 					}

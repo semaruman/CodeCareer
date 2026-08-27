@@ -1,0 +1,17 @@
+@model CreatePublicationViewModel
+@{
+	ViewBag.Title = Model.PublicationId.HasValue ? "Редактировать публикацию" : "Создать публикацию";
+}
+
+<div class="mx-auto max-w-2xl rounded-3xl border border-white/20 bg-white/10 p-6 backdrop-blur-xl sm:p-8">
+	<h1 class="mb-4 text-2xl font-bold">@ViewBag.Title</h1>
+	<form asp-action="@(Model.PublicationId.HasValue ? "EditPublication" : "CreatePublication")" method="post" class="space-y-4">
+		@if (Model.PublicationId.HasValue)
+		{
+			<input type="hidden" asp-for="PublicationId" />
+		}
+		<textarea asp-for="Content" rows="6" class="w-full rounded-xl border border-white/80 bg-transparent px-4 py-3"></textarea>
+		<span asp-validation-for="Content" class="text-rose-300 text-sm"></span>
+		<button type="submit" class="rounded-xl bg-gradient-to-r from-purple-500 to-indigo-400 px-4 py-2 font-semibold">Сохранить</button>
+	</form>
+</div>

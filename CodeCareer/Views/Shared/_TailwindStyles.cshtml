@@ -1,0 +1,16 @@
+@inject IWebHostEnvironment HostEnv
+@{
+    var tailwindBuilt = System.IO.File.Exists(
+        System.IO.Path.Combine(HostEnv.WebRootPath, "css", "tailwind.css"));
+}
+@if (!tailwindBuilt)
+{
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { theme: { extend: { fontFamily: { sans: ['Poppins', 'system-ui', 'sans-serif'] }, colors: { cc: { deep: '#1a0033', mid: '#2e0249', accent: '#a78bfa', soft: '#c4b5fd' } } } } } };
+    </script>
+}
+else
+{
+    <link rel="stylesheet" href="~/css/tailwind.css" asp-append-version="true" />
+}

@@ -3,7 +3,8 @@
 	ViewBag.Title = Model.Name;
 	var topic = ViewBag.Topic as TopicModel;
 	var isSolved = ViewBag.IsSolved as bool? ?? false;
-	var checkResult = ViewBag.CheckResult as string;
+	var judgeResult = ViewBag.JudgeResult as string;
+	var submissions = ViewBag.Submissions as List<SubmissionModel> ?? new List<SubmissionModel>();
 }
 
 <div class="mx-auto max-w-4xl space-y-4">
@@ -21,48 +22,49 @@
 	</nav>
 
 	<div class="rounded-3xl border border-white/20 bg-white/10 p-6 text-left shadow-xl backdrop-blur-xl space-y-6 sm:p-8">
-		@if (topic != null)
-		{
-			var firstNote = topic.Notes?.OrderBy(n => n.SortOrder).FirstOrDefault();
-			if (firstNote != null)
-			{
-				<p>
-					<a class="text-cc-soft hover:underline" asp-area="User" asp-controller="Learning" asp-action="Note" asp-route-id="@firstNote.Id">К конспекту темы</a>
-				</p>
-			}
-		}
-
 		@await Component.InvokeAsync("TaskS", new { taskP = Model })
 
-		@if (!string.IsNullOrEmpty(checkResult))
+		@if (!string.IsNullOrEmpty(judgeResult))
 		{
-			<p class="rounded-xl border border-white/20 bg-white/5 px-4 py-2 text-sm @(checkResult.StartsWith("Верно") ? "text-cc-soft" : "text-rose-300")">@checkResult</p>
+			<p class="rounded-xl border border-white/20 bg-white/5 px-4 py-2 text-sm @(judgeResult.StartsWith("Accepted") ? "text-cc-soft" : "text-rose-300")">@judgeResult</p>
+		}
+
+		@if (isSolved)
+		{
+			<p class="text-sm text-cc-soft">✓ Задача решена (Accepted)</p>
 		}
 
 		<div class="rounded-2xl border border-white/15 bg-white/5 p-4 space-y-3">
-			<h3 class="font-semibold text-cc-soft">Проверка примера (сравнение вывода)</h3>
-			<form asp-area="User" asp-controller="Learning" asp-action="CheckSample" method="post" class="space-y-3">
+			<h3 class="font-semibold text-cc-soft">Отправить решение</h3>
+			<form asp-area="User" asp-controller="Learning" asp-action="SubmitSolution" method="post" class="space-y-3">
 				<input type="hidden" name="taskId" value="@Model.Id" />
 				<input type="hidden" name="taskName" value="@Model.Name" />
-				<label class="text-sm">Номер примера (0–2)</label>
-				<input type="number" name="sampleIndex" value="0" min="0" max="2" class="w-full rounded-xl border border-white/80 bg-transparent px-3 py-2" />
-				<label class="text-sm">Ваш вывод программы</label>
-				<textarea name="actualOutput" rows="3" class="w-full rounded-xl border border-white/80 bg-transparent px-3 py-2"></textarea>
-				<button type="submit" class="rounded-xl bg-gradient-to-r from-purple-500 to-indigo-400 px-4 py-2 text-sm font-semibold">Проверить</button>
+				<label class="text-sm">Язык</label>
+				<select name="language" class="w-full rounded-xl border border-white/80 bg-transparent px-3 py-2">
+					<option value="csharp">C#</option>
+					<option value="python">Python 3</option>
+					<option value="cpp">C++</option>
+					<option value="java">Java</option>
+					<option value="javascript">JavaScript</option>
+				</select>
+				<label class="text-sm">Исходный код</label>
+				<textarea name="sourceCode" rows="12" class="w-full rounded-xl border border-white/80 bg-black/30 px-3 py-2 font-mono text-sm" placeholder="using System;&#10;class Program { static void Main() { ... } }"></textarea>
+				<button type="submit" class="rounded-xl bg-gradient-to-r from-purple-500 to-indigo-400 px-4 py-2 text-sm font-semibold">Отправить на проверку</button>
 			</form>
+			<p class="text-xs text-white/50">Проверка выполняется через Judge0 (sandbox). Скрытые тесты не показываются.</p>
 		</div>
 
-		@if (!isSolved)
+		@if (submissions.Any())
 		{
-			<form asp-area="User" asp-controller="Learning" asp-action="MarkTaskSolved" method="post">
-				<input type="hidden" name="taskId" value="@Model.Id" />
-				<input type="hidden" name="taskName" value="@Model.Name" />
-				<button type="submit" class="rounded-xl border border-white/30 px-4 py-2 text-sm hover:bg-white/10">Отметить решённой вручную</button>
-			</form>
-		}
-		else
-		{
-			<p class="text-sm text-cc-soft">✓ Задача отмечена как решённая</p>
+			<div class="rounded-2xl border border-white/15 bg-white/5 p-4 space-y-2">
+				<h3 class="font-semibold text-cc-soft">История отправок</h3>
+				<ul class="space-y-1 text-sm">
+					@foreach (var s in submissions.Take(10))
+					{
+						<li>@s.CreatedAt.ToLocalTime(): @s.Language — @s.Status (@s.Score%)</li>
+					}
+				</ul>
+			</div>
 		}
 
 		@await Component.InvokeAsync("OlympCompiler")

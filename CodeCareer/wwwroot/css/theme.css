@@ -130,6 +130,10 @@ select:focus {
   font-size: 0.875rem;
 }
 
+.validation-summary-valid {
+  display: none;
+}
+
 select option {
   background-color: #1a0033;
   color: #ffffff;

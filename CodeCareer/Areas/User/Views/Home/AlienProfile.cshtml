@@ -1,5 +1,4 @@
 ﻿@using CodeCareer.Areas.User.Services.Interfaces
-@using CodeCareer.Areas.User.Services.Implementations.JsonServices
 @model AlienProfileViewModel
 
 @inject IPublicationService PublicationService
@@ -45,7 +44,7 @@
 		@*Кнопка "подписаться"*@
 		@if (currentUser != null)
 		{
-			<form asp-area="Users" asp-controller="Home" asp-action="PublicationFeed" method="post">
+			<form asp-area="User" asp-controller="Home" asp-action="PublicationFeed" method="post">
 
 				<input asp-for="AlienUserEmail" value="@Model.AlienUserEmail" type="hidden" />
 				<input type="hidden" asp-for="WantsToSubscribe" value="@(!currentUser.SubscriptionsEmails.Contains(Model.AlienUserEmail))" />
