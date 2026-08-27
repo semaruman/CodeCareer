@@ -1,71 +1,57 @@
 ﻿using System.Security.Claims;
 using CodeCareer.Areas.User.Models;
+using CodeCareer.Areas.User.Services.Interfaces;
 
-namespace CodeCareer.Areas.User.Services.Interfaces
+namespace CodeCareer.Areas.User.Services.Implementations;
+
+public class CurrentUserService : ICurrentUserService
 {
-    public class CurrentUserService : ICurrentUserService
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IUserService _userService;
+    private UserModel? _cachedUser;
+
+    public CurrentUserService(IHttpContextAccessor httpContextAccessor, IUserService userService)
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IUserService _userService;
-        private UserModel _cachedUser; // Кэш для текущего запроса
+        _httpContextAccessor = httpContextAccessor;
+        _userService = userService;
+    }
 
-        public CurrentUserService(
-            IHttpContextAccessor httpContextAccessor,
-            IUserService userService)
-        {
-            _httpContextAccessor = httpContextAccessor;
-            _userService = userService;
-        }
+    public bool IsAuthenticated =>
+        _httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated == true;
 
-        public UserModel CurrentUser
+    public UserModel CurrentUser
+    {
+        get
         {
-            get
+            if (_cachedUser != null)
             {
-                // Если уже загрузили в этом запросе - возвращаем из кэша
+                return _cachedUser;
+            }
+
+            var httpContext = _httpContextAccessor.HttpContext;
+            if (httpContext?.User?.Identity?.IsAuthenticated != true)
+            {
+                return new UserModel();
+            }
+
+            var userIdClaim = httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (int.TryParse(userIdClaim, out var userId))
+            {
+                _cachedUser = _userService.GetUserById(userId);
                 if (_cachedUser != null)
+                {
                     return _cachedUser;
-
-                // Получаем email из АУТЕНТИФИЦИРОВАННЫХ claims
-                var email = _httpContextAccessor.HttpContext?.User?
-                    .FindFirstValue(ClaimTypes.Email);
-
-                // Также можно получить ID
-                var userId = _httpContextAccessor.HttpContext?.User?
-                    .FindFirstValue(ClaimTypes.NameIdentifier);
-
-                if (string.IsNullOrEmpty(email) && string.IsNullOrEmpty(userId))
-                {
-                    return new UserModel(); // Не аутентифицирован
                 }
-
-                // Загружаем из БД
-                if (!string.IsNullOrEmpty(email))
-                    _cachedUser = _userService.GetUserByEmail(email);
-
-                return _cachedUser ?? new UserModel();
             }
-            set
+
+            var email = httpContext.User.FindFirstValue(ClaimTypes.Email);
+            if (!string.IsNullOrEmpty(email))
             {
-                // Сохраняем в БД
-                if (value != null && !string.IsNullOrEmpty(value.Email))
-                {
-                    var existingUser = _userService.GetUserByEmail(value.Email);
-                    if (existingUser != null)
-                    {
-                        _userService.UpdateUserModel(value);
-                    }
-                    else
-                    {
-                        _userService.AddUserModel(value);
-                    }
-
-                    // Кэшируем для текущего запроса
-                    _cachedUser = value;
-
-                    // НЕ СОЗДАЕМ CLAIMS ЗДЕСЬ!
-                    // Аутентификация должна быть в контроллере через SignInAsync
-                }
+                _cachedUser = _userService.GetUserByEmail(email);
             }
+
+            return _cachedUser ?? new UserModel();
         }
+        set => _cachedUser = value;
     }
 }

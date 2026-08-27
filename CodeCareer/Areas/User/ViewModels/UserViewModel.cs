@@ -9,9 +9,12 @@ namespace CodeCareer.Areas.User.ViewModels
         public string FullName { get; set; }
 
         [Required(ErrorMessage = "Введите почту")]
-        public string Email { get; set; }
+        [EmailAddress(ErrorMessage = "Некорректный email")]
+        public string Email { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Введите пароль")]
-        public string Password { get; set; }
+        [MinLength(8, ErrorMessage = "Минимум 8 символов")]
+        [MaxLength(128)]
+        public string Password { get; set; } = string.Empty;
     }
 }
