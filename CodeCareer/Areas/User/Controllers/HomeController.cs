@@ -1,448 +1,457 @@
-﻿using System.Security.Claims;
-using CodeCareer.Areas.User.Models;
-using CodeCareer.Areas.User.Services.Implementations.JsonServices;
+﻿using CodeCareer.Areas.User.Models;
 using CodeCareer.Areas.User.Services.Interfaces;
 using CodeCareer.Areas.User.ViewModels;
-using Microsoft.AspNetCore.Authentication;
+using CodeCareer.Infrastructure;
+using CodeCareer.Security;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
-namespace CodeCareer.Areas.User.Controllers
+namespace CodeCareer.Areas.User.Controllers;
+
+[Area("User")]
+public class HomeController : Controller
 {
-    [Area("User")]
-    public class HomeController : Controller
+    private readonly ICurrentUserService _currentUserService;
+    private readonly IUserService _userService;
+    private readonly IPublicationService _publicationService;
+    private readonly ITagService _tagService;
+    private readonly ICommentService _commentService;
+    private readonly IAuthService _authService;
+    private readonly INotificationService _notificationService;
+    private readonly IAchievementService _achievementService;
+    private readonly IFileStorage _fileStorage;
+
+    private UserModel currentUser => _currentUserService.CurrentUser;
+
+    public HomeController(
+        IUserService userService,
+        IPublicationService publicationService,
+        ITagService tagService,
+        ICurrentUserService currentUserService,
+        ICommentService commentService,
+        IAuthService authService,
+        INotificationService notificationService,
+        IAchievementService achievementService,
+        IFileStorage fileStorage)
     {
+        _userService = userService;
+        _publicationService = publicationService;
+        _tagService = tagService;
+        _currentUserService = currentUserService;
+        _commentService = commentService;
+        _authService = authService;
+        _notificationService = notificationService;
+        _achievementService = achievementService;
+        _fileStorage = fileStorage;
+    }
 
+    [HttpGet]
+    [Route("")]
+    [Route("{action}")]
+    [AllowAnonymous]
+    public ActionResult Index() => View(currentUser);
 
-        private readonly ICurrentUserService _currentUserService;
+    [HttpGet]
+    [AllowAnonymous]
+    public IActionResult Authorizate() => View(new UserViewModel());
 
-        private readonly IUserService _userService;
-        private readonly IPublicationService _publicationService;
-        private readonly ITagService _tagService;
-        private readonly ICommentService _commentService;
-
-        public UserModel currentUser
+    [HttpPost]
+    [AllowAnonymous]
+    [EnableRateLimiting("login")]
+    public async Task<IActionResult> Authorizate(UserViewModel user)
+    {
+        if (!ModelState.IsValid)
         {
-            get => _currentUserService.CurrentUser;
-            set => _currentUserService.CurrentUser = value;
+            return View(user);
         }
 
-        public HomeController(
-            IUserService userService,
-            IPublicationService publicationService,
-            ITagService tagService,
-            ICurrentUserService currentUserService,
-            ICommentService commentService)
+        var result = await _authService.SignInAsync(HttpContext, user.Email, user.Password ?? string.Empty);
+        if (!result.Success)
         {
-            _userService = userService;
-            _publicationService = publicationService;
-            _tagService = tagService;
-            _currentUserService = currentUserService;
-            _commentService = commentService;
-        }
-
-        [HttpGet]
-        [Route("")]
-        [Route("{action}")]
-        public ActionResult Index()
-        {
-            return View(currentUser);
-        }
-
-        [HttpGet]
-        public IActionResult Authorizate()
-        {
-            return View(new UserViewModel());
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Authorizate(UserViewModel user)
-        {
-            if (string.IsNullOrEmpty(user.FullName) || string.IsNullOrEmpty(user.Email) || string.IsNullOrEmpty(user.Password))
+            var existing = _userService.GetUserByEmail(user.Email);
+            if (existing == null)
             {
-                return View(user);
-            }
-
-            var dbUser = _userService.GetUserByEmail(user.Email);
-
-            if (dbUser != null && user.Password == dbUser.Password)
-            {
-                var claims = new List<Claim>
-                    {
-                        new Claim(ClaimTypes.Name, user.FullName),
-                        new Claim(ClaimTypes.Email, user.Email)
-                    };
-
-                var claimsIdentity = new ClaimsIdentity(claims, "CookieAuth");
-                var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-
-                await HttpContext.SignInAsync(claimsPrincipal);
-
-                return RedirectToAction("Index", "Home");
-            }
-            else if (dbUser == null)
-            {
-                _userService.AddUserModel(new UserModel
+                var registerResult = await _authService.RegisterAsync(HttpContext, new UserModel
                 {
                     FullName = user.FullName,
                     Email = user.Email,
-                    Password = user.Password,
-                });
-                var claims = new List<Claim>
-                    {
-                        new Claim(ClaimTypes.Name, user.FullName),
-                        new Claim(ClaimTypes.Email, user.Email)
-                    };
+                }, user.Password ?? string.Empty);
 
-                var claimsIdentity = new ClaimsIdentity(claims, "CookieAuth");
-                var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+                if (registerResult.Success)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
 
-                await HttpContext.SignInAsync(claimsPrincipal);
-
-                return RedirectToAction("Index", "Home");
-            }
-            else
-            {
+                ModelState.AddModelError(string.Empty, registerResult.ErrorMessage ?? "Ошибка регистрации");
                 return View(user);
             }
-            
-        }
-        public IActionResult SuccessAuthorizate()
-        {
-            return View(currentUser);
-        }
 
-        public async Task<IActionResult> LogoutUser()
-        {
-            await HttpContext.SignOutAsync();
-            return RedirectToAction("Index");
-        }
-
-        [HttpGet]
-        public IActionResult Profile()
-        {
-            if (currentUser.FullName != null)
-            {
-                return View(currentUser);
-            }
-            else
-            {
-                return RedirectToAction("Authorizate");
-            }
-        }
-
-        [HttpGet]
-        public IActionResult AlienProfile(string userEmail)
-        {
-            AlienProfileViewModel model = new AlienProfileViewModel()
-            {
-                CurrentUserEmail = currentUser.Email,
-                AlienUserEmail = userEmail
-            };
-
-            return View(model);
-        }
-
-        [HttpPost]
-        public IActionResult AlienProfile(AlienProfileViewModel viewModel)
-        {
-            // если пользователь не зарегистрирован
-            if (currentUser.FullName == string.Empty)
-            {
-                // Ничего не делаем
-            }
-            else
-            {
-                UserModel alienUser = _userService.GetUserModels().FirstOrDefault(u => u.Email == viewModel.AlienUserEmail);
-
-                if (alienUser == null)
-                {
-                    Console.WriteLine($"Null. {viewModel.AlienUserEmail}");
-                }
-
-                if (viewModel.WantsToSubscribe)
-                {
-                    alienUser.SubscribersEmails.Add(currentUser.Email);
-                    alienUser.Subscribers += 1;
-                    currentUser.Subscriptions += 1;
-                    currentUser.SubscriptionsEmails.Add(alienUser.Email);
-
-                    alienUser.Rating += Constants.PlUS_RATING_FOR_SUBSCRIBE;
-                    currentUser.Rating += Constants.PlUS_RATING_FOR_SUBSCRIPTION;
-
-                    _userService.UpdateUserModel(alienUser);
-                    _userService.UpdateUserModel(currentUser);
-
-                }
-                else
-                {
-
-                    if (alienUser.SubscribersEmails.Remove(currentUser.Email))
-                    {
-                        alienUser.Subscribers -= 1;
-                        currentUser.Subscriptions -= 1;
-                        currentUser.SubscriptionsEmails.Remove(alienUser.Email);
-
-                        alienUser.Rating -= Constants.PlUS_RATING_FOR_SUBSCRIBE;
-                        currentUser.Rating -= Constants.PlUS_RATING_FOR_SUBSCRIPTION;
-                    }
-
-                    _userService.UpdateUserModel(alienUser);
-                    _userService.UpdateUserModel(currentUser);
-
-                }
-
-            }
-
-            AlienProfileViewModel model = new AlienProfileViewModel()
-            {
-                CurrentUserEmail = currentUser.Email,
-                AlienUserEmail = viewModel.AlienUserEmail
-            };
-
-            return View(model);
-        }
-
-        [HttpGet]
-        public IActionResult ShowSubscribes(string userEmail)
-        {
-            UserModel user = _userService.GetUserModels().FirstOrDefault(u => u.Email == userEmail);
+            ModelState.AddModelError(string.Empty, result.ErrorMessage ?? "Ошибка входа");
             return View(user);
         }
 
-        [HttpGet]
-        public IActionResult ShowSubscriptions(string userEmail)
+        return RedirectToAction(nameof(Index));
+    }
+
+    [Authorize]
+    public async Task<IActionResult> LogoutUser()
+    {
+        await _authService.SignOutAsync(HttpContext);
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpGet]
+    [Authorize]
+    public IActionResult Profile() => View(currentUser);
+
+    [HttpGet]
+    [AllowAnonymous]
+    public IActionResult AlienProfile(string userEmail)
+    {
+        var model = new AlienProfileViewModel
         {
-            UserModel user = _userService.GetUserModels().FirstOrDefault(u => u.Email == userEmail);
+            CurrentUserEmail = currentUser.Email,
+            AlienUserEmail = userEmail,
+        };
+        return View(model);
+    }
+
+    [HttpPost]
+    [Authorize]
+    [EnableRateLimiting("write-content")]
+    public IActionResult AlienProfile(AlienProfileViewModel viewModel)
+    {
+        var alienUser = _userService.GetUserByEmail(viewModel.AlienUserEmail);
+        if (alienUser == null)
+        {
+            return RedirectToAction(nameof(AlienProfile), new { userEmail = viewModel.AlienUserEmail });
+        }
+
+        if (viewModel.WantsToSubscribe)
+        {
+            if (_userService.Subscribe(currentUser.Id, alienUser.Id))
+            {
+                _notificationService.Add(alienUser.Id, NotificationTypes.NewFollower,
+                    $"{currentUser.FullName} подписался на вас");
+                _achievementService.TryGrant(alienUser.Id, AchievementKeys.FirstFollower);
+            }
+        }
+        else
+        {
+            _userService.Unsubscribe(currentUser.Id, alienUser.Id);
+        }
+
+        return RedirectToAction(nameof(AlienProfile), new { userEmail = viewModel.AlienUserEmail });
+    }
+
+    [HttpGet]
+    [AllowAnonymous]
+    public IActionResult ShowSubscribes(string userEmail)
+    {
+        var user = _userService.GetUserByEmail(userEmail);
+        return View(user);
+    }
+
+    [HttpGet]
+    [AllowAnonymous]
+    public IActionResult ShowSubscriptions(string userEmail)
+    {
+        var user = _userService.GetUserByEmail(userEmail);
+        return View(user);
+    }
+
+    [HttpGet]
+    [Authorize]
+    public IActionResult EditProfile() => View(currentUser);
+
+    [HttpPost]
+    [Authorize]
+    [EnableRateLimiting("write-content")]
+    public async Task<IActionResult> EditProfile(UserModel user, IFormFile? avatar)
+    {
+        if (string.IsNullOrWhiteSpace(user.Info) || user.Info.Length > 300)
+        {
+            ModelState.AddModelError(nameof(UserModel.Info), "Информация профиля обязательна (до 300 символов)");
             return View(user);
         }
 
-        [HttpGet]
-        public IActionResult EditProfile()
-        {
-            return View(currentUser);
-        }
+        currentUser.Info = user.Info;
+        currentUser.ShowSubscriptions = user.ShowSubscriptions;
 
-        [HttpPost]
-        public IActionResult EditProfile(UserModel user)
+        if (avatar != null)
         {
-            if (user.Info != string.Empty)
+            var path = await _fileStorage.SaveAvatarAsync(currentUser.Id, avatar);
+            if (path != null)
             {
-                //_userService.RemoveUserModel(currentUser.Id);
-                currentUser.Info = user.Info;
-                currentUser.ShowSubscriptions = user.ShowSubscriptions;
-                _userService.UpdateUserModel(currentUser);
-
-                return RedirectToAction("EditProfileSuccess");
+                currentUser.AvatarPath = path;
             }
-            return View(user);
         }
 
-        public IActionResult EditProfileSuccess()
+        _userService.UpdateUserModel(currentUser);
+        return RedirectToAction(nameof(EditProfileSuccess));
+    }
+
+    [Authorize]
+    public IActionResult EditProfileSuccess() => View();
+
+    [HttpGet]
+    [Authorize]
+    public IActionResult CreatePublication() => View(new CreatePublicationViewModel());
+
+    [HttpPost]
+    [Authorize]
+    [EnableRateLimiting("write-content")]
+    public IActionResult CreatePublication(CreatePublicationViewModel viewModel, List<string>? tagNames)
+    {
+        if (!ModelState.IsValid || string.IsNullOrWhiteSpace(viewModel.Content))
         {
-            return View();
-        }
-
-        [HttpGet]
-        public IActionResult CreatePublication()
-        {
-            return View(new CreatePublicationViewModel());
-        }
-
-        [HttpPost]
-        public IActionResult CreatePublication(CreatePublicationViewModel viewModel, List<string> TagNames)
-        {
-
-            if (!string.IsNullOrEmpty(viewModel.Content))
-            {
-                var publication = new PublicationModel { Content = viewModel.Content };
-
-                publication.Tags = _tagService.GetTagModels().Where(t => TagNames.Contains(t.Name)).ToHashSet();
-
-                publication.User = currentUser;
-                currentUser.Rating += Constants.PlUS_RATING_FOR_POST;
-                _publicationService.AddPublicationModel(publication);
-
-                _userService.UpdateUserModel(currentUser);
-
-                return RedirectToAction("Profile");
-            }
             return View(viewModel);
         }
 
-        [HttpGet]
-        public IActionResult Publication(int id)
+        var publication = new PublicationModel
         {
-            var publication = _publicationService.GetById(id);
-            if (publication == null)
-            {
-                return NotFound();
-            }
+            Content = viewModel.Content.Trim(),
+            UserId = currentUser.Id,
+            User = currentUser,
+            Tags = _tagService.GetTagModels().Where(t => (tagNames ?? new()).Contains(t.Name)).ToHashSet(),
+        };
 
+        currentUser.Rating += Constants.PlUS_RATING_FOR_POST;
+        _publicationService.AddPublicationModel(publication);
+        _userService.UpdateUserModel(currentUser);
+        _achievementService.TryGrant(currentUser.Id, AchievementKeys.FirstPost);
+
+        return RedirectToAction(nameof(Profile));
+    }
+
+    [HttpGet]
+    [Authorize]
+    public IActionResult EditPublication(int id)
+    {
+        var publication = _publicationService.GetById(id);
+        if (publication == null || !_publicationService.IsOwner(id, currentUser.Id))
+        {
+            return Forbid();
+        }
+
+        return View(new CreatePublicationViewModel { Content = publication.Content, PublicationId = id });
+    }
+
+    [HttpPost]
+    [Authorize]
+    [EnableRateLimiting("write-content")]
+    public IActionResult EditPublication(CreatePublicationViewModel viewModel, List<string>? tagNames)
+    {
+        if (!viewModel.PublicationId.HasValue || string.IsNullOrWhiteSpace(viewModel.Content))
+        {
+            return View(viewModel);
+        }
+
+        var publication = _publicationService.GetById(viewModel.PublicationId.Value);
+        if (publication == null || !_publicationService.IsOwner(publication.Id, currentUser.Id))
+        {
+            return Forbid();
+        }
+
+        publication.Content = viewModel.Content.Trim();
+        publication.Tags = _tagService.GetTagModels().Where(t => (tagNames ?? new()).Contains(t.Name)).ToHashSet();
+        _publicationService.UpdatePublicationModel(publication);
+        return RedirectToAction(nameof(Publication), new { id = publication.Id });
+    }
+
+    [HttpPost]
+    [Authorize]
+    [EnableRateLimiting("write-content")]
+    public IActionResult DeletePublication(int id)
+    {
+        if (!_publicationService.IsOwner(id, currentUser.Id))
+        {
+            return Forbid();
+        }
+
+        _publicationService.RemovePublicationModel(id);
+        return RedirectToAction(nameof(Profile));
+    }
+
+    [HttpGet]
+    [AllowAnonymous]
+    public IActionResult Publication(int id)
+    {
+        var publication = _publicationService.GetById(id);
+        if (publication == null)
+        {
+            return NotFound();
+        }
+
+        return View(new PublicationDetailsViewModel
+        {
+            Publication = publication,
+            Comments = _commentService.GetByPublicationId(id),
+        });
+    }
+
+    [HttpPost]
+    [Authorize]
+    [EnableRateLimiting("write-content")]
+    public IActionResult AddComment(int publicationId, string newCommentContent)
+    {
+        var publication = _publicationService.GetById(publicationId);
+        if (publication == null)
+        {
+            return NotFound();
+        }
+
+        var content = (newCommentContent ?? string.Empty).Trim();
+        if (string.IsNullOrEmpty(content) || content.Length > 1000)
+        {
             var viewModel = new PublicationDetailsViewModel
             {
                 Publication = publication,
-                Comments = _commentService.GetByPublicationId(id),
+                Comments = _commentService.GetByPublicationId(publicationId),
+                NewCommentContent = newCommentContent ?? string.Empty,
             };
-            return View(viewModel);
+            ModelState.AddModelError(nameof(PublicationDetailsViewModel.NewCommentContent),
+                string.IsNullOrEmpty(content) ? "Введите текст комментария" : "Максимальная длина — 1000 символов");
+            return View(nameof(Publication), viewModel);
         }
 
-        [HttpPost]
-        public IActionResult AddComment(int publicationId, string newCommentContent)
+        _commentService.Add(new CommentModel
         {
-            if (string.IsNullOrEmpty(currentUser.Email))
-            {
-                return RedirectToAction("Authorizate");
-            }
+            PublicationId = publicationId,
+            UserId = currentUser.Id,
+            User = currentUser,
+            Content = content,
+        });
 
-            var publication = _publicationService.GetById(publicationId);
-            if (publication == null)
-            {
-                return NotFound();
-            }
-
-            var content = (newCommentContent ?? string.Empty).Trim();
-            if (string.IsNullOrEmpty(content) || content.Length > 1000)
-            {
-                var viewModel = new PublicationDetailsViewModel
-                {
-                    Publication = publication,
-                    Comments = _commentService.GetByPublicationId(publicationId),
-                    NewCommentContent = newCommentContent ?? string.Empty,
-                };
-                ModelState.AddModelError(nameof(PublicationDetailsViewModel.NewCommentContent),
-                    string.IsNullOrEmpty(content)
-                        ? "Введите текст комментария"
-                        : "Максимальная длина — 1000 символов");
-                return View("Publication", viewModel);
-            }
-
-            _commentService.Add(new CommentModel
-            {
-                PublicationId = publicationId,
-                User = currentUser,
-                Content = content,
-                CreatedDate = DateTime.Now,
-            });
-
-            return RedirectToAction(nameof(Publication), new { id = publicationId });
+        if (publication.UserId != currentUser.Id)
+        {
+            _notificationService.Add(publication.UserId, NotificationTypes.CommentOnPost,
+                $"{currentUser.FullName} прокомментировал вашу публикацию");
         }
 
-        [HttpGet]
-        public IActionResult PublicationFeed()
+        return RedirectToAction(nameof(Publication), new { id = publicationId });
+    }
+
+    [HttpPost]
+    [Authorize]
+    public IActionResult DeleteComment(int commentId, int publicationId)
+    {
+        if (!_commentService.Delete(commentId, currentUser.Id))
         {
-            return View(new PublicationFeedViewModel(currentUser.Email));
+            return Forbid();
         }
 
-        [HttpPost]
-        public IActionResult PublicationFeed(PublicationFeedViewModel viewModel, List<string> SelectedTags)
+        return RedirectToAction(nameof(Publication), new { id = publicationId });
+    }
+
+    [HttpGet]
+    [AllowAnonymous]
+    public IActionResult PublicationFeed() => View(new PublicationFeedViewModel(currentUser.Email));
+
+    [HttpPost]
+    [Authorize]
+    [EnableRateLimiting("write-content")]
+    public IActionResult PublicationFeed(PublicationFeedViewModel viewModel, List<string>? selectedTags)
+    {
+        var publicationUser = _userService.GetUserByEmail(viewModel.PublicationUserEmail ?? string.Empty);
+        if (publicationUser != null)
         {
-            // если пользователь не зарегистрирован
-            if (viewModel.CurrentUserEmail == null)
+            if (viewModel.WantsToSubscribe)
             {
-                // Ничего не делаем
+                _userService.Subscribe(currentUser.Id, publicationUser.Id);
             }
             else
             {
-                UserModel publicationUser = _userService.GetUserModels().FirstOrDefault(u => u.Email == viewModel.PublicationUserEmail);
-                if (viewModel.WantsToSubscribe)
-                {
-                    publicationUser.SubscribersEmails.Add(currentUser.Email);
-                    publicationUser.Subscribers += 1;
-                    currentUser.Subscriptions += 1;
-                    currentUser.SubscriptionsEmails.Add(publicationUser.Email);
-
-                    publicationUser.Rating += Constants.PlUS_RATING_FOR_SUBSCRIBE;
-                    currentUser.Rating += Constants.PlUS_RATING_FOR_SUBSCRIPTION;
-
-                    _userService.UpdateUserModel(publicationUser);
-                    _userService.UpdateUserModel(currentUser);
-
-                }
-                else
-                {
-
-                    if (publicationUser.SubscribersEmails.Remove(currentUser.Email))
-                    {
-                        publicationUser.Subscribers -= 1;
-                        currentUser.Subscriptions -= 1;
-                        currentUser.SubscriptionsEmails.Remove(publicationUser.Email);
-
-                        publicationUser.Rating -= Constants.PlUS_RATING_FOR_SUBSCRIBE;
-                        currentUser.Rating -= Constants.PlUS_RATING_FOR_SUBSCRIPTION;
-                    }
-
-                    _userService.UpdateUserModel(publicationUser);
-                    _userService.UpdateUserModel(currentUser);
-
-                }
-
+                _userService.Unsubscribe(currentUser.Id, publicationUser.Id);
             }
-
-            viewModel = new PublicationFeedViewModel
-            {
-                CurrentUserEmail = currentUser.Email,
-                TagNames = SelectedTags,
-                SortType = viewModel.SortType,
-            };
-
-            return View(viewModel);
         }
 
-        public IActionResult Top100Users()
+        viewModel = new PublicationFeedViewModel
         {
-            var users = _userService.GetUserModels().OrderByDescending(u => u.Rating).Take(100).ToList();
-            return View(users);
-        }
+            CurrentUserEmail = currentUser.Email,
+            TagNames = selectedTags ?? new List<string>(),
+            SortType = viewModel.SortType,
+        };
 
-        [HttpGet]
-        public IActionResult AddSkillTags()
+        return View(viewModel);
+    }
+
+    [AllowAnonymous]
+    public IActionResult Top100Users()
+    {
+        var users = _userService.GetUserModels().OrderByDescending(u => u.Rating).Take(100).ToList();
+        return View(users);
+    }
+
+    [HttpGet]
+    [Authorize]
+    public IActionResult AddSkillTags() => View(new List<string>());
+
+    [HttpPost]
+    [Authorize]
+    public IActionResult AddSkillTags(List<string>? skillTagNames)
+    {
+        if (skillTagNames != null)
         {
-            return View(new List<string>());
+            currentUser.SkillTags = _tagService.GetTagModels().Where(t => skillTagNames.Contains(t.Name)).ToHashSet();
+            _userService.UpdateUserModel(currentUser);
         }
+        return RedirectToAction(nameof(Profile));
+    }
 
-        [HttpPost]
-        public IActionResult AddSkillTags(List<string> skillTagNames)
+    [HttpGet]
+    [AllowAnonymous]
+    public IActionResult Community() => View();
+
+    [HttpGet]
+    [AllowAnonymous]
+    public IActionResult FindUser() => View(new FindUserViewModel());
+
+    [HttpPost]
+    [AllowAnonymous]
+    public IActionResult FindUser(FindUserViewModel viewModel, List<string>? skillTagNames)
+    {
+        if ((viewModel.FindUserName?.Length ?? 0) > 200)
         {
-            if (skillTagNames != null)
-            {
-                currentUser.SkillTags = _tagService.GetTagModels().Where(t => skillTagNames.Contains(t.Name)).ToHashSet();
-                _userService.UpdateUserModel(currentUser);
-            }
-            return RedirectToAction("Profile");
+            viewModel.FindUserName = viewModel.FindUserName![..200];
         }
 
-        [HttpGet]
-        public IActionResult Community()
+        viewModel.SkillTagNames = skillTagNames ?? new List<string>();
+        return View(viewModel);
+    }
+
+    [HttpGet]
+    [AllowAnonymous]
+    public IActionResult FindPublication() => View(new FindPublicationViewModel());
+
+    [HttpPost]
+    [AllowAnonymous]
+    public IActionResult FindPublication(FindPublicationViewModel viewModel, List<string>? tagNames)
+    {
+        if ((viewModel.FindPublicationText?.Length ?? 0) > 200)
         {
-            return View();
+            viewModel.FindPublicationText = viewModel.FindPublicationText![..200];
         }
 
-        [HttpGet]
-        public IActionResult FindUser()
-        {
-            return View(new FindUserViewModel());
-        }
+        viewModel.TagNames = tagNames ?? new List<string>();
+        return View(viewModel);
+    }
 
-        [HttpPost]
-        public IActionResult FindUser(FindUserViewModel viewModel, List<string> skillTagNames)
-        {
-            viewModel.SkillTagNames = skillTagNames;
+    [HttpGet]
+    [Authorize]
+    public IActionResult Notifications()
+    {
+        ViewBag.Notifications = _notificationService.GetAll(currentUser.Id);
+        ViewBag.UnreadCount = _notificationService.CountUnread(currentUser.Id);
+        return View();
+    }
 
-            return View(viewModel);
-        }
-
-        [HttpGet]
-        public IActionResult FindPublication()
-        {
-            return View(new FindPublicationViewModel());
-        }
-
-        [HttpPost]
-        public IActionResult FindPublication(FindPublicationViewModel viewModel, List<string> tagNames)
-        {
-            viewModel.TagNames = tagNames;
-
-            return View(viewModel);
-        }
+    [HttpPost]
+    [Authorize]
+    public IActionResult MarkNotificationRead(int notificationId)
+    {
+        _notificationService.MarkRead(notificationId, currentUser.Id);
+        return RedirectToAction(nameof(Notifications));
     }
 }

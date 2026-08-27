@@ -1,202 +1,264 @@
 using CodeCareer.Areas.User.Models;
 using CodeCareer.Areas.User.Services.Interfaces;
+using CodeCareer.Infrastructure;
+using CodeCareer.Judge;
 using Markdig;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
-namespace CodeCareer.Areas.User.Controllers
+namespace CodeCareer.Areas.User.Controllers;
+
+[Area("User")]
+public class LearningController : Controller
 {
-    [Area("User")]
-    public class LearningController : Controller
+    private readonly ISectionService _sectionService;
+    private readonly ITopicService _topicService;
+    private readonly INoteService _noteService;
+    private readonly ITaskService _taskService;
+    private readonly IProgressService _progressService;
+    private readonly ICourseService _courseService;
+    private readonly ICurrentUserService _currentUserService;
+    private readonly IChatHistoryService _chatHistoryService;
+    private readonly ISubmissionService _submissionService;
+    private readonly ICodeJudge _codeJudge;
+    private readonly IAchievementService _achievementService;
+    private readonly IMarkdownSanitizer _markdownSanitizer;
+    private readonly IConfiguration _configuration;
+
+    private static readonly MarkdownPipeline MarkdownPipeline = new MarkdownPipelineBuilder()
+        .UseAdvancedExtensions()
+        .Build();
+
+    public LearningController(
+        ISectionService sectionService,
+        ITopicService topicService,
+        INoteService noteService,
+        ITaskService taskService,
+        IProgressService progressService,
+        ICourseService courseService,
+        ICurrentUserService currentUserService,
+        IChatHistoryService chatHistoryService,
+        ISubmissionService submissionService,
+        ICodeJudge codeJudge,
+        IAchievementService achievementService,
+        IMarkdownSanitizer markdownSanitizer,
+        IConfiguration configuration)
     {
-        private readonly ISectionService _sectionService;
-        private readonly ITopicService _topicService;
-        private readonly INoteService _noteService;
-        private readonly ITaskService _taskService;
-        private readonly IProgressService _progressService;
-        private readonly ICourseService _courseService;
-        private readonly ICurrentUserService _currentUserService;
-        private readonly IChatHistoryService _chatHistoryService;
-        private readonly IConfiguration _configuration;
+        _sectionService = sectionService;
+        _topicService = topicService;
+        _noteService = noteService;
+        _taskService = taskService;
+        _progressService = progressService;
+        _courseService = courseService;
+        _currentUserService = currentUserService;
+        _chatHistoryService = chatHistoryService;
+        _submissionService = submissionService;
+        _codeJudge = codeJudge;
+        _achievementService = achievementService;
+        _markdownSanitizer = markdownSanitizer;
+        _configuration = configuration;
+    }
 
-        private static readonly MarkdownPipeline MarkdownPipeline = new MarkdownPipelineBuilder()
-            .UseAdvancedExtensions()
-            .Build();
-
-        public LearningController(
-            ISectionService sectionService,
-            ITopicService topicService,
-            INoteService noteService,
-            ITaskService taskService,
-            IProgressService progressService,
-            ICourseService courseService,
-            ICurrentUserService currentUserService,
-            IChatHistoryService chatHistoryService,
-            IConfiguration configuration)
+    [HttpGet]
+    [AllowAnonymous]
+    public IActionResult Index()
+    {
+        ViewBag.Courses = _courseService.GetPublishedCourses();
+        var email = _currentUserService.CurrentUser.Email;
+        if (!string.IsNullOrEmpty(email))
         {
-            _sectionService = sectionService;
-            _topicService = topicService;
-            _noteService = noteService;
-            _taskService = taskService;
-            _progressService = progressService;
-            _courseService = courseService;
-            _currentUserService = currentUserService;
-            _chatHistoryService = chatHistoryService;
-            _configuration = configuration;
+            ViewBag.UserEmail = email;
+            ViewBag.ProgressService = _progressService;
+            ViewBag.TaskService = _taskService;
+            ViewBag.NoteService = _noteService;
+        }
+        return View(_sectionService.GetSectionsWithTopics(onlyPublishedTopics: true));
+    }
+
+    [HttpGet]
+    [AllowAnonymous]
+    public IActionResult Topic(string slug)
+    {
+        var topic = _topicService.GetBySlug(slug);
+        if (topic == null) return NotFound();
+        ViewBag.Notes = _noteService.GetByTopicId(topic.Id);
+        ViewBag.Tasks = _taskService.GetByTopicId(topic.Id);
+        var email = _currentUserService.CurrentUser.Email;
+        if (!string.IsNullOrEmpty(email))
+        {
+            ViewBag.Completion = _progressService.GetTopicCompletionPercent(email, topic.Id,
+                ViewBag.Notes is List<NoteModel> notes ? notes.Count : 0,
+                ViewBag.Tasks is List<TaskModel> tasks ? tasks.Count : 0);
+        }
+        return View(topic);
+    }
+
+    [HttpGet]
+    [AllowAnonymous]
+    public IActionResult Note(int id)
+    {
+        var note = _noteService.GetById(id);
+        if (note == null) return NotFound();
+        var html = Markdown.ToHtml(note.BodyMarkdown ?? string.Empty, MarkdownPipeline);
+        ViewBag.HtmlBody = _markdownSanitizer.SanitizeHtml(html);
+        ViewBag.AiChatBaseUrl = _configuration["AiChat:BaseUrl"] ?? "http://localhost:7300";
+        ViewBag.AiChatPath = _configuration["AiChat:ChatPath"] ?? "/api/chat";
+        var email = _currentUserService.CurrentUser.Email;
+        ViewBag.IsRead = !string.IsNullOrEmpty(email) && _progressService.IsNoteRead(email, note.Id);
+        if (!string.IsNullOrEmpty(email))
+        {
+            ViewBag.ChatHistory = _chatHistoryService.GetByNote(email, note.Id);
+        }
+        return View(note);
+    }
+
+    [HttpPost]
+    [Authorize]
+    public IActionResult MarkNoteRead(int noteId, int topicId)
+    {
+        _progressService.MarkNoteRead(_currentUserService.CurrentUser.Email, topicId, noteId);
+        return RedirectToAction(nameof(Note), new { id = noteId });
+    }
+
+    [HttpGet]
+    [AllowAnonymous]
+    public IActionResult Tasks(string slug)
+    {
+        var topic = _topicService.GetBySlug(slug);
+        if (topic == null) return NotFound();
+        ViewBag.Topic = topic;
+        var email = _currentUserService.CurrentUser.Email;
+        if (!string.IsNullOrEmpty(email))
+        {
+            ViewBag.SolvedIds = _progressService.GetTaskProgress(email)
+                .Where(p => p.Status == "solved").Select(p => p.TaskId).ToHashSet();
+        }
+        return View(_taskService.GetByTopicId(topic.Id));
+    }
+
+    [HttpGet]
+    [AllowAnonymous]
+    public IActionResult Solve(string taskName)
+    {
+        var task = _taskService.GetByName(taskName);
+        if (task == null) return NotFound();
+        ViewBag.Topic = task.TopicId.HasValue ? _topicService.GetById(task.TopicId.Value) : null;
+        ViewBag.Task = task;
+        var user = _currentUserService.CurrentUser;
+        ViewBag.IsSolved = user.Id > 0 && _progressService.IsTaskSolved(user.Email, task.Id);
+        ViewBag.Submissions = user.Id > 0 ? _submissionService.GetByUserAndTask(user.Id, task.Id) : new List<SubmissionModel>();
+        ViewBag.JudgeResult = TempData["JudgeResult"];
+        return View(task);
+    }
+
+    [HttpPost]
+    [Authorize]
+    [EnableRateLimiting("submit-code")]
+    public async Task<IActionResult> SubmitSolution(int taskId, string taskName, string language, string sourceCode, CancellationToken cancellationToken)
+    {
+        var user = _currentUserService.CurrentUser;
+        if (user.Id <= 0)
+        {
+            return Challenge();
         }
 
-        [HttpGet]
-        public IActionResult Index()
+        if (string.IsNullOrWhiteSpace(sourceCode) || sourceCode.Length > 65536)
         {
-            var sections = _sectionService.GetSectionsWithTopics(onlyPublishedTopics: true);
-            ViewBag.Courses = _courseService.GetPublishedCourses();
-            var email = _currentUserService.CurrentUser.Email;
-            if (!string.IsNullOrEmpty(email))
-            {
-                ViewBag.UserEmail = email;
-                ViewBag.ProgressService = _progressService;
-                ViewBag.TaskService = _taskService;
-                ViewBag.NoteService = _noteService;
-            }
-            return View(sections);
-        }
-
-        [HttpGet]
-        public IActionResult Topic(string slug)
-        {
-            var topic = _topicService.GetBySlug(slug);
-            if (topic == null) return NotFound();
-            var notes = _noteService.GetByTopicId(topic.Id);
-            var tasks = _taskService.GetByTopicId(topic.Id);
-            ViewBag.Notes = notes;
-            ViewBag.Tasks = tasks;
-            var email = _currentUserService.CurrentUser.Email;
-            if (!string.IsNullOrEmpty(email))
-            {
-                ViewBag.Completion = _progressService.GetTopicCompletionPercent(email, topic.Id, notes.Count, tasks.Count);
-            }
-            return View(topic);
-        }
-
-        [HttpGet]
-        public IActionResult Note(int id)
-        {
-            var note = _noteService.GetById(id);
-            if (note == null) return NotFound();
-            ViewBag.HtmlBody = Markdown.ToHtml(note.BodyMarkdown ?? string.Empty, MarkdownPipeline);
-            ViewBag.AiChatBaseUrl = _configuration["AiChat:BaseUrl"] ?? "https://localhost:7301";
-            ViewBag.AiChatPath = _configuration["AiChat:ChatPath"] ?? "/api/chat";
-            var email = _currentUserService.CurrentUser.Email;
-            ViewBag.IsRead = !string.IsNullOrEmpty(email) && _progressService.IsNoteRead(email, note.Id);
-            if (!string.IsNullOrEmpty(email))
-            {
-                ViewBag.ChatHistory = _chatHistoryService.GetByNote(email, note.Id);
-            }
-            return View(note);
-        }
-
-        [HttpPost]
-        public IActionResult MarkNoteRead(int noteId, int topicId)
-        {
-            var email = _currentUserService.CurrentUser.Email;
-            if (string.IsNullOrEmpty(email))
-            {
-                return RedirectToAction("Authorizate", "Home");
-            }
-            _progressService.MarkNoteRead(email, topicId, noteId);
-            return RedirectToAction(nameof(Note), new { id = noteId });
-        }
-
-        [HttpGet]
-        public IActionResult Tasks(string slug)
-        {
-            var topic = _topicService.GetBySlug(slug);
-            if (topic == null) return NotFound();
-            var tasks = _taskService.GetByTopicId(topic.Id);
-            ViewBag.Topic = topic;
-            var email = _currentUserService.CurrentUser.Email;
-            if (!string.IsNullOrEmpty(email))
-            {
-                ViewBag.SolvedIds = _progressService.GetTaskProgress(email)
-                    .Where(p => p.Status == "solved")
-                    .Select(p => p.TaskId)
-                    .ToHashSet();
-            }
-            return View(tasks);
-        }
-
-        [HttpGet]
-        public IActionResult Solve(string taskName)
-        {
-            var task = _taskService.GetByName(taskName);
-            if (task == null) return NotFound();
-            TopicModel? topic = null;
-            if (task.TopicId.HasValue)
-            {
-                topic = _topicService.GetById(task.TopicId.Value);
-            }
-            ViewBag.Topic = topic;
-            ViewBag.Task = task;
-            var email = _currentUserService.CurrentUser.Email;
-            ViewBag.IsSolved = !string.IsNullOrEmpty(email) && _progressService.IsTaskSolved(email, task.Id);
-            ViewBag.CheckResult = TempData["CheckResult"];
-            return View(task);
-        }
-
-        [HttpPost]
-        public IActionResult MarkTaskSolved(int taskId, string taskName)
-        {
-            var email = _currentUserService.CurrentUser.Email;
-            if (string.IsNullOrEmpty(email))
-            {
-                return RedirectToAction("Authorizate", "Home");
-            }
-            _progressService.MarkTaskSolved(email, taskId);
+            TempData["JudgeResult"] = "Код не может быть пустым и не должен превышать 64 KB.";
             return RedirectToAction(nameof(Solve), new { taskName });
         }
 
-        [HttpPost]
-        public IActionResult CheckSample(int taskId, int sampleIndex, string actualOutput, string taskName)
+        var result = await _codeJudge.ExecuteAsync(new CodeSubmission
         {
-            var ok = _taskService.CheckSampleOutput(taskId, sampleIndex, actualOutput);
-            TempData["CheckResult"] = ok ? "Верно: вывод совпал с примером." : "Неверно: вывод не совпал с ожидаемым.";
-            if (ok)
+            TaskId = taskId,
+            UserId = user.Id,
+            Language = language ?? "csharp",
+            SourceCode = sourceCode,
+        }, cancellationToken);
+
+        _submissionService.Save(new SubmissionModel
+        {
+            UserId = user.Id,
+            TaskId = taskId,
+            Language = language ?? "csharp",
+            SourceCode = sourceCode,
+            Status = result.Status.ToString(),
+            Score = result.Score,
+            ExecutionTime = result.ExecutionTime,
+            MemoryUsed = result.MemoryUsed,
+        });
+
+        if (result.Status == SubmissionStatus.Accepted)
+        {
+            _progressService.MarkTaskSolved(user.Email, taskId);
+            _achievementService.TryGrant(user.Id, AchievementKeys.FirstTaskSolved);
+            var solvedCount = _progressService.CountSolvedTasks(user.Email);
+            if (solvedCount >= 10)
             {
-                var email = _currentUserService.CurrentUser.Email;
-                if (!string.IsNullOrEmpty(email))
-                {
-                    _progressService.MarkTaskSolved(email, taskId);
-                }
+                _achievementService.TryGrant(user.Id, AchievementKeys.TenTasksSolved);
             }
-            return RedirectToAction(nameof(Solve), new { taskName });
         }
 
-        [HttpGet]
-        public IActionResult Search(string q)
+        TempData["JudgeResult"] = FormatJudgeResult(result);
+        return RedirectToAction(nameof(Solve), new { taskName });
+    }
+
+    [HttpGet]
+    [Authorize]
+    public IActionResult Submissions()
+    {
+        var user = _currentUserService.CurrentUser;
+        return View(_submissionService.GetByUserId(user.Id));
+    }
+
+    [HttpGet]
+    [AllowAnonymous]
+    public IActionResult Search(string? q)
+    {
+        var query = (q ?? string.Empty).Trim();
+        if (query.Length > 200) query = query[..200];
+        ViewBag.Query = query;
+        ViewBag.Notes = _noteService.Search(query);
+        ViewBag.Tasks = _taskService.Search(query);
+        return View();
+    }
+
+    [HttpGet]
+    [AllowAnonymous]
+    public IActionResult Course(int id)
+    {
+        var course = _courseService.GetById(id);
+        if (course == null) return NotFound();
+        return View(course);
+    }
+
+    [HttpPost]
+    [Authorize]
+    [EnableRateLimiting("ai-chat")]
+    public IActionResult SaveChatMessage(int noteId, string role, string content)
+    {
+        var email = _currentUserService.CurrentUser.Email;
+        if (string.IsNullOrEmpty(email) || string.IsNullOrWhiteSpace(content))
         {
-            ViewBag.Query = q ?? string.Empty;
-            ViewBag.Notes = _noteService.Search(q ?? string.Empty);
-            ViewBag.Tasks = _taskService.Search(q ?? string.Empty);
-            return View();
+            return BadRequest();
         }
 
-        [HttpGet]
-        public IActionResult Course(int id)
+        if (content.Length > 4000)
         {
-            var course = _courseService.GetById(id);
-            if (course == null) return NotFound();
-            return View(course);
+            content = content[..4000];
         }
 
-        [HttpPost]
-        [IgnoreAntiforgeryToken]
-        public IActionResult SaveChatMessage(int noteId, string role, string content)
-        {
-            var email = _currentUserService.CurrentUser.Email;
-            if (!string.IsNullOrEmpty(email) && !string.IsNullOrWhiteSpace(content))
-            {
-                _chatHistoryService.AddMessage(email, noteId, role, content);
-            }
-            return Ok();
-        }
+        _chatHistoryService.AddMessage(email, noteId, role, content);
+        return Ok();
+    }
+
+    private static string FormatJudgeResult(JudgeResult result)
+    {
+        var visible = result.TestResults.Where(t => !t.IsHidden).ToList();
+        var details = visible.Count == 0
+            ? string.Empty
+            : " | " + string.Join("; ", visible.Select(t => $"#{t.Index + 1}: {t.Status}"));
+        return $"{result.Status} (score {result.Score}%){details}. {result.Message}".Trim();
     }
 }
