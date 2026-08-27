@@ -1,10 +1,12 @@
 using CodeCareer.Areas.User.Models;
 
-namespace CodeCareer.Areas.User.Services.Interfaces
+namespace CodeCareer.Areas.User.Services.Interfaces;
+
+public interface ICommentService
 {
-    public interface ICommentService
-    {
-        List<CommentModel> GetByPublicationId(int publicationId);
-        void Add(CommentModel comment);
-    }
+    List<CommentModel> GetByPublicationId(int publicationId);
+    CommentModel? GetById(int id);
+    void Add(CommentModel comment);
+    bool Delete(int commentId, int userId);
+    bool DeleteAsAdmin(int commentId);
 }

@@ -1,17 +1,16 @@
 ﻿using CodeCareer.Areas.User.Models;
 
-namespace CodeCareer.Areas.User.Services.Interfaces
+namespace CodeCareer.Areas.User.Services.Interfaces;
+
+public interface IUserService
 {
-    public interface IUserService
-    {
-        public List<UserModel> GetUserModels();
-        public void AddUserModel(UserModel user);
-        public void RemoveUserModel(int userId);
-
-        public void UpdateUserModel(UserModel user);
-
-        public UserModel GetUserByEmail(string email);
-
-        public UserModel GetUserById(int email);
-    }
+    List<UserModel> GetUserModels();
+    void AddUserModel(UserModel user);
+    void RemoveUserModel(int userId);
+    void UpdateUserModel(UserModel user);
+    UserModel? GetUserByEmail(string email);
+    UserModel? GetUserById(int id);
+    bool Subscribe(int followerId, int followingId);
+    bool Unsubscribe(int followerId, int followingId);
+    bool IsSubscribed(int followerId, int followingId);
 }

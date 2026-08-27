@@ -7,9 +7,16 @@ namespace CodeCareer.Areas.User.Services.Implementations.MySqlEfServices
 {
     public class ProgressMySqlEfService : IProgressService
     {
+        private readonly ApplicationDbContext _db;
+
+        public ProgressMySqlEfService(ApplicationDbContext db)
+        {
+            _db = db;
+        }
+
         public void MarkNoteRead(string userEmail, int topicId, int noteId)
         {
-            using var db = new ApplicationDbContext();
+            var db = _db;
             var existing = db.UserTopicProgress
                 .FirstOrDefault(p => p.UserEmail == userEmail && p.TopicId == topicId && p.NoteId == noteId);
             if (existing == null)
@@ -31,7 +38,7 @@ namespace CodeCareer.Areas.User.Services.Implementations.MySqlEfServices
 
         public void MarkTaskSolved(string userEmail, int taskId)
         {
-            using var db = new ApplicationDbContext();
+            var db = _db;
             var existing = db.UserTaskProgress
                 .FirstOrDefault(p => p.UserEmail == userEmail && p.TaskId == taskId);
             if (existing == null)
@@ -54,21 +61,21 @@ namespace CodeCareer.Areas.User.Services.Implementations.MySqlEfServices
 
         public bool IsNoteRead(string userEmail, int noteId)
         {
-            using var db = new ApplicationDbContext();
+            var db = _db;
             return db.UserTopicProgress.AsNoTracking()
                 .Any(p => p.UserEmail == userEmail && p.NoteId == noteId && p.NoteReadAt != null);
         }
 
         public bool IsTaskSolved(string userEmail, int taskId)
         {
-            using var db = new ApplicationDbContext();
+            var db = _db;
             return db.UserTaskProgress.AsNoTracking()
                 .Any(p => p.UserEmail == userEmail && p.TaskId == taskId && p.Status == "solved");
         }
 
         public List<UserTopicProgressModel> GetTopicProgress(string userEmail)
         {
-            using var db = new ApplicationDbContext();
+            var db = _db;
             return db.UserTopicProgress.AsNoTracking()
                 .Where(p => p.UserEmail == userEmail)
                 .ToList();
@@ -76,7 +83,7 @@ namespace CodeCareer.Areas.User.Services.Implementations.MySqlEfServices
 
         public List<UserTaskProgressModel> GetTaskProgress(string userEmail)
         {
-            using var db = new ApplicationDbContext();
+            var db = _db;
             return db.UserTaskProgress.AsNoTracking()
                 .Where(p => p.UserEmail == userEmail)
                 .ToList();
@@ -92,7 +99,7 @@ namespace CodeCareer.Areas.User.Services.Implementations.MySqlEfServices
         {
             var total = notesCount + tasksCount;
             if (total == 0) return 0;
-            using var db = new ApplicationDbContext();
+            var db = _db;
             var readNotes = db.UserTopicProgress.AsNoTracking()
                 .Count(p => p.UserEmail == userEmail && p.TopicId == topicId && p.NoteReadAt != null);
             var taskIds = db.Tasks.AsNoTracking().Where(t => t.TopicId == topicId).Select(t => t.Id).ToList();

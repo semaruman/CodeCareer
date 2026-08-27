@@ -1,24 +1,28 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace CodeCareer.Areas.User.Models
+namespace CodeCareer.Areas.User.Models;
+
+public class PublicationModel
 {
-    public class PublicationModel
-    {
-        [BindNever]
-        public int Id { get; set; }
+    [BindNever]
+    public int Id { get; set; }
 
-        [BindNever]
-        public DateTime CreatedDate { get; set; } = DateTime.Now;
+    [BindNever]
+    public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
-        [BindNever]
-        public UserModel User { get; set; }
+    public int UserId { get; set; }
 
-        [Required(ErrorMessage = "Введите описание")]
-        [MaxLength(1000, ErrorMessage = "Максимальная длина - 1000 символов")]
-        public string Content {  get; set; }
+    [BindNever]
+    public UserModel User { get; set; } = null!;
 
-        public HashSet<TagModel> Tags { get; set; }
+    [Required(ErrorMessage = "Введите описание")]
+    [MaxLength(1000, ErrorMessage = "Максимальная длина - 1000 символов")]
+    public string Content { get; set; } = string.Empty;
 
-    }
+    [BindNever]
+    public HashSet<TagModel> Tags { get; set; } = new();
+
+    public ICollection<PublicationTagModel> PublicationTags { get; set; } = new List<PublicationTagModel>();
+    public ICollection<CommentModel> Comments { get; set; } = new List<CommentModel>();
 }

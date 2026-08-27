@@ -3,31 +3,34 @@ using CodeCareer.Areas.User.Models;
 using CodeCareer.Areas.User.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace CodeCareer.Areas.User.Services.Implementations.MySqlEfServices
+namespace CodeCareer.Areas.User.Services.Implementations.MySqlEfServices;
+
+public class ChatHistoryMySqlEfService : IChatHistoryService
 {
-    public class ChatHistoryMySqlEfService : IChatHistoryService
+    private readonly ApplicationDbContext _db;
+
+    public ChatHistoryMySqlEfService(ApplicationDbContext db) => _db = db;
+
+    public void AddMessage(string userEmail, int noteId, string role, string content)
     {
-        public void AddMessage(string userEmail, int noteId, string role, string content)
+        if (content.Length > 8000)
         {
-            using var db = new ApplicationDbContext();
-            db.ChatHistories.Add(new ChatHistoryModel
-            {
-                UserEmail = userEmail,
-                NoteId = noteId,
-                Role = role,
-                Content = content,
-                CreatedAt = DateTime.UtcNow,
-            });
-            db.SaveChanges();
+            content = content[..8000];
         }
 
-        public List<ChatHistoryModel> GetByNote(string userEmail, int noteId)
+        _db.ChatHistories.Add(new ChatHistoryModel
         {
-            using var db = new ApplicationDbContext();
-            return db.ChatHistories.AsNoTracking()
-                .Where(c => c.UserEmail == userEmail && c.NoteId == noteId)
-                .OrderBy(c => c.CreatedAt)
-                .ToList();
-        }
+            UserEmail = userEmail,
+            NoteId = noteId,
+            Role = role,
+            Content = content,
+            CreatedAt = DateTime.UtcNow,
+        });
+        _db.SaveChanges();
     }
+
+    public List<ChatHistoryModel> GetByNote(string userEmail, int noteId) =>
+        _db.ChatHistories.AsNoTracking()
+            .Where(c => c.UserEmail == userEmail && c.NoteId == noteId)
+            .OrderBy(c => c.CreatedAt).ToList();
 }

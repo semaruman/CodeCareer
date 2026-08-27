@@ -1,43 +1,79 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
-using CodeCareer.Areas.User.ViewModels;
 
-namespace CodeCareer.Areas.User.Models
+namespace CodeCareer.Areas.User.Models;
+
+public class UserModel
 {
-    public class UserModel
-    {
-        public int Id { get; set; } = 1;
+    public int Id { get; set; }
 
-        public string FullName { get; set; }
+    [Required(ErrorMessage = "Имя обязательно")]
+    [MaxLength(100)]
+    public string FullName { get; set; } = string.Empty;
 
-        public string Email {  get; set; }
+    [Required(ErrorMessage = "Email обязателен")]
+    [MaxLength(256)]
+    [EmailAddress]
+    public string Email { get; set; } = string.Empty;
 
-        public string Password { get; set; }
+    /// <summary>Stored hash. Never expose in views.</summary>
+    [JsonIgnore]
+    public string PasswordHash { get; set; } = string.Empty;
 
-        public DateTime? BirthDate { get; set; }
+    /// <summary>Form-only password, not persisted.</summary>
+    [NotMapped]
+    [DataType(DataType.Password)]
+    public string? Password { get; set; }
 
-        [Required(ErrorMessage = "Обязательное поле")]
-        [MaxLength(300, ErrorMessage = "текст не должен превышать 300 символов")]
-        public string Info {  get; set; } = string.Empty;
+    public DateTime? BirthDate { get; set; }
 
-        public int Rating { get; set; } = 0;
+    [MaxLength(300, ErrorMessage = "текст не должен превышать 300 символов")]
+    public string Info { get; set; } = string.Empty;
 
-        public int Subscribers { get; set; } = 0;
+    public int Rating { get; set; }
 
-        [JsonInclude]
-        public HashSet<string> SubscribersEmails = new HashSet<string>();
+    [MaxLength(64)]
+    public string Status { get; set; } = "Начинающий";
 
-        public int Subscriptions { get; set; } = 0;
+    [MaxLength(32)]
+    public string Role { get; set; } = Security.Roles.User;
 
-        [JsonInclude]
-        public HashSet<string> SubscriptionsEmails = new HashSet<string>();
+    [MaxLength(256)]
+    public string? AvatarPath { get; set; }
 
-        public string Status { get; set; } = "Начинающий";
+    public bool ShowSubscriptions { get; set; } = true;
 
-        public HashSet<TagModel> SkillTags { get; set; } = new HashSet<TagModel>();
+    public bool MustChangePassword { get; set; }
 
-        public bool ShowSubscriptions { get; set; } = true;
+    public int FailedLoginAttempts { get; set; }
 
-        public DateTime RegistrationDate { get; set; } = DateTime.Now;
-    }
+    public DateTime? LockoutEndUtc { get; set; }
+
+    public DateTime RegistrationDate { get; set; } = DateTime.UtcNow;
+
+    // Legacy denormalized counters — kept for display; source of truth is UserSubscriptions.
+    [NotMapped]
+    public int Subscribers { get; set; }
+
+    [NotMapped]
+    [JsonInclude]
+    public HashSet<string> SubscribersEmails { get; set; } = new();
+
+    [NotMapped]
+    public int Subscriptions { get; set; }
+
+    [NotMapped]
+    [JsonInclude]
+    public HashSet<string> SubscriptionsEmails { get; set; } = new();
+
+    [NotMapped]
+    public HashSet<TagModel> SkillTags { get; set; } = new();
+
+    public ICollection<UserSubscriptionModel> Following { get; set; } = new List<UserSubscriptionModel>();
+    public ICollection<UserSubscriptionModel> Followers { get; set; } = new List<UserSubscriptionModel>();
+    public ICollection<UserSkillTagModel> UserSkillTags { get; set; } = new List<UserSkillTagModel>();
+    public ICollection<PublicationModel> Publications { get; set; } = new List<PublicationModel>();
+    public ICollection<NotificationModel> Notifications { get; set; } = new List<NotificationModel>();
+    public ICollection<UserAchievementModel> Achievements { get; set; } = new List<UserAchievementModel>();
 }

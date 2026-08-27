@@ -7,9 +7,16 @@ namespace CodeCareer.Areas.User.Services.Implementations.MySqlEfServices
 {
     public class TaskMySqlEfService : ITaskService
     {
+        private readonly ApplicationDbContext _db;
+
+        public TaskMySqlEfService(ApplicationDbContext db)
+        {
+            _db = db;
+        }
+
         public List<TaskModel> GetTaskModels()
         {
-            using var dbContext = new ApplicationDbContext();
+            var dbContext = _db;
             List<TaskModel> res = new List<TaskModel>();
             foreach (var task in dbContext.Tasks.AsNoTracking())
             {
@@ -21,7 +28,7 @@ namespace CodeCareer.Areas.User.Services.Implementations.MySqlEfServices
 
         public List<TaskModel> GetByTopicId(int topicId)
         {
-            using var dbContext = new ApplicationDbContext();
+            var dbContext = _db;
             var list = dbContext.Tasks.AsNoTracking()
                 .Where(t => t.TopicId == topicId)
                 .ToList();
@@ -31,7 +38,7 @@ namespace CodeCareer.Areas.User.Services.Implementations.MySqlEfServices
 
         public TaskModel? GetByName(string name)
         {
-            using var dbContext = new ApplicationDbContext();
+            var dbContext = _db;
             var task = dbContext.Tasks.AsNoTracking().FirstOrDefault(t => t.Name == name);
             if (task != null) HydrateSamples(task);
             return task;
@@ -39,7 +46,7 @@ namespace CodeCareer.Areas.User.Services.Implementations.MySqlEfServices
 
         public TaskModel? GetById(int id)
         {
-            using var dbContext = new ApplicationDbContext();
+            var dbContext = _db;
             var task = dbContext.Tasks.AsNoTracking().FirstOrDefault(t => t.Id == id);
             if (task != null) HydrateSamples(task);
             return task;
@@ -47,7 +54,7 @@ namespace CodeCareer.Areas.User.Services.Implementations.MySqlEfServices
 
         public void AddTaskModel(TaskModel task)
         {
-            using var dbContext = new ApplicationDbContext();
+            var dbContext = _db;
             task.AllInputStrings = string.Join("; ", task.InputStrings);
             task.AllOutputStrings = string.Join("; ", task.OutputStrings);
             if (task.TopicId.HasValue)
@@ -64,7 +71,7 @@ namespace CodeCareer.Areas.User.Services.Implementations.MySqlEfServices
 
         public void RemoveTaskModel(int id)
         {
-            using var dbContext = new ApplicationDbContext();
+            var dbContext = _db;
             var task = dbContext.Tasks.Find(id);
             if (task == null) return;
             dbContext.Tasks.Remove(task);
@@ -73,7 +80,7 @@ namespace CodeCareer.Areas.User.Services.Implementations.MySqlEfServices
 
         public List<TaskModel> Search(string query)
         {
-            using var dbContext = new ApplicationDbContext();
+            var dbContext = _db;
             if (string.IsNullOrWhiteSpace(query)) return new List<TaskModel>();
             var q = query.Trim().ToLowerInvariant();
             var list = dbContext.Tasks.AsNoTracking()
