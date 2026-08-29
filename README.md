@@ -6,6 +6,11 @@ A full-stack learning and community platform for software engineers. CodeCareer 
 
 The main app is a server-rendered monolith with clear module boundaries (social, learning, judge, admin). LLM credentials and sandboxed code execution are isolated from the web process.
 
+<div>
+    <img width="1917" height="944" alt="Снимок экрана 2026-07-31 181947" src="https://github.com/user-attachments/assets/220aabb8-3d74-4240-9a58-4b223fb0304a" />
+</div>
+
+
 ---
 
 ## Key features
