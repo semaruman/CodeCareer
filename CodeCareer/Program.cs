@@ -127,6 +127,7 @@ if (!app.Environment.IsEnvironment("Testing"))
         var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         db.Database.Migrate();
         LegacyDataMigrator.Migrate(db);
+        DevelopmentDataSeeder.SeedTags(db);
         if (app.Environment.IsDevelopment())
         {
             DevelopmentDataSeeder.Seed(db);
