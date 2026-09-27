@@ -375,12 +375,7 @@ namespace CodeCareer.Areas.User.Data.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("name");
 
-                    b.Property<int?>("PublicationModelId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("PublicationModelId");
 
                     b.ToTable("tags", (string)null);
                 });
@@ -818,13 +813,6 @@ namespace CodeCareer.Areas.User.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("CodeCareer.Areas.User.Models.TagModel", b =>
-                {
-                    b.HasOne("CodeCareer.Areas.User.Models.PublicationModel", null)
-                        .WithMany("Tags")
-                        .HasForeignKey("PublicationModelId");
-                });
-
             modelBuilder.Entity("CodeCareer.Areas.User.Models.TaskModel", b =>
                 {
                     b.HasOne("CodeCareer.Areas.User.Models.TopicModel", "Topic")
@@ -905,8 +893,6 @@ namespace CodeCareer.Areas.User.Data.Migrations
                     b.Navigation("Comments");
 
                     b.Navigation("PublicationTags");
-
-                    b.Navigation("Tags");
                 });
 
             modelBuilder.Entity("CodeCareer.Areas.User.Models.SectionModel", b =>

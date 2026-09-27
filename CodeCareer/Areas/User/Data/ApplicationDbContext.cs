@@ -59,6 +59,7 @@ public class ApplicationDbContext : DbContext
             entity.Property(u => u.FailedLoginAttempts).HasColumnName("failed_login_attempts");
             entity.Property(u => u.LockoutEndUtc).HasColumnName("lockout_end_utc");
             entity.Property(u => u.RegistrationDate).HasColumnName("registration_date");
+            entity.Ignore(u => u.SkillTags);
         });
     }
 
@@ -72,6 +73,7 @@ public class ApplicationDbContext : DbContext
             entity.Property(p => p.Content).HasColumnName("content").HasMaxLength(1000);
             entity.HasIndex(p => p.UserId);
             entity.HasOne(p => p.User).WithMany(u => u.Publications).HasForeignKey(p => p.UserId).OnDelete(DeleteBehavior.Cascade);
+            entity.Ignore(p => p.Tags);
         });
 
         modelBuilder.Entity<PublicationTagModel>(entity =>

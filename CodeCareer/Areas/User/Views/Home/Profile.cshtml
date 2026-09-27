@@ -7,7 +7,6 @@
 @{
 	ViewBag.Title = "Профиль";
 	var publications = PublicationService.GetPublicationModels().Where(p => p.User.Email == Model.Email).ToList();
-	publications.Reverse();
 	var solved = ProgressService.CountSolvedTasks(Model.Email);
 	var readNotes = ProgressService.CountReadNotes(Model.Email);
 }

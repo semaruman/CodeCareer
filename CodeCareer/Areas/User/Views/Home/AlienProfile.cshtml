@@ -9,7 +9,6 @@
 	UserModel user = UserService.GetUserModels().FirstOrDefault(u => u.Email == Model.AlienUserEmail);
 	ViewBag.Title = $"Профиль {user.FullName}";
 	var publications = PublicationService.GetPublicationModels().Where(p => p.User.Email == Model.AlienUserEmail).ToList();
-	publications.Reverse();
 
 	var currentUser = UserService.GetUserModels().FirstOrDefault(u => u.Email == Model.CurrentUserEmail);
 	var solved = ProgressService.CountSolvedTasks(user.Email);

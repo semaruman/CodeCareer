@@ -35,17 +35,13 @@
 	}
 
 
-	if (Model.SortType == "Сначала новые")
+	if (Model.SortType == "Сначала старые")
 	{
-		publications.Reverse();
-	}
-	else if (Model.SortType == "Сначала старые")
-	{
-		publications.OrderBy(p => p.CreatedDate);
+		publications = publications.OrderBy(p => p.CreatedDate).ToList();
 	}
 	else
 	{
-		publications.Reverse();
+		publications = publications.OrderByDescending(p => p.CreatedDate).ToList();
 	}
 }
 

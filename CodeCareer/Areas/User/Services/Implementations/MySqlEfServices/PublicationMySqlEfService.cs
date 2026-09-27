@@ -43,34 +43,28 @@ public class PublicationMySqlEfService : IPublicationService
     public void AddPublicationModel(PublicationModel publication)
     {
         publication.CreatedDate = DateTime.UtcNow;
+        var tagNames = publication.Tags.Select(t => t.Name).ToList();
+        publication.Tags.Clear();
+        publication.User = null!;
+        publication.PublicationTags = new List<PublicationTagModel>();
+
         _db.Publications.Add(publication);
         _db.SaveChanges();
-        SyncTags(publication);
+
+        SyncTags(publication.Id, tagNames);
     }
 
     public void UpdatePublicationModel(PublicationModel publication)
     {
-        var existing = _db.Publications
-            .Include(p => p.PublicationTags)
-            .FirstOrDefault(p => p.Id == publication.Id);
-
+        var existing = _db.Publications.FirstOrDefault(p => p.Id == publication.Id);
         if (existing == null)
         {
             return;
         }
 
         existing.Content = publication.Content;
-        existing.PublicationTags.Clear();
-        foreach (var tag in publication.Tags)
-        {
-            var dbTag = _db.Tags.FirstOrDefault(t => t.Name == tag.Name);
-            if (dbTag != null)
-            {
-                existing.PublicationTags.Add(new PublicationTagModel { PublicationId = existing.Id, TagId = dbTag.Id });
-            }
-        }
-
         _db.SaveChanges();
+        SyncTags(publication.Id, publication.Tags.Select(t => t.Name));
     }
 
     public void RemovePublicationModel(int id)
@@ -88,19 +82,30 @@ public class PublicationMySqlEfService : IPublicationService
     public bool IsOwner(int publicationId, int userId) =>
         _db.Publications.AsNoTracking().Any(p => p.Id == publicationId && p.UserId == userId);
 
-    private void SyncTags(PublicationModel publication)
+    private void SyncTags(int publicationId, IEnumerable<string> tagNames)
     {
+        var names = tagNames.Where(n => !string.IsNullOrWhiteSpace(n)).Distinct().ToList();
         var existing = _db.Publications
             .Include(p => p.PublicationTags)
-            .First(p => p.Id == publication.Id);
+            .First(p => p.Id == publicationId);
 
         existing.PublicationTags.Clear();
-        foreach (var tag in publication.Tags)
+
+        if (names.Count > 0)
         {
-            var dbTag = _db.Tags.FirstOrDefault(t => t.Name == tag.Name);
-            if (dbTag != null)
+            var tagIds = _db.Tags
+                .AsNoTracking()
+                .Where(t => names.Contains(t.Name))
+                .Select(t => t.Id)
+                .ToList();
+
+            foreach (var tagId in tagIds)
             {
-                existing.PublicationTags.Add(new PublicationTagModel { PublicationId = existing.Id, TagId = dbTag.Id });
+                existing.PublicationTags.Add(new PublicationTagModel
+                {
+                    PublicationId = existing.Id,
+                    TagId = tagId,
+                });
             }
         }
 

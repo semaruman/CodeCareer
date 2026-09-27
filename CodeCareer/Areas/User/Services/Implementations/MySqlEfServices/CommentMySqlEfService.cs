@@ -29,6 +29,8 @@ public class CommentMySqlEfService : ICommentService
     public void Add(CommentModel comment)
     {
         comment.CreatedDate = DateTime.UtcNow;
+        comment.User = null!;
+        comment.Publication = null!;
         _db.Comments.Add(comment);
         _db.SaveChanges();
     }

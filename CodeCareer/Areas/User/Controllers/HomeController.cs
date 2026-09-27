@@ -213,7 +213,6 @@ public class HomeController : Controller
         {
             Content = viewModel.Content.Trim(),
             UserId = currentUser.Id,
-            User = currentUser,
             Tags = _tagService.GetTagModels().Where(t => (tagNames ?? new()).Contains(t.Name)).ToHashSet(),
         };
 
@@ -320,7 +319,6 @@ public class HomeController : Controller
         {
             PublicationId = publicationId,
             UserId = currentUser.Id,
-            User = currentUser,
             Content = content,
         });
 
